@@ -1,0 +1,129 @@
+/***************************************************************
+CSS for all JSP pages
+***************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+/***************************************************************
+Cart sign (list-food.html) (cart.html)(thanks-page.html)
+***************************************************************/
+.fa-stack[data-count]:after {
+    position: absolute;
+    right: 0%;
+    top: 0%;
+    content: attr(data-count);
+    font-size: 40%;
+    padding: .6em;
+    border-radius: 999px;
+    line-height: .75em;
+    color: whitesmoke;
+    color: #DF0000;
+    text-align: center;
+    min-width: 1em;
+    font-weight: bold;
+    background: whitesmoke;
+    border-style: solid;
+}
+
+.fa-circle {
+    color: #DF0000;
+}
+
+.red-cart {
+    color: #DF0000;
+    background: whitesmoke;
+}
+/***************************************************************
+Pagination (list-food.html)
+***************************************************************/
+/* header styling */
+h1 {
+    color: green;
+}
+
+/* pagination position styling */
+.pagination_section {
+    position: fixed;
+    top: 100%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -100px;
+}
+
+/* pagination styling */
+.pagination_section a {
+    background-color: lightgray;
+    color: black;
+    padding: 10px 18px;
+    text-decoration: none;
+}
+
+/* pagination hover effect on non-active */
+.pagination_section a:hover:not(.active) {
+    background-color: red;
+    color: black;
+}
+
+
+
+/***************************************************************
+ Button Order(cart.html)
+***************************************************************/
+/* button style */
+.order-button {
+    font-weight: bold;
+    height: 50px;
+    width: 150px;
+    top: 100%;
+    right:0 ;
+    margin-top: -50px;
+    margin-left: -100px;
+}
+
+/***************************************************************
+Registration form (registraion.jsp)
+***************************************************************/
+.divider-text {
+    position: relative;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.divider-text span {
+    padding: 7px;
+    font-size: 12px;
+    position: relative;
+    z-index: 2;
+}
+
+.divider-text:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    top: 55%;
+    left: 0;
+    z-index: 1;
+}
+.errorMessage {
+    font-weight: bold;
+    color: red;
+}
+.btn-facebook {
+    background-color: #405D9D;
+    color: #fff;
+}
+
+.btn-twitter {
+    background-color: #42AEEC;
+    color: #fff;
+}
