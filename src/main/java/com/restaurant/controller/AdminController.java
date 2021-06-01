@@ -4,6 +4,7 @@ package com.restaurant.controller;
 import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.OrderStatus;
 import com.restaurant.service.OrderService;
+import com.restaurant.service.OrderStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.RequestDispatcher;
@@ -25,6 +26,8 @@ public class AdminController extends HttpServlet {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private OrderStatusService statusService;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -46,7 +49,7 @@ public class AdminController extends HttpServlet {
         Order order;
         try {
             order = orderService.getOrder(orderIdString);
-            OrderStatus newStatus = OrderStatus.getOrderStatus(statusName);
+            OrderStatus newStatus = statusService.findByStatusName(statusName);
             orderService.updateOrder(order.getId(), newStatus);
         } catch (Exception e) {
             e.printStackTrace();

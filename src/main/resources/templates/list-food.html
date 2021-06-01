@@ -25,17 +25,15 @@
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav">
-                <a href="/controller?command=menuList" class="nav-item nav-link">
+                <a href="/menu" class="nav-item nav-link">
                     Menu
                 </a>
-                <div th:if="${session.username!=null}">
-                    <a href="cart.html" class="nav-item nav-link active">
-                        Cart
-                    </a>
-                    <a href="/controller?command=myOrders" class="nav-item nav-link">
-                        My Orders
-                    </a>
-                </div>
+                <a href="/cart" class="nav-item nav-link active" th:if="${session.username!=null}">
+                    Cart
+                </a>
+                <a href="/myorders" class="nav-item nav-link" th:if="${session.username!=null}">
+                    My Orders
+                </a>
             </div>
             <div class="nav-item dropdown ml-auto">
                 <a class="nav-link dropdown-toggle" href="" id="dropdown09" style="color:black;" data-toggle="dropdown"
@@ -59,22 +57,20 @@
                     </a>
                 </div>
             </div>
-            <div class="navbar-nav" th:if="${session.username==null}">
-                <a href="registration.html" class="nav-item nav-link"></span>
+            <div class="navbar-nav">
+                <a href="/registration" th:if="${session.username==null}" class="nav-item nav-link"></span>
                     Registration
                 </a>
-                <a href="login-main.html" class="nav-item nav-link"></span>
+                <a href="/login" th:if="${session.username==null}" class="nav-item nav-link"></span>
                     Login
+                </a>
+                <a href="/controller?command=logout" th:if="${session.username!=null}" class="nav-item nav-link"></span>
+                Logout
                 </a>
             </div>
 
             <div th:if="${session.username!=null}">
-                <div class="navbar-nav">
-                    <a href="/controller?command=logout" class="nav-item nav-link"></span>
-                        Logout
-                    </a>
-                </div>
-                <a href="cart.html">
+                <a href="/cart">
             <span class="fa-stack fa-2x has-badge" data-count="${sessionScope.cart.size()}">
                     <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
@@ -93,23 +89,16 @@
     <div id="content">
 
 
-            <a href="/controller?command=menuList&filter=all_categories" th:if="${session.lang!='ua'}">
-                <button type="button" class="btn btn-light">All categories</button>
-            </a >
-            <a href="/controller?command=menuList&filter=all_categories" th:if="${session.lang=='ua'}">
-                <button type="button" class="btn btn-light">Всі категорії</button>
-            </a>
-
-        <th:forEach var="category" items="${categories}">
-            <a href="/controller?command=menuList&filter=${category.name}">
-                <th:if test="${sessionScope.lang!='ua'}">
-                    <button type="button" class="btn btn-light">${category.name}</button>
-                </th:if>
-                <th:if test="${sessionScope.lang=='ua'}">
-                    <button type="button" class="btn btn-light">${category.nameUa}</button>
-                </th:if>
-            </a>
-        </th:forEach>
+        <a href="/controller?command=menuList&filter=all_categories" th:if="${session.lang!='ua'}">
+            <button type="button" class="btn btn-light">All categories</button>
+        </a>
+        <a href="/controller?command=menuList&filter=all_categories" th:if="${session.lang=='ua'}">
+            <button type="button" class="btn btn-light">Всі категорії</button>
+        </a>
+        <a th:each="category: ${categories}" href="/controller?command=menuList&filter=${category.name}">
+            <button th:if="${session.lang!='ua'}" type="button" class="btn btn-light" th:text="${category.name}"/>
+            <button th:if="${session.lang=='ua'}" type="button" class="btn btn-light" th:text="${category.nameUa}"/>
+        </a>
 
         <table class="table">
             <thead>
@@ -119,47 +108,36 @@
                                    style="color:red;">Name&#8597;</a></th>
                 <th scope="col"><a href="/controller?command=menuList&sort=price"
                                    style="color:red;">Price&#8597;</a></th>
-                <th scope="col"><a  href="/controller?command=menuList&sort=category"
-                        style="color:red;">Category&#8597;</a></th>
+                <th scope="col"><a href="/controller?command=menuList&sort=category"
+                                   style="color:red;">Category&#8597;</a></th>
                 <th:if test="${sessionScope.get('username')!=null}">
                     <th scope="col"></th>
                 </th:if>
             </tr>
             </thead>
             <tbody>
-            <th:forEach var="foodItem" items="${FOOD_LIST}">
-                <tr>
-                    <td><img src="${foodItem.image}" width="100" height="100"></td>
-                    <th:if test="${sessionScope.lang!='ua'}">
-                        <td> ${foodItem.name} </td>
-                    </th:if>
-                    <th:if test="${sessionScope.lang=='ua'}">
-                        <td> ${foodItem.nameUa} </td>
-                    </th:if>
-                    <td> ${foodItem.price}$</td>
-                    <th:if test="${sessionScope.lang!='ua'}">
-                        <td>${foodItem.category.name}</td>
-                    </th:if>
-                    <th:if test="${sessionScope.lang=='ua'}">
-                        <td>${foodItem.category.nameUa}</td>
-                    </th:if>
-                    <th:if test="${sessionScope.get('username')!=null}">
-                        <td><a href="/controller?command=menuOrder&foodId=${foodItem.id}" style="color:black;">
-                            <button type="button" class="btn btn-dark">Add to Cart</button>
-                        </a>
-                        </td>
-                    </th:if>
-                </tr>
-            </th:forEach>
+            <tr th:each="foodItem: ${FOOD_LIST}">
+                <td><img th:src="${foodItem.image}" width="100" height="100"></td>
+                <td th:text="${foodItem.name}" th:if="${session.lang!='ua'}"/>
+                <td th:text="${foodItem.nameUa}" th:if="${session.lang=='ua'}"/>
+                <td th:text="${foodItem.price}"></td>
+                <td th:text="${foodItem.category.name}" th:if="${session.lang!='ua'}"/>
+                <td th:text="${foodItem.category.nameUa}" th:if="${session.lang=='ua'}"/>
+                <td th:if="${session.username!=null}"><a th:href="@{/menu/order(foodId=${foodItem.id})}"
+                                                         style="color:black;">
+                    <button type="button" class="btn btn-dark">Add to Cart</button>
+                </a>
+                </td>
+            </tr>
             </tbody>
         </table>
         <div class="pagination_section">
-<!--            <th:set var="counter" value="1"/>
-            <th:set var="end" value="${requestScope.numberOfPages}"/>
-            <th:forEach start="1" end="${end}">
-                <a href="/controller?command=menuList&page=${counter}">${counter}</a>
-                <th:set var="counter" value="${counter+1}"/>
-            </th:forEach>-->
+            <!--            <th:set var="counter" value="1"/>
+                        <th:set var="end" value="${requestScope.numberOfPages}"/>
+                        <th:forEach start="1" end="${end}">
+                            <a href="/controller?command=menuList&page=${counter}">${counter}</a>
+                            <th:set var="counter" value="${counter+1}"/>
+                        </th:forEach>-->
         </div>
 
     </div>

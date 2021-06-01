@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface FoodRepository extends JpaRepository<FoodItem, Long> {
 
@@ -15,7 +17,7 @@ public interface FoodRepository extends JpaRepository<FoodItem, Long> {
     List<FoodItem> findAll();
 
     @Override
-    FoodItem getById(Long aLong);
+    Optional<FoodItem> findById(Long aLong);
 
     @Override
     Page<FoodItem> findAll(Pageable pageable);

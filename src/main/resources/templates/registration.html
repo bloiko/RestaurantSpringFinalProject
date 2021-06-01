@@ -1,4 +1,4 @@
-<html lang="${sessionScope.lang}">
+<html lang="${sessionScope.lang}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -14,53 +14,53 @@
 <!--
     <h4 class="card-title mt-3 text-center"><fmt:message key="registration.registration"/></h4>
 -->
-    <form action="/controller?command=registration" method="post">
-        <label class="errorMessage">${error_message}</label>
+    <form th:action="@{/registration}" method="post">
+        <label class="errorMessage" th:value="${session.error_message}"/>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-user"></i> </span>
             </div>
-            <input name="first_name" class="form-control" placeholder="First Name" value="${first_name}" type="text">
+            <input name="first_name" class="form-control" placeholder="First Name" th:value="${first_name}" type="text">
         </div>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-user"></i> </span>
             </div>
-            <input name="last_name" class="form-control" placeholder="Last Name" type="text" value="${last_name}">
+            <input name="last_name" class="form-control" placeholder="Last Name" type="text" th:value="${last_name}">
         </div>
-        <label class="errorMessage">${username_error_message}</label>
+        <label class="errorMessage" th:value="${session.username_error_message}"/>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
             </div>
             <input name="username" class="form-control" placeholder="Username" type="text">
         </div>
-        <label class="errorMessage">${password_error_message}</label>
+        <label class="errorMessage" th:value="${session.password_error_message}"/>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
             </div>
             <input name="password" class="form-control" placeholder="Password" type="password">
         </div>
-        <label class="errorMessage">${email_error_message}</label>
+        <label class="errorMessage" th:value="${session.email_error_message}"></label>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
             </div>
-            <input name="email" class="form-control" placeholder="Email" type="text" value="${email}">
+            <input name="email" class="form-control" placeholder="Email" type="text" th:value="${email}">
         </div>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-building"></i> </span>
             </div>
-            <input name="address" class="form-control" placeholder="Address" type="text" value="${address}">
+            <input name="address" class="form-control" placeholder="Address" type="text" th:value="${address}">
         </div>
-        <label class="errorMessage">${phone_number_error_message}</label>
+        <label class="errorMessage" th:value="${session.phone_number_error_message}"/>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
             </div>
-            <input name="phoneNumber" class="form-control" placeholder="Phone Number" type="text" value="${phoneNumber}">
+            <input name="phoneNumber" class="form-control" placeholder="Phone Number" type="text" th:value="${phoneNumber}">
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block">Submit</button>

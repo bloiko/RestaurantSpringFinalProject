@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Item entity.
@@ -19,7 +18,7 @@ import java.util.List;
 @Table(name="item")
 public class Item implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -29,13 +28,7 @@ public class Item implements Serializable {
     @Column(name = "quantity")
     private int quantity;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "order_item",
-            joinColumns = {
-                    @JoinColumn(name = "item_id", referencedColumnName = "id",
-                            nullable = false, updatable = false)},
-            inverseJoinColumns = {
-                    @JoinColumn(name = "order_id", referencedColumnName = "id",
-                            nullable = false, updatable = false)})
-    private List<Order> orders;
+    @ManyToOne
+    @JoinColumn(name="order_id")
+    private Order order;
 }

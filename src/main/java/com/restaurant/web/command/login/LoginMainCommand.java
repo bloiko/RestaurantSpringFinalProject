@@ -5,6 +5,10 @@ import com.restaurant.service.UserService;
 import com.restaurant.web.command.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 
 import javax.servlet.ServletException;
@@ -20,13 +24,17 @@ import java.io.IOException;
  *
  */
 @Slf4j
-public class LoginMainCommand extends Command {
+@Controller
+public class LoginMainCommand{
     public static final String COMMAND = "command";
     @Autowired
     private UserService userService;
-
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @GetMapping("/login")
+    public String getLoginPage(){
+        return "login-main";
+    }
+    @PostMapping("/login")
+    public String execute(HttpServletRequest request, Model model) throws ServletException, IOException {
         log.debug("Command starts");
         HttpSession session = request.getSession();
         removePastErrorMessagesIfExist(session);
@@ -46,17 +54,17 @@ public class LoginMainCommand extends Command {
                     log.trace("Remove attribute from the session: "+COMMAND);
 
                     log.debug("Command finished");
-                    return "cart.html";
+                    return "cart";
                 } else {
                     log.debug("Command finished");
-                    return "/controller?command=menuList";
+                    return "redirect:/menu";
                 }
             }
         session.setAttribute("message", "Account's Invalid");
         log.trace("Set attribute to the session: message --> "+ "Account's Invalid");
 
         log.debug("Command finished");
-        return "login-main.html";
+        return "login-main";
     }
 
     private void removePastErrorMessagesIfExist(HttpSession session) {

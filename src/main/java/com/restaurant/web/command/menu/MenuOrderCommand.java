@@ -6,6 +6,8 @@ import com.restaurant.service.FoodItemService;
 import com.restaurant.web.command.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,18 +24,20 @@ import java.util.List;
  * @author B.Loiko
  */
 @Slf4j
+@Controller
 public class MenuOrderCommand extends Command {
     @Autowired
     private FoodItemService foodItemService;
 
     @Override
+    @GetMapping("/menu/order")
     public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
         List<Item> cart = getCart(session);
         String foodId = request.getParameter("foodId");
         foodItemService.addFoodItemToCart(cart, foodId);
         session.setAttribute("cart", cart);
-        return "/controller?command=menuList";
+        return "redirect:/menu";
     }
 
     private List<Item> getCart(HttpSession session) {

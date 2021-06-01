@@ -11,6 +11,6 @@ public class MenuPage {
     private int pageNumber = 0 ;
     private int pageSize = 5 ;
     private Sort.Direction sortDirection = Sort.Direction.ASC ;
-    private String sortBy;
+    private String sortBy = "name";
     private String filterBy;
 }

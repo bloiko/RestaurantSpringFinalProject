@@ -1,5 +1,6 @@
 package com.restaurant.service;
 import com.restaurant.database.entity.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -8,7 +9,9 @@ import java.util.List;
  *
  * @author B.Loiko
  */
+@Service
 public class CartService {
+
     public List<Item> removeItemFromCart(List<Item> cart, String itemId) {
         int index = isExisting(Integer.parseInt(itemId), cart);
         if (index != -1) {

@@ -1,4 +1,3 @@
-
 <html lang="${sessionScope.lang}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -26,17 +25,15 @@
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav">
-                <a href="/controller?command=menuList" class="nav-item nav-link">
+                <a href="/menu" class="nav-item nav-link">
                     Menu
                 </a>
-                <div th:if="${session.username!=null}">
-                    <a href="cart.html" class="nav-item nav-link active">
-                        Cart
-                    </a>
-                    <a href="/controller?command=myOrders" class="nav-item nav-link">
-                        My Orders
-                    </a>
-                </div>
+                <a href="/cart" class="nav-item nav-link active" th:if="${session.username!=null}">
+                    Cart
+                </a>
+                <a href="/myorders" class="nav-item nav-link" th:if="${session.username!=null}">
+                    My Orders
+                </a>
             </div>
             <div class="nav-item dropdown ml-auto">
                 <a class="nav-link dropdown-toggle" href="" id="dropdown09" style="color:black;" data-toggle="dropdown"
@@ -60,22 +57,20 @@
                     </a>
                 </div>
             </div>
-            <div class="navbar-nav" th:if="${session.username==null}">
-                <a href="registration.html" class="nav-item nav-link"></span>
+            <div class="navbar-nav">
+                <a href="/registration" th:if="${session.username==null}" class="nav-item nav-link"></span>
                     Registration
                 </a>
-                <a href="login-main.html" class="nav-item nav-link"></span>
+                <a href="/login" th:if="${session.username==null}" class="nav-item nav-link"></span>
                     Login
+                </a>
+                <a href="/controller?command=logout" th:if="${session.username!=null}" class="nav-item nav-link"></span>
+                    Logout
                 </a>
             </div>
 
             <div th:if="${session.username!=null}">
-                <div class="navbar-nav">
-                    <a href="/controller?command=logout" class="nav-item nav-link"></span>
-                        Logout
-                    </a>
-                </div>
-                <a href="cart.html">
+                <a href="/cart">
             <span class="fa-stack fa-2x has-badge" data-count="${sessionScope.cart.size()}">
                     <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
@@ -102,43 +97,30 @@
             </tr>
             </thead>
             <tbody>
-            <th:forEach var="order" items="${ORDERS_LIST}">
+            <th:forEach var="order" items="${ORDERS_LIST}" th:each="order: ${ORDERS_LIST}">
                 <th:set var="orderPrice" value="${0}"/>
                 <tr>
-                    <td>${order.orderDate}</td>
+                    <td th:text="${order.orderDate}" />
                     <td>
                         <table>
                             <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Sub Total</th>
+                                <th th:text="Name"/>
+                                <th th:text="Price"/>
+                                <th th:text="Quantity"/>
                             </tr>
-                            <th:forEach var="item" items="${order.items}">
-                                <th:set var="orderPrice" value="${orderPrice+item.foodItem.price*item.quantity}"/>
+                            <th:forEach th:each="item: ${order.items}">
                                 <tr>
-                                    <th:if test="${sessionScope.lang!='ua'}">
-                                        <td> ${item.foodItem.name} </td>
-                                    </th:if>
-                                    <th:if test="${sessionScope.lang=='ua'}">
-                                        <td> ${item.foodItem.nameUa} </td>
-                                    </th:if>
-                                    <td> ${item.foodItem.price}</td>
-                                    <td>${item.quantity}</td>
-                                    <td>${item.foodItem.price*item.quantity}</td>
+                                    <td th:text="${item.foodItem.name}" th:if="${session.lang!='ua'}"/>
+                                    <td th:text="${item.foodItem.nameUa}" th:if="${session.lang=='ua'}"/>
+                                    <td th:text="${item.foodItem.price}"/>
+                                    <td th:text="${item.quantity}"/>
                                 </tr>
                             </th:forEach>
                         </table>
                     </td>
-                    <td>${orderPrice}$</td>
-                    <td>
-                        <th:if test="${sessionScope.lang!='ua'}">
-                            ${order.status.value}
-                    </th:if>
-                    <th:if test="${sessionScope.lang=='ua'}">
-                        ${order.status.valueUa}
-                    </th:if>
-                    </td>
+                    <td th:text="${order.orderPrice}">$
+                    <td th:text="${order.orderStatus.statusName}" th:if="${session.lang!='ua'}"/>
+                    <td th:text="${order.orderStatus.statusNameUa}" th:if="${session.lang=='ua'}"></td>
                 </tr>
             </th:forEach>
             </tbody>

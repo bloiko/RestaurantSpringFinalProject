@@ -7,9 +7,12 @@ import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +21,7 @@ import java.util.regex.Pattern;
  *
  * @author B.Loiko
  */
+@Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
@@ -31,24 +35,27 @@ public class UserService {
      * @param password user password.
      * @return boolean if user is admin.
      */
+    @Transactional
     public boolean isCorrectAdmin(String userName, String password) {
         User user = userRepository.findByUserName(userName).get();
         return user != null && user.getUserName().equals(userName) && user.getPassword().equals(password)
-                && user.getRole().equals(Role.ADMIN);
+                && user.getRole().equals("ADMIN");
     }
-
+    @Transactional
     public List<Order> getUserOrdersSortByOrderDateReversed(String username) {
         Long userId = userRepository.findByUserName(username).get().getId();
         List<Order> orders = orderListDAO.findAllByUserId(userId);
         orders.sort(Comparator.comparing(Order::getOrderDate).reversed());
         return orders;
     }
-
-    public void addUserAndReturnId(User user)  {
-        Long userId = userRepository.findByUserName(user.getUserName()).get().getId();
+    @Transactional
+    public Long addUserAndReturnId(User user)  {
+        Optional<User> optional = userRepository.findByUserName(user.getUserName());
+        Long userId = optional.isPresent() ? optional.get().getId():-1;
         if (userId == -1) {
-            userRepository.save(user).getId();
+           return  userRepository.save(user).getId();
         }
+        return -1L;
     }
 
     public boolean isCorrectPhoneNumber(String phoneNumber) {
@@ -66,15 +73,17 @@ public class UserService {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
-
+    @Transactional
     public boolean isCorrectUser(String userName, String password) {
 
        User  user = userRepository.findByUserName(userName).get();
         return user != null && user.getUserName().equals(userName) && user.getPassword().equals(password)
-                && (user.getRole().equals(Role.USER) || user.getRole().equals(Role.ADMIN));
+                && (user.getRole().getName().equals("USER") ||
+                user.getRole().getName().equals("ADMIN"));
     }
-
+    @Transactional
     public User getUserByUserName(String username) {
-        return userRepository.findByUserName(username).get();
+        Optional<User> optional = userRepository.findByUserName(username);
+        return optional.isPresent()?optional.get():null;
     }
 }

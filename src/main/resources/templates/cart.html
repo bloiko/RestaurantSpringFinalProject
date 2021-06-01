@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="styles.css">
     <title>Cart</title>
 </head>
-<body>
+<body th:with="sum=0">
 <div class="bs-example">
     <nav class="navbar navbar-expand-md navbar-light bg-light">
         <a href="#" class="navbar-brand">
@@ -25,17 +25,15 @@
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav">
-                <a href="/controller?command=menuList" class="nav-item nav-link">
+                <a href="/menu" class="nav-item nav-link">
                     Menu
                 </a>
-                <div th:if="${session.username!=null}">
-                    <a href="cart.html" class="nav-item nav-link active">
-                        Cart
-                    </a>
-                    <a href="/controller?command=myOrders" class="nav-item nav-link">
-                        My Orders
-                    </a>
-                </div>
+                <a href="/cart" class="nav-item nav-link active" th:if="${session.username!=null}">
+                    Cart
+                </a>
+                <a href="/myorders" class="nav-item nav-link" th:if="${session.username!=null}">
+                    My Orders
+                </a>
             </div>
             <div class="nav-item dropdown ml-auto">
                 <a class="nav-link dropdown-toggle" href="" id="dropdown09" style="color:black;" data-toggle="dropdown"
@@ -59,22 +57,20 @@
                     </a>
                 </div>
             </div>
-            <div class="navbar-nav" th:if="${session.username==null}">
-                <a href="registration.html" class="nav-item nav-link"></span>
+            <div class="navbar-nav">
+                <a href="/registration" th:if="${session.username==null}" class="nav-item nav-link"></span>
                     Registration
                 </a>
-                <a href="login-main.html" class="nav-item nav-link"></span>
+                <a href="/login" th:if="${session.username==null}" class="nav-item nav-link"></span>
                     Login
+                </a>
+                <a href="/controller?command=logout" th:if="${session.username!=null}" class="nav-item nav-link"></span>
+                    Logout
                 </a>
             </div>
 
             <div th:if="${session.username!=null}">
-                <div class="navbar-nav">
-                    <a href="/controller?command=logout" class="nav-item nav-link"></span>
-                        Logout
-                    </a>
-                </div>
-                <a href="cart.html">
+                <a href="/cart">
             <span class="fa-stack fa-2x has-badge" data-count="${sessionScope.cart.size()}">
                     <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
@@ -115,47 +111,36 @@
             </tr>
             </thead>
             <tbody>
-            <th:forEach var="item" items="${sessionScope.cart}">
-                <th:set var="sum" value="${sum+item.foodItem.price*item.quantity}"/>
-                <tr>
-                    <td><img src="${item.foodItem.image}" width="80" height="80"></td>
-                    <th:if test="${sessionScope.lang!='ua'}">
-                        <td> ${item.foodItem.name}</td>
-                    </th:if>
-                    <th:if test="${sessionScope.lang=='ua'}">
-                        <td> ${item.foodItem.nameUa}</td>
-                    </th:if>
-                    <td> ${item.foodItem.price}$</td>
-                    <td> ${item.quantity}</td>
-                    <td align="left"><a href="/controller?command=cartDeleteItem&itemId=${item.foodItem.id}"
-                                        onclick="return confirm('Are you sure?')">
+            <tr th:each="item: ${session.cart}" >
+                <!--<th:set var="sum" value="${sum+item.foodItem.price*item.quantity}"/>-->
+                <td><img th:src="${item.foodItem.image}" width="80" height="80"/></td>
+                <td th:text="${item.foodItem.name}" th:if="${session.lang!='ua'}"></td>
+                <!--<td th:text="${item.foodItem.nameUa}" th:if="${session.lang=='ua'}"/>-->
+                <td th:text="${item.foodItem.price}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td align="left">
+                    <a th:href="@{/cart/delete(itemId=${item.foodItem.id})}"
+                       onclick="return confirm('Are you sure?')">
                         <button type="button" class="btn btn-dark">
                             Delete
                         </button>
-                    </a></td>
-                    >
-                    <td>${item.foodItem.price*item.quantity}$</td>
-                </tr>
-            </th:forEach>
+                    </a>
+                </td>
+                <td th:text="${item.foodItem.price*item.quantity}"></td>
+            </tr>
             </tbody>
         </table>
     </div>
 </div>
 <div class="order" style="position: relative;">
-    <h2>
-        Sum
-        : ${sum}$
-    </h2>
-    <a href="/controller?command=cartOrderItem">
+    <h2 th:text="${sum}"/>
+    <a th:href="@{/cart/order}">
         <button type="button" class="btn btn-danger order-button" style="position: absolute; right: 10%">
             Order
         </button>
     </a>
 </div>
 <br/><br/>
-<div th:fragment="footer">
-    &copy; 2016 Footer
-</div>
-<div th:insert="fragments/footer :: footer"></div>
+<!--<div th:insert="fragments/footer :: footer"></div>-->
 </body>
 </html>

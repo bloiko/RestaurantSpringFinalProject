@@ -98,7 +98,7 @@ public class RegistrationController extends HttpServlet {
             isCorrect = false;
         }
         if (isCorrect) {
-            return new User(0L, firstName, lastName, username, password, email, address, phoneNumber, Role.USER);
+            return new User(0L, firstName, lastName, username, password, email, address, phoneNumber, new Role(2L,"User"));
         } else {
             return null;
         }

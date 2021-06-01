@@ -2,13 +2,11 @@ package com.restaurant.database.entity;
 
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Order status entity.
@@ -16,37 +14,20 @@ import javax.persistence.Table;
  * @author B.Loiko
  *
  */
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="status")
-public enum OrderStatus {
-    WAITING(1L,"WAITING","В очікуванні"),
-    PREPARING(2L,"PREPARING","Готується"),
-    READY(3L,"READY","Готове"),
-    DELIVERED(4L,"DELIVERED","Доставляється"),
-    DONE(5L,"DONE","Доставлено");
+public class OrderStatus {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @Column(name = "status_name")
-    private String value;
+    private String statusName;
     @Column(name = "status_name_ua")
-    private String valueUa;
-
-    OrderStatus(Long id, String value, String valueUa) {
-        this.id = id;
-        this.value = value;
-        this.valueUa = valueUa;
-    }
-    public String getValue() {
-        return value;
-    }
-
-    public String getValueUa() {
-        return valueUa;
-    }
-
-    public static OrderStatus getOrderStatus(String value){
+    private String statusNameUa;
+ /*   public static OrderStatus getOrderStatus(String value){
         if(value.equals(WAITING.value)){
             return WAITING;
         }else if(value.equals(PREPARING.value)){
@@ -59,19 +40,5 @@ public enum OrderStatus {
             return DONE;
         }
         return DONE;
-    }
-
-    public boolean equalsTo(String name) {
-        return value.equals(name);
-    }
-
-    public String value() {
-        return value;
-    }
-    public String valueUa() {
-        return valueUa;
-    }
-    public Long getId() {
-        return id;
-    }
+    }*/
 }

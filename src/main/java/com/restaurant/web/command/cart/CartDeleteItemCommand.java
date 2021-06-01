@@ -5,6 +5,8 @@ import com.restaurant.service.CartService;
 import com.restaurant.web.command.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,11 +22,13 @@ import java.util.List;
  *
  */
 @Slf4j
+@Controller
 public class CartDeleteItemCommand extends Command {
     @Autowired
     private CartService cartService;
 
     @Override
+    @GetMapping("/cart/delete")
     public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         log.debug("Command starts");
         HttpSession session = request.getSession();
@@ -41,7 +45,7 @@ public class CartDeleteItemCommand extends Command {
         log.trace("Set attribute to the request: cart -->"+cart);
 
         log.debug("Command finished");
-        return "cart.html";
+        return "cart";
     }
 
 }

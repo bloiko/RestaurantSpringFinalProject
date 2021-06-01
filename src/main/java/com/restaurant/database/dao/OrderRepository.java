@@ -19,8 +19,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      List<Order> findAllByOrderStatusNot(OrderStatus status);
 
      List<Order> findAllByUserId(Long userId);
-    @Override
-    <S extends Order> S save(S s);
 
     @Override
     Optional<Order> findById(Long aLong);

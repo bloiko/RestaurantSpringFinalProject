@@ -5,6 +5,8 @@ import com.restaurant.database.entity.Order;
 import com.restaurant.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,11 +24,12 @@ import java.util.List;
  *
  */
 @Slf4j
-public class MyOrdersCommand extends Command {
+@Controller
+public class MyOrdersCommand {
     @Autowired
     private UserService userService;
 
-    @Override
+    @GetMapping("/myorders")
     public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         log.debug("Controller starts");
         HttpSession session = request.getSession();
@@ -41,6 +44,6 @@ public class MyOrdersCommand extends Command {
         log.trace("Session attribute : username" + username);
 
         log.debug("Controller finished");
-        return "my-orders.html";
+        return "my-orders";
     }
 }

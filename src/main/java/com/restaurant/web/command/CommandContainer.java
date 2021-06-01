@@ -36,22 +36,22 @@ public class CommandContainer {
         commands.put("adminList", new AdminListCommand());
         commands.put("changeOrderStatus", new AdminChangeOrderStatusCommand());
         //cart
-        commands.put("cartList", new CartListCommand());
+       // commands.put("cartList", new CartListCommand());
         commands.put("cartDeleteItem", new CartDeleteItemCommand());
-        commands.put("cartOrderItem", new CartOrderItemCommand());
+       // commands.put("cartOrderItem", new CartOrderItemCommand());
         //thanks page
         commands.put("thanks", new ThanksCommand());
         //menu page
-        commands.put("menuList", new MenuListCommand());
+        //commands.put("menuList", new MenuListCommand());
         commands.put("menuOrder", new MenuOrderCommand());
         //my order page
-        commands.put("myOrders", new MyOrdersCommand());
+      //  commands.put("myOrders", new MyOrdersCommand());
         //login and logout pages
-        commands.put("loginMain", new LoginMainCommand());
+        //commands.put("loginMain", new LoginMainCommand());
         commands.put("loginAdmin", new LoginAdminCommand());
         commands.put("logout", new LogoutCommand());
         //registration page
-        commands.put("registration", new RegistrationCommand());
+      //  commands.put("registration", new RegistrationCommand());
         //no command page
         commands.put("noCommand", new NoCommand());
 

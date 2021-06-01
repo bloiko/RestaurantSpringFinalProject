@@ -82,17 +82,15 @@
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav">
-                <a href="/controller?command=menuList" class="nav-item nav-link">
+                <a href="/menu" class="nav-item nav-link">
                     Menu
                 </a>
-                <div th:if="${session.username!=null}">
-                    <a href="cart.html" class="nav-item nav-link active">
-                        Cart
-                    </a>
-                    <a href="/controller?command=myOrders" class="nav-item nav-link">
-                        My Orders
-                    </a>
-                </div>
+                <a href="/cart" class="nav-item nav-link active" th:if="${session.username!=null}">
+                    Cart
+                </a>
+                <a href="/myorders" class="nav-item nav-link" th:if="${session.username!=null}">
+                    My Orders
+                </a>
             </div>
             <div class="nav-item dropdown ml-auto">
                 <a class="nav-link dropdown-toggle" href="" id="dropdown09" style="color:black;" data-toggle="dropdown"
@@ -116,22 +114,20 @@
                     </a>
                 </div>
             </div>
-            <div class="navbar-nav" th:if="${session.username==null}">
-                <a href="registration.html" class="nav-item nav-link"></span>
+            <div class="navbar-nav">
+                <a href="/registration" th:if="${session.username==null}" class="nav-item nav-link"></span>
                     Registration
                 </a>
-                <a href="login-main.html" class="nav-item nav-link"></span>
+                <a href="/login" th:if="${session.username==null}" class="nav-item nav-link"></span>
                     Login
+                </a>
+                <a href="/controller?command=logout" th:if="${session.username!=null}" class="nav-item nav-link"></span>
+                    Logout
                 </a>
             </div>
 
             <div th:if="${session.username!=null}">
-                <div class="navbar-nav">
-                    <a href="/controller?command=logout" class="nav-item nav-link"></span>
-                        Logout
-                    </a>
-                </div>
-                <a href="cart.html">
+                <a href="/cart">
             <span class="fa-stack fa-2x has-badge" data-count="${sessionScope.cart.size()}">
                     <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
@@ -146,7 +142,7 @@
         <h3 class="title-gratitude">
             Gratitude
         </h3>
-        <div class="item">
+        <div class="item" th:text="${orderId}">
             <!--<span><fmt:message key="thanks.your_order_number_is"/> <a class="link" href="#">${orderId}</a> </span>-->
         </div>
         <div style="padding-bottom: 20px;" class="item">

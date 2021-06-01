@@ -4,6 +4,7 @@ package com.restaurant.web.command.admin;
 import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.OrderStatus;
 import com.restaurant.service.OrderService;
+import com.restaurant.service.OrderStatusService;
 import com.restaurant.web.command.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ import java.io.IOException;
 public class AdminChangeOrderStatusCommand extends Command {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private OrderStatusService orderStatusService;
 
 
     @Override
@@ -37,7 +40,7 @@ public class AdminChangeOrderStatusCommand extends Command {
 
         Order order = orderService.getOrder(orderIdString);
         log.trace("Get from Service by id" + orderIdString + ": order --> " + order);
-        OrderStatus newStatus = OrderStatus.getOrderStatus(statusName);
+        OrderStatus newStatus = orderStatusService.findByStatusName(statusName);
         orderService.updateOrder(order.getId(), newStatus);
         log.debug("Order was updated");
         log.debug("Command finished");

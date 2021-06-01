@@ -4,9 +4,11 @@ package com.restaurant.web.command.menu;
 import com.restaurant.database.entity.FoodItem;
 import com.restaurant.database.entity.MenuPage;
 import com.restaurant.service.FoodItemService;
-import com.restaurant.web.command.Command;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,14 +22,15 @@ import java.util.List;
  *
  * @author B.Loiko
  */
-public class MenuListCommand extends Command {
+@Controller
+public class MenuListCommand /*extends Command */{
     private static final int NUMBER_ITEMS_ON_PAGE = 5;
     public static final String FILTER = "filter";
     @Autowired
     private FoodItemService foodItemService;
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    @GetMapping("/menu")
+    public String execute(HttpServletRequest request, Model model) throws IOException, ServletException {
         HttpSession session = request.getSession();
 
         String filterBy = getFilter(request, session);
@@ -50,14 +53,15 @@ public class MenuListCommand extends Command {
         int page = getPageNumber(request, session);
         List<FoodItem> foodItems = null;
         int numOfPages = 0;
-        MenuPage menuPage = new MenuPage(page - 1, NUMBER_ITEMS_ON_PAGE, Sort.Direction.valueOf(sort), sort, filterBy);
+        Sort.Direction direction = "ASC".equals(order)? Sort.Direction.ASC: Sort.Direction.DESC;
+        MenuPage menuPage = new MenuPage(page - 1, NUMBER_ITEMS_ON_PAGE, direction, sort, filterBy);
         foodItems = foodItemService.getFoodItems(menuPage);
         numOfPages = filterBy == null || filterBy.isEmpty() ? getNumOfPages(foodItemService.getFoodItems()) : getNumOfPages(foodItems);
-        request.setAttribute("numberOfPages", numOfPages);
+        model.addAttribute("numberOfPages", numOfPages);
         session.setAttribute("page", page);
-        request.setAttribute("categories", foodItemService.getCategories());
-        request.setAttribute("FOOD_LIST", foodItems);
-        return "list-food.html";
+        model.addAttribute("categories", foodItemService.getCategories());
+        model.addAttribute("FOOD_LIST", foodItems);
+        return "list-food";
     }
 
     private String getOppositeOrder(String sort, String sessionSort, String order) {

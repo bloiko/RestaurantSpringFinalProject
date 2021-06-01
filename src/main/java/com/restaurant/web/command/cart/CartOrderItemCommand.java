@@ -8,6 +8,9 @@ import com.restaurant.service.UserService;
 import com.restaurant.web.command.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,14 +26,15 @@ import java.util.List;
  * @author B.Loiko
  */
 @Slf4j
-public class CartOrderItemCommand extends Command {
+@Controller
+public class CartOrderItemCommand {
     @Autowired
     private UserService userService;
     @Autowired
     private OrderService orderService;
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    @GetMapping("/cart/order")
+    public String execute(HttpServletRequest request, Model model) throws IOException, ServletException {
         log.debug("Command starts");
         HttpSession session = request.getSession();
         String username = (String) session.getAttribute("username");
@@ -50,14 +54,14 @@ public class CartOrderItemCommand extends Command {
 
         List<Item> cart = (List<Item>) session.getAttribute("cart");
         Long orderId = orderService.addOrderAndGetId(cart, user);
-        request.setAttribute("orderId", orderId);
+        model.addAttribute("orderId", orderId);
         log.trace("Set attribute to the request: orderId --> " + orderId);
 
-        session.setAttribute("cart", new ArrayList<Order>());
+        session.setAttribute("cart", new ArrayList<Item>());
         log.trace("Set attribute to the request: cart --> new list with 0 size");
 
         log.debug("Command finished");
-        return "thanks-page.html";
+        return "thanks-page";
     }
 
 }
