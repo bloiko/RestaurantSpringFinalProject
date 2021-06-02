@@ -1,6 +1,9 @@
 package com.restaurant.web.command;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,8 +17,9 @@ import java.io.PrintWriter;
  * 
  */
 @Slf4j
-public class NoCommand extends Command {
-	@Override
+@Controller
+public class NoCommand {
+	@GetMapping("/error")
 	public String execute(HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException {
 		log.debug("Command starts");
@@ -24,7 +28,7 @@ public class NoCommand extends Command {
 		log.info("Error was processed");
 
 		log.debug("Command finished");
-		return "error-page.html";
+		return "error-page";
 	}
 	private void processError(HttpServletRequest request,
 							  HttpServletResponse response) throws IOException {

@@ -10,6 +10,8 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Override
     List<Category> findAll();
+
+    Category findByName(String name);
 }
 
 

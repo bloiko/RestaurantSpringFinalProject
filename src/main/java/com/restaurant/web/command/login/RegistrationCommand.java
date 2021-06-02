@@ -3,7 +3,6 @@ package com.restaurant.web.command.login;
 import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.service.UserService;
-import com.restaurant.web.command.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
@@ -38,23 +36,24 @@ public class RegistrationCommand {
     private UserService userService;
 
     @GetMapping
-    public String getRegistrationPage(){
+    public String getRegistrationPage() {
         return "registration";
     }
+
     @PostMapping
     public String execute(HttpServletRequest request, Model model) throws ServletException, IOException {
         log.debug("Command starts");
         User user = getUserIfCorrectData(request);
         if (user == null) {
             log.info("User data is invalid");
-            prepareDataToTheRedirection(request,model);
+            prepareDataToTheRedirection(request, model);
             log.trace("User data was prepared to the redirection");
 
             log.debug("Command finished");
             return "registration";
         } else {
-                userService.addUserAndReturnId(user);
-                log.info("User was added to the database");
+            userService.addUserAndReturnId(user);
+            log.info("User was added to the database");
             log.debug("Command finished");
             return "login-main";
         }
@@ -115,10 +114,10 @@ public class RegistrationCommand {
             session.setAttribute("error_message", "Everything must be filled!");
             isCorrect = false;
         }
-            if (username != null && userService.getUserByUserName(username) != null) {//if user exists
-                session.setAttribute("username_error_message", "Username should be unique!");
-                isCorrect = false;
-            }
+        if (username != null && userService.getUserByUserName(username) != null) {//if user exists
+            session.setAttribute("username_error_message", "Username should be unique!");
+            isCorrect = false;
+        }
         if (password.length() < 8) {
             session.setAttribute("password_error_message", "Password should has at least 8 symbols!");
             isCorrect = false;
@@ -134,7 +133,7 @@ public class RegistrationCommand {
         }
         log.debug("Data was checked with result: " + isCorrect);
         if (isCorrect) {
-            return new User(0L, firstName, lastName, username, password, email, address, phoneNumber, new Role(2L,"USER"));
+            return new User(0L, firstName, lastName, username, password, email, address, phoneNumber, new Role(2L, "USER"));
         } else {
             return null;
         }

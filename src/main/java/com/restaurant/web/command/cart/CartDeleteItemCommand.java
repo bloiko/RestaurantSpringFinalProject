@@ -2,7 +2,6 @@ package com.restaurant.web.command.cart;
 
 import com.restaurant.database.entity.Item;
 import com.restaurant.service.CartService;
-import com.restaurant.web.command.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,11 +22,10 @@ import java.util.List;
  */
 @Slf4j
 @Controller
-public class CartDeleteItemCommand extends Command {
+public class CartDeleteItemCommand  {
     @Autowired
     private CartService cartService;
 
-    @Override
     @GetMapping("/cart/delete")
     public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         log.debug("Command starts");

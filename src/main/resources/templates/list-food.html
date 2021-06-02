@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/css/flag-icon.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <title>Menu</title>
 </head>
 <body>
@@ -70,9 +70,9 @@
             </div>
 
             <div th:if="${session.username!=null}">
-                <a href="/cart">
-            <span class="fa-stack fa-2x has-badge" data-count="${sessionScope.cart.size()}">
-                    <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+                <a th:href="@{/cart}">
+            <span class="fa-stack fa-2x has-badge" data-count="${cart_size}">
+                    <!--<i class="fa fa-circle fa-stack-2x fa-inverse"></i>-->
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
                 </span>
                 </a>
@@ -89,13 +89,13 @@
     <div id="content">
 
 
-        <a href="/controller?command=menuList&filter=all_categories" th:if="${session.lang!='ua'}">
+        <a th:href="@{/menu(filter='all_categories')}" th:if="${session.lang!='ua'}">
             <button type="button" class="btn btn-light">All categories</button>
         </a>
-        <a href="/controller?command=menuList&filter=all_categories" th:if="${session.lang=='ua'}">
+        <a th:href="@{/menu(filter='all_categories')}" th:if="${session.lang=='ua'}">
             <button type="button" class="btn btn-light">Всі категорії</button>
         </a>
-        <a th:each="category: ${categories}" href="/controller?command=menuList&filter=${category.name}">
+        <a th:each="category: ${categories}" th:href="@{/menu(filter=${category.name})}">
             <button th:if="${session.lang!='ua'}" type="button" class="btn btn-light" th:text="${category.name}"/>
             <button th:if="${session.lang=='ua'}" type="button" class="btn btn-light" th:text="${category.nameUa}"/>
         </a>
@@ -104,11 +104,11 @@
             <thead>
             <tr>
                 <th scope="col"><a style="color:red;">Image</a></th>
-                <th scope="col"><a href="/controller?command=menuList&sort=name"
+                <th scope="col"><a th:href="@{/menu(sort=name)}"
                                    style="color:red;">Name&#8597;</a></th>
-                <th scope="col"><a href="/controller?command=menuList&sort=price"
+                <th scope="col"><a th:href="@{/menu(sort=price)}"
                                    style="color:red;">Price&#8597;</a></th>
-                <th scope="col"><a href="/controller?command=menuList&sort=category"
+                <th scope="col"><a th:href="@{/menu(sort=category)}"
                                    style="color:red;">Category&#8597;</a></th>
                 <th:if test="${sessionScope.get('username')!=null}">
                     <th scope="col"></th>
@@ -132,12 +132,9 @@
             </tbody>
         </table>
         <div class="pagination_section">
-            <!--            <th:set var="counter" value="1"/>
-                        <th:set var="end" value="${requestScope.numberOfPages}"/>
-                        <th:forEach start="1" end="${end}">
-                            <a href="/controller?command=menuList&page=${counter}">${counter}</a>
-                            <th:set var="counter" value="${counter+1}"/>
-                        </th:forEach>-->
+            <th:forEach th:each="i : ${pageNumbers}">
+                <a th:href="@{/menu(page=${i})}" th:text="${i}"/>
+            </th:forEach>
         </div>
 
     </div>

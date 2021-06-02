@@ -1,6 +1,7 @@
 package com.restaurant.database.dao;
 
 
+import com.restaurant.database.entity.Category;
 import com.restaurant.database.entity.FoodItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public interface FoodRepository extends JpaRepository<FoodItem, Long> {
     @Override
     Page<FoodItem> findAll(Pageable pageable);
 
-    Page<FoodItem> findAllByCategory(String category, Pageable pageable);
+    Page<FoodItem> findAllByCategory(Category category, Pageable pageable);
 }
 
 

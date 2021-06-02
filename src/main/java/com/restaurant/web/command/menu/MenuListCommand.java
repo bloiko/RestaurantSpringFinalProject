@@ -2,6 +2,7 @@ package com.restaurant.web.command.menu;
 
 
 import com.restaurant.database.entity.FoodItem;
+import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.MenuPage;
 import com.restaurant.service.FoodItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Command show menu list in the main page.
@@ -23,7 +24,7 @@ import java.util.List;
  * @author B.Loiko
  */
 @Controller
-public class MenuListCommand /*extends Command */{
+public class MenuListCommand {
     private static final int NUMBER_ITEMS_ON_PAGE = 5;
     public static final String FILTER = "filter";
     @Autowired
@@ -57,8 +58,11 @@ public class MenuListCommand /*extends Command */{
         MenuPage menuPage = new MenuPage(page - 1, NUMBER_ITEMS_ON_PAGE, direction, sort, filterBy);
         foodItems = foodItemService.getFoodItems(menuPage);
         numOfPages = filterBy == null || filterBy.isEmpty() ? getNumOfPages(foodItemService.getFoodItems()) : getNumOfPages(foodItems);
-        model.addAttribute("numberOfPages", numOfPages);
+        model.addAttribute("pageNumbers", IntStream.iterate(1, i -> i + 1).limit(numOfPages).toArray());
         session.setAttribute("page", page);
+        List<Item> cart = (List<Item>) session.getAttribute("cart");
+        model.addAttribute("cart_size", cart!=null?cart.size():0);
+
         model.addAttribute("categories", foodItemService.getCategories());
         model.addAttribute("FOOD_LIST", foodItems);
         return "list-food";

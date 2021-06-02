@@ -5,9 +5,10 @@ import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.OrderStatus;
 import com.restaurant.service.OrderService;
 import com.restaurant.service.OrderStatusService;
-import com.restaurant.web.command.Command;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,14 +21,14 @@ import java.io.IOException;
  * @author B.Loiko
  */
 @Slf4j
-public class AdminChangeOrderStatusCommand extends Command {
+@Controller
+public class AdminChangeOrderStatusCommand {
     @Autowired
     private OrderService orderService;
     @Autowired
     private OrderStatusService orderStatusService;
 
-
-    @Override
+@GetMapping("/admin/change-order-status")
     public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("Command starts");
 
@@ -44,6 +45,6 @@ public class AdminChangeOrderStatusCommand extends Command {
         orderService.updateOrder(order.getId(), newStatus);
         log.debug("Order was updated");
         log.debug("Command finished");
-        return "/controller?command=adminList";
+        return "redirect:/admin/list";
     }
 }

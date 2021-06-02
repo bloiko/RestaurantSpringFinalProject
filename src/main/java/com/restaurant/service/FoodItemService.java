@@ -94,7 +94,8 @@ public class FoodItemService {
         if (menuPage.getFilterBy() == null) {
             return foodRepository.findAll(pageable).getContent();
         } else {
-            return foodRepository.findAllByCategory(filterBy, pageable).getContent();
+            return foodRepository.findAllByCategory(categoryRepository.findByName(filterBy),
+                    pageable).getContent();
         }
     }
 }

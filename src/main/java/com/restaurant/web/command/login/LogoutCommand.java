@@ -1,7 +1,9 @@
 package com.restaurant.web.command.login;
 
-import com.restaurant.web.command.Command;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,9 +17,9 @@ import java.io.IOException;
  *
  */
 @Slf4j
-public class LogoutCommand extends Command {
-
-    @Override
+@Controller
+public class LogoutCommand  {
+    @GetMapping("/logout")
     public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         log.debug("Controller starts");
         HttpSession session = request.getSession();
@@ -27,6 +29,6 @@ public class LogoutCommand extends Command {
         log.trace("Session attribute was removed : cart");
 
         log.debug("Controller finished");
-        return "/controller?command=menuList";
+        return "redirect:/menu";
     }
 }

@@ -1,4 +1,4 @@
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Title</title>
 </head>
@@ -19,8 +19,8 @@
                 <th>Order price</th>
                 <th>Status</th>
             </tr>
-            <c:forEach var="order" items="${NOT_DONE_ORDERS_LIST}">
-                <c:set var="orderPrice" value="${0}"/>
+            <th:forEach  th:each="order: ${NOT_DONE_ORDERS_LIST}">
+                <th:set var="orderPrice" value="${0}"/>
                 <tr>
                     <td>${order.id}</td>
                     <td>
@@ -68,33 +68,33 @@
                             </tr>
 
 
-                            <c:forEach var="item" items="${order.items}">
-                                <c:set var="orderPrice" value="${orderPrice+item.foodItem.price*item.quantity}"/>
+                            <th:forEach var="item" items="${order.items}">
+                                <th:set var="orderPrice" value="${orderPrice+item.foodItem.price*item.quantity}"/>
                                 <tr>
                                     <td> ${item.foodItem.name} </td>
                                     <td> ${item.foodItem.price}</td>
                                     <td>${item.quantity}</td>
                                     <td>${item.foodItem.price*item.quantity}</td>
                                 </tr>
-                            </c:forEach>
+                            </th:forEach>
                         </table>
                     </td>
-                    <td>${orderPrice}</td>
+                    <td>${order.price}</td>
                     <td>
                             ${order.status}
                         <br/><br/>
                         <form action="/controller?command=changeOrderStatus&orderId=${order.id}" method="post">
                             <select name="status">
-                                <c:forEach var="statusTemp" items="${statusList}">
+                                <th:forEach var="statusTemp" items="${statusList}">
                                     <option value="${statusTemp}">${statusTemp}</option>
-                                </c:forEach>
+                                </th:forEach>
                             </select>
                             <br/>
                             <input type="submit" value="Change"/>
                         </form>
                     </td>
                 </tr>
-            </c:forEach>
+            </th:forEach>
         </table>
 
 
@@ -108,8 +108,8 @@
                 <th>Order price</th>
                 <th>Status</th>
             </tr>
-            <c:forEach var="order" items="${DONE_ORDERS_LIST}">
-                <c:set var="orderPrice" value="${0}"/>
+            <th:forEach var="order" items="${DONE_ORDERS_LIST}">
+                <th:set var="orderPrice" value="${0}"/>
                 <tr>
                     <th>${order.id}</th>
                     <th>
@@ -151,15 +151,15 @@
                             </tr>
 
 
-                            <c:forEach var="item" items="${order.items}">
-                                <c:set var="orderPrice" value="${orderPrice+item.foodItem.price*item.quantity}"/>
+                            <th:forEach var="item" items="${order.items}">
+                                <th:set var="orderPrice" value="${orderPrice+item.foodItem.price*item.quantity}"/>
                                 <tr>
                                     <td> ${item.foodItem.name} </td>
                                     <td> ${item.foodItem.price}</td>
                                     <td>${item.quantity}</td>
                                     <td>${item.foodItem.price*item.quantity}</td>
                                 </tr>
-                            </c:forEach>
+                            </th:forEach>
                         </table>
                     </th>
                     <th>${orderPrice}</th>
@@ -167,7 +167,7 @@
                             ${order.status}
                     </th>
                 </tr>
-            </c:forEach>
+            </th:forEach>
         </table>
     </div>
 </div>
