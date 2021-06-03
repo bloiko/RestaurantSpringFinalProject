@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Order service.
@@ -61,8 +63,11 @@ public class OrderService {
         return orderRepository.findAllByOrderStatus(statusRepository.findByStatusName("DONE"));
     }
     @Transactional
-    public List<Order> getNotDoneOrdersSortById(){
-        return orderRepository.findAllByOrderStatusNot(statusRepository.findByStatusName("DONE"));
+    public List<Order> getNotDoneOrdersSortByIdDesc(){
+        return orderRepository.findAllByOrderStatusNot(statusRepository.findByStatusName("DONE"))
+                .stream()
+                .sorted(Comparator.comparing(Order::getId).reversed())
+                .collect(Collectors.toList());
     }
     @Transactional
     public Order getOrder(String orderIdString) {

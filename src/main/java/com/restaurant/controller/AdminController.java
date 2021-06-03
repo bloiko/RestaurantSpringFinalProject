@@ -32,7 +32,7 @@ public class AdminController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<OrderStatus> orderStatuses = orderService.getStatuses();
-        List<Order> notDoneOrders = orderService.getNotDoneOrdersSortById();
+        List<Order> notDoneOrders = orderService.getNotDoneOrdersSortByIdDesc();
         List<Order> doneOrders = orderService.getDoneOrders();
 
         request.setAttribute("statusList", orderStatuses);

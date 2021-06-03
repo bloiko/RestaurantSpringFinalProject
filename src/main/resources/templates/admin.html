@@ -12,136 +12,132 @@
     <div id="content">
         <table border="1">
             <tr>
-                <th>id</th>
+                <th>Id</th>
                 <th>User information</th>
                 <th>Date of ordering</th>
                 <th>Items</th>
                 <th>Order price</th>
                 <th>Status</th>
             </tr>
-            <th:forEach  th:each="order: ${NOT_DONE_ORDERS_LIST}">
-                <th:set var="orderPrice" value="${0}"/>
-                <tr>
-                    <td>${order.id}</td>
-                    <td>
-                        <table>
+            <tr th:each="order: ${NOT_DONE_ORDERS_LIST}">
+                <td th:text="${order.id}"/>
+                <td>
+                    <table>
+                        <tr>
+                            <td>Id
+                            </th>
+                            <td th:text="${order.user.id}"/>
+                        </tr>
+                        <tr>
+                            <td>First Name</td>
+                            <td th:text="${order.user.firstName}"/>
+                        </tr>
+                        <tr>
+                            <td>Last Name</td>
+                            <td th:text="${order.user.lastName}"/>
+                        </tr>
+                        <tr>
+                            <td>Username</td>
+                            <td th:text="${order.user.userName}"/>
+                        </tr>
+                        <tr>
+                            <td>Email</td>
+                            <td th:text="${order.user.email}"/>
+                        </tr>
+                        <tr>
+                            <td>Address</td>
+                            <td th:text="${order.user.address}"/>
+                        </tr>
+                        <tr>
+                            <td>Phone Number</td>
+                            <td th:text="${order.user.phoneNumber}"/>
+                        </tr>
+                    </table>
+                </td>
+                <td th:text="${order.orderDate}"/>
+                <td>
+                    <table>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Sub Total</th>
+                        </tr>
+                        <th:forEach th:each="item: ${order.items}">
                             <tr>
-                                <td>Id</td>
-                                <td> ${order.user.id} </td>
+                                <td th:text="${item.foodItem.name}"/>
+                                <td th:text="${item.foodItem.price}"/>
+                                <td th:text="${item.quantity}"/>
+                                <td th:text="${item.foodItem.price*item.quantity}"/>
                             </tr>
-                            <tr>
-                                <td>First Name</td>
-                                <td> ${order.user.firstName} </td>
-                            </tr>
-                            <tr>
-                                <td>Last Name</td>
-                                <td>${order.user.lastName}</td>
-                            </tr>
-                            <tr>
-                                <td>Usename</td>
-                                <td>${order.user.userName}</td>
-                            </tr>
-                            <tr>
-                                <td>Email</td>
-                                <td>${order.user.email}</td>
-                            </tr>
-                            <tr>
-                                <td>Address</td>
-                                <td>${order.user.address}</td>
-                            </tr>
-                            <tr>
-                                <td>Phone Number</td>
-                                <td>${order.user.phoneNumber}</td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td>
-                            ${order.orderDate}
-                    </td>
-                    <td>
-                        <table>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Sub Total</th>
-                            </tr>
-
-
-                            <th:forEach var="item" items="${order.items}">
-                                <th:set var="orderPrice" value="${orderPrice+item.foodItem.price*item.quantity}"/>
-                                <tr>
-                                    <td> ${item.foodItem.name} </td>
-                                    <td> ${item.foodItem.price}</td>
-                                    <td>${item.quantity}</td>
-                                    <td>${item.foodItem.price*item.quantity}</td>
-                                </tr>
+                        </th:forEach>
+                    </table>
+                </td>
+                <td th:text="${order.orderPrice}"></td>
+                <td th:text="${order.orderStatus.statusName}">
+                    <br/><br/>
+                    <form th:action="@{/admin/change-status-order(orderId=${order.id})}" th:method="post">
+                        <select name="status">
+                            <th:forEach th:each="statusTemp: ${statusList}">
+                                <option th:value="${statusTemp}">${statusTemp}</option>
                             </th:forEach>
-                        </table>
-                    </td>
-                    <td>${order.price}</td>
-                    <td>
-                            ${order.status}
-                        <br/><br/>
-                        <form action="/controller?command=changeOrderStatus&orderId=${order.id}" method="post">
-                            <select name="status">
-                                <th:forEach var="statusTemp" items="${statusList}">
-                                    <option value="${statusTemp}">${statusTemp}</option>
-                                </th:forEach>
-                            </select>
-                            <br/>
-                            <input type="submit" value="Change"/>
-                        </form>
-                    </td>
-                </tr>
-            </th:forEach>
+                        </select>
+                        <br/>
+                        <input type="submit" value="Change"/>
+                    </form>
+                </td>
+            </tr>
         </table>
 
 
         <h1>Done tasks:</h1>
         <table border="1">
             <tr>
-                <th>id</th>
+                <th>Id</th>
                 <th>User information</th>
                 <th>Date of ordering</th>
                 <th>Items</th>
                 <th>Order price</th>
                 <th>Status</th>
             </tr>
-            <th:forEach var="order" items="${DONE_ORDERS_LIST}">
-                <th:set var="orderPrice" value="${0}"/>
+            <th:forEach th:each="order: ${DONE_ORDERS_LIST}">
                 <tr>
-                    <th>${order.id}</th>
-                    <th>
+                    <td th:text="${order.id}"/>
+                    <td>
                         <table>
                             <tr>
+                                <td>Id
+                                </th>
+                                <td th:text="${order.user.id}"/>
+                            </tr>
+                            <tr>
                                 <td>First Name</td>
-                                <td> ${order.user.firstName} </td>
+                                <td th:text="${order.user.firstName}"/>
                             </tr>
                             <tr>
                                 <td>Last Name</td>
-                                <td>${order.user.lastName}</td>
+                                <td th:text="${order.user.lastName}"/>
                             </tr>
                             <tr>
                                 <td>Username</td>
-                                <td>${order.user.userName}</td>
+                                <td th:text="${order.user.userName}"/>
                             </tr>
                             <tr>
                                 <td>Email</td>
-                                <td>${order.user.email}</td>
+                                <td th:text="${order.user.email}"/>
                             </tr>
                             <tr>
                                 <td>Address</td>
-                                <td>${order.user.address}</td>
+                                <td th:text="${order.user.address}"/>
                             </tr>
                             <tr>
                                 <td>Phone Number</td>
-                                <td>${order.user.phoneNumber}</td>
+                                <td th:text="${order.user.phoneNumber}"/>
                             </tr>
                         </table>
-                    </th>
-                    <th>${order.orderDate}</th>
-                    <th>
+                    </td>
+                    <td th:text="${order.orderDate}"/>
+                    <td>
                         <table>
                             <tr>
                                 <th>Name</th>
@@ -149,23 +145,29 @@
                                 <th>Quantity</th>
                                 <th>Sub Total</th>
                             </tr>
-
-
-                            <th:forEach var="item" items="${order.items}">
-                                <th:set var="orderPrice" value="${orderPrice+item.foodItem.price*item.quantity}"/>
+                            <th:forEach th:each="item: ${order.items}">
                                 <tr>
-                                    <td> ${item.foodItem.name} </td>
-                                    <td> ${item.foodItem.price}</td>
-                                    <td>${item.quantity}</td>
-                                    <td>${item.foodItem.price*item.quantity}</td>
+                                    <td th:text="${item.foodItem.name}"/>
+                                    <td th:text="${item.foodItem.price}"/>
+                                    <td th:text="${item.quantity}"/>
+                                    <td th:text="${item.foodItem.price*item.quantity}"/>
                                 </tr>
                             </th:forEach>
                         </table>
-                    </th>
-                    <th>${orderPrice}</th>
-                    <th>
-                            ${order.status}
-                    </th>
+                    </td>
+                    <td th:text="${order.orderPrice}"/>
+                    <td th:text="${order.orderStatus.statusName}">
+                        <br/><br/>
+                        <form th:action="@{/admin/change-status-order(orderId=${order.id})}" th:method="post">
+                            <select name="status">
+                                <th:forEach th:each="statusTemp: ${statusList}">
+                                    <option th:value="${statusTemp}" th:text="${statusTemp}"/>
+                                </th:forEach>
+                            </select>
+                            <br/>
+                            <input type="submit" value="Change"/>
+                        </form>
+                    </td>
                 </tr>
             </th:forEach>
         </table>
