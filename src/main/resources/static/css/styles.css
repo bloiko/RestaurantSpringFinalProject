@@ -15,7 +15,7 @@ CSS for all JSP pages
 /***************************************************************
 Cart sign (list-food.html) (cart.html)(thanks-page.html)
 ***************************************************************/
-.fa-stack[data-count]:after {
+/*.fa-stack[data-count]:after {
     position: absolute;
     right: 0%;
     top: 0%;
@@ -40,7 +40,7 @@ Cart sign (list-food.html) (cart.html)(thanks-page.html)
 .red-cart {
     color: #DF0000;
     background: whitesmoke;
-}
+}*/
 /***************************************************************
 Pagination (list-food.html)
 ***************************************************************/

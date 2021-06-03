@@ -32,7 +32,7 @@ public class CartListCommand  {
         for (Item item : items){
             sum +=item.getFoodItem().getPrice()*item.getQuantity();
         }
-        model.addAttribute("sum",sum);
+        session.setAttribute("sum",sum);
         log.debug("Command finished");
         return "cart";
     }

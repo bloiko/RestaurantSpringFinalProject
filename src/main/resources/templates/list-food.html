@@ -25,54 +25,42 @@
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav">
-                <a href="/menu" class="nav-item nav-link">
-                    Menu
-                </a>
-                <a href="/cart" class="nav-item nav-link active" th:if="${session.username!=null}">
-                    Cart
-                </a>
-                <a href="/myorders" class="nav-item nav-link" th:if="${session.username!=null}">
-                    My Orders
-                </a>
+                <a href="/menu" class="nav-item nav-link" th:text="#{header.menu}"/>
+                <a href="/cart" th:text="#{header.cart}" class="nav-item nav-link active"
+                   th:if="${session.username!=null}"/>
+                <a href="/myorders" th:text="#{header.my_orders}" class="nav-item nav-link"
+                   th:if="${session.username!=null}"/>
             </div>
             <div class="nav-item dropdown ml-auto">
                 <a class="nav-link dropdown-toggle" href="" id="dropdown09" style="color:black;" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
-                    <th:if test="${sessionScope.lang!='ua'}">
-                        <span class="flag-icon flag-icon-us"/>
-                    </th:if>
-                    <th:if test="${sessionScope.lang=='ua'}">
-                        <span class="flag-icon flag-icon-${sessionScope.lang}"> </span>
-                    </th:if>
-                    Language
+                    <span class="flag-icon flag-icon-us" th:if="${session.lang!='ua'}"/>
+                    <span class="flag-icon flag-icon-${sessionScope.lang}" th:if="${session.lang=='ua'}"/>
+                    <!-- <a href="#" th:text="#{header.language}"></a>-->
                 </a>
-                <div class="dropdown-menu" aria-labelledby="dropdown09">
-                    <a class="dropdown-item" href="/controller?command=cartList&sessionLocale=ua"><span
-                            class="flag-icon flag-icon-ua"> </span>
-                        Ukrainian
+                <div class="dropdown-menu" style="width: 20px">
+                    <a class="dropdown-item" th:href="@{/menu/list(sessionLocale='ua')}">
+                        <span class="flag-icon flag-icon-ua"/>
                     </a>
-                    <a class="dropdown-item" href="/controller?command=cartList&sessionLocale=en"><span
-                            class="flag-icon flag-icon-us"> </span>
-                        English
+                    <a class="dropdown-item" th:href="@{/menu/list(sessionLocale='en')}">
+                        <span class="flag-icon flag-icon-us"/>
                     </a>
                 </div>
             </div>
             <div class="navbar-nav">
-                <a href="/registration" th:if="${session.username==null}" class="nav-item nav-link"></span>
-                    Registration
-                </a>
-                <a href="/login" th:if="${session.username==null}" class="nav-item nav-link"></span>
-                    Login
-                </a>
-                <a href="/controller?command=logout" th:if="${session.username!=null}" class="nav-item nav-link"></span>
-                Logout
-                </a>
+                <a href="/registration" th:if="${session.username==null}" class="nav-item nav-link"
+                   th:text="#{header.registration}"/>
+                <a href="/login" th:if="${session.username==null}" class="nav-item nav-link" th:text="#{header.login}"/>
+                <a href="/logout" th:if="${session.username!=null}" class="nav-item nav-link"
+                   th:text="#{header.logout}"/>
             </div>
 
             <div th:if="${session.username!=null}">
                 <a th:href="@{/cart}">
-            <span class="fa-stack fa-2x has-badge" data-count="${cart_size}">
-                    <!--<i class="fa fa-circle fa-stack-2x fa-inverse"></i>-->
+            <span class="fa-stack fa-2x has-badge">
+                    <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
+                </span>
+                    <span class="fa-stack fa-2x has-badge" th:text="${cart_size}">
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
                 </span>
                 </a>
@@ -82,18 +70,13 @@
 </div>
 <div id="wrapper">
     <div id="header">
-        <h2>Menu</h2>
+        <h2 th:text="#{header.menu}"></h2>
     </div>
 </div>
 <div id="container">
     <div id="content">
-
-
-        <a th:href="@{/menu(filter='all_categories')}" th:if="${session.lang!='ua'}">
-            <button type="button" class="btn btn-light">All categories</button>
-        </a>
-        <a th:href="@{/menu(filter='all_categories')}" th:if="${session.lang=='ua'}">
-            <button type="button" class="btn btn-light">Всі категорії</button>
+        <a th:href="@{/menu(filter='all_categories')}">
+            <button type="button" class="btn btn-light" th:text="#{list_food.all_categories}"></button>
         </a>
         <a th:each="category: ${categories}" th:href="@{/menu(filter=${category.name})}">
             <button th:if="${session.lang!='ua'}" type="button" class="btn btn-light" th:text="${category.name}"/>
@@ -103,14 +86,14 @@
         <table class="table">
             <thead>
             <tr>
-                <th scope="col"><a style="color:red;">Image</a></th>
+                <th scope="col"><a style="color:red;" th:text="#{list_food.image}"></a></th>
                 <th scope="col"><a th:href="@{/menu(sort=name)}"
-                                   style="color:red;">Name&#8597;</a></th>
+                                   style="color:red;" th:text="#{list_food.name}">&#8597;</a></th>
                 <th scope="col"><a th:href="@{/menu(sort=price)}"
-                                   style="color:red;">Price&#8597;</a></th>
+                                   style="color:red;" th:text="#{list_food.price}">&#8597;</a></th>
                 <th scope="col"><a th:href="@{/menu(sort=category)}"
-                                   style="color:red;">Category&#8597;</a></th>
-                <th:if test="${sessionScope.get('username')!=null}">
+                                   style="color:red;" th:text="#{list_food.category}">&#8597;</a></th>
+                <th:if th:if="${session.get('username')!=null}">
                     <th scope="col"></th>
                 </th:if>
             </tr>
@@ -125,7 +108,7 @@
                 <td th:text="${foodItem.category.nameUa}" th:if="${session.lang=='ua'}"/>
                 <td th:if="${session.username!=null}"><a th:href="@{/menu/order(foodId=${foodItem.id})}"
                                                          style="color:black;">
-                    <button type="button" class="btn btn-dark">Add to Cart</button>
+                    <button type="button" class="btn btn-dark" th:text="#{list_food.add_to_cart}"></button>
                 </a>
                 </td>
             </tr>
@@ -139,7 +122,6 @@
 
     </div>
 </div>
-<div w3-include-html="footer.html"></div>
 </body>
 </html>
 

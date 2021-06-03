@@ -25,54 +25,42 @@
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav">
-                <a href="/menu" class="nav-item nav-link">
-                    Menu
-                </a>
-                <a href="/cart" class="nav-item nav-link active" th:if="${session.username!=null}">
-                    Cart
-                </a>
-                <a href="/myorders" class="nav-item nav-link" th:if="${session.username!=null}">
-                    My Orders
-                </a>
+                <a href="/menu" class="nav-item nav-link" th:text="#{header.menu}"/>
+                <a href="/cart" th:text="#{header.cart}" class="nav-item nav-link active"
+                   th:if="${session.username!=null}"/>
+                <a href="/myorders" th:text="#{header.my_orders}" class="nav-item nav-link"
+                   th:if="${session.username!=null}"/>
             </div>
             <div class="nav-item dropdown ml-auto">
                 <a class="nav-link dropdown-toggle" href="" id="dropdown09" style="color:black;" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
-                    <th:if test="${sessionScope.lang!='ua'}">
-                        <span class="flag-icon flag-icon-us"/>
-                    </th:if>
-                    <th:if test="${sessionScope.lang=='ua'}">
-                        <span class="flag-icon flag-icon-${sessionScope.lang}"> </span>
-                    </th:if>
-                    Language
+                    <span class="flag-icon flag-icon-us" th:if="${session.lang!='ua'}"/>
+                    <span class="flag-icon flag-icon-${sessionScope.lang}" th:if="${session.lang=='ua'}"/>
+                    <!-- <a href="#" th:text="#{header.language}"></a>-->
                 </a>
-                <div class="dropdown-menu" aria-labelledby="dropdown09">
-                    <a class="dropdown-item" href="/controller?command=cartList&sessionLocale=ua"><span
-                            class="flag-icon flag-icon-ua"> </span>
-                        Ukrainian
+                <div class="dropdown-menu" style="width: 20px">
+                    <a class="dropdown-item" th:href="@{/menu/list(sessionLocale='ua')}">
+                        <span class="flag-icon flag-icon-ua"/>
                     </a>
-                    <a class="dropdown-item" href="/controller?command=cartList&sessionLocale=en"><span
-                            class="flag-icon flag-icon-us"> </span>
-                        English
+                    <a class="dropdown-item" th:href="@{/menu/list(sessionLocale='en')}">
+                        <span class="flag-icon flag-icon-us"/>
                     </a>
                 </div>
             </div>
             <div class="navbar-nav">
-                <a href="/registration" th:if="${session.username==null}" class="nav-item nav-link"></span>
-                    Registration
-                </a>
-                <a href="/login" th:if="${session.username==null}" class="nav-item nav-link"></span>
-                    Login
-                </a>
-                <a href="/controller?command=logout" th:if="${session.username!=null}" class="nav-item nav-link"></span>
-                    Logout
-                </a>
+                <a href="/registration" th:if="${session.username==null}" class="nav-item nav-link"
+                   th:text="#{header.registration}"/>
+                <a href="/login" th:if="${session.username==null}" class="nav-item nav-link" th:text="#{header.login}"/>
+                <a href="/logout" th:if="${session.username!=null}" class="nav-item nav-link"
+                   th:text="#{header.logout}"/>
             </div>
 
             <div th:if="${session.username!=null}">
-                <a href="/cart">
-            <span class="fa-stack fa-2x has-badge" data-count="${sessionScope.cart.size()}">
-                    <i class="fa fa-circle fa-stack-2x fa-inverse"></i>
+                <a th:href="@{/cart}">
+            <span class="fa-stack fa-2x has-badge">
+                    <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
+                </span>
+                    <span class="fa-stack fa-2x has-badge" th:text="${cart_size}">
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
                 </span>
                 </a>
@@ -81,41 +69,25 @@
     </nav>
 </div>
 <div id="header">
-    <h2>
-        Cart
-    </h2>
+    <h2 th:text="#{cart.cart}"> </h2>
 </div>
 <div id="container">
     <div id="content">
         <table class="table">
             <thead></thead>
             <tr>
-                <th scope="col">
-                    Image
-                </th>
-                <th scope="col">
-                    Name
-                </th>
-                <th scope="col">
-                    Price
-                </th>
-                <th scope="col">
-                    Quantity
-                </th>
-                <th scope="col">
-                    Option
-                </th>
-                <th scope="col">
-                    Sub Total
-                </th>
+                <th scope="col" th:text="#{cart.image}"></th>
+                <th scope="col" th:text="#{cart.name}"></th>
+                <th scope="col" th:text="#{cart.price}"></th>
+                <th scope="col" th:text="#{cart.quantity}"></th>
+                <th scope="col" th:text="#{cart.option}"></th>
+                <th scope="col" th:text="#{cart.sub_total}"></th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="item: ${session.cart}" >
-                <!--<th:set var="sum" value="${sum+item.foodItem.price*item.quantity}"/>-->
                 <td><img th:src="${item.foodItem.image}" width="80" height="80"/></td>
                 <td th:text="${item.foodItem.name}" th:if="${session.lang!='ua'}"></td>
-                <!--<td th:text="${item.foodItem.nameUa}" th:if="${session.lang=='ua'}"/>-->
                 <td th:text="${item.foodItem.price}"></td>
                 <td th:text="${item.quantity}"></td>
                 <td align="left">
@@ -133,14 +105,12 @@
     </div>
 </div>
 <div class="order" style="position: relative;">
-    <h2 th:text="${sum}"/>
+
+    <h2 th:text="'Sum:'${session.sum}"></h2>
     <a th:href="@{/cart/order}">
-        <button type="button" class="btn btn-danger order-button" style="position: absolute; right: 10%">
-            Order
-        </button>
+        <button type="button" class="btn btn-danger order-button" style="position: absolute; right: 10%" th:text="#{cart.order}"></button>
     </a>
 </div>
 <br/><br/>
-<!--<div th:insert="fragments/footer :: footer"></div>-->
 </body>
 </html>
