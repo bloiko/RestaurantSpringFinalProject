@@ -13,15 +13,15 @@ import java.util.Locale;
 public class LocaleConfigurer implements WebMvcConfigurer {
     @Bean
     public LocaleResolver localeResolver() {
-        SessionLocaleResolver slr = new SessionLocaleResolver();
-        slr.setDefaultLocale(Locale.US);
-        return slr;
+        SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
+        sessionLocaleResolver.setDefaultLocale(Locale.US);
+        return sessionLocaleResolver;
     }
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
-        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        lci.setParamName("lang");
-        return lci;
+        LocaleChangeInterceptor changeInterceptor = new LocaleChangeInterceptor();
+        changeInterceptor.setParamName("lang");
+        return changeInterceptor;
     }
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

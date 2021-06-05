@@ -27,11 +27,11 @@ public class LoginMainCommand{
     public static final String COMMAND = "command";
     @Autowired
     private UserService userService;
-    @GetMapping("/login")
+    @GetMapping("/login-main")
     public String getLoginPage(){
         return "login-main";
     }
-    @PostMapping("/login")
+    @PostMapping("/login-main")
     public String execute(HttpServletRequest request, Model model) throws ServletException, IOException {
         log.debug("Command starts");
         HttpSession session = request.getSession();

@@ -43,7 +43,7 @@ public class CartDeleteItemCommand  {
         log.trace("Set attribute to the request: cart -->"+cart);
 
         log.debug("Command finished");
-        return "cart";
+        return "redirect:/cart";
     }
 
 }

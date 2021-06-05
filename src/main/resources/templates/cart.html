@@ -39,10 +39,10 @@
                     <!-- <a href="#" th:text="#{header.language}"></a>-->
                 </a>
                 <div class="dropdown-menu" style="width: 20px">
-                    <a class="dropdown-item" th:href="@{/menu/list(sessionLocale='ua')}">
+                    <a class="dropdown-item" th:href="@{/cart(lang='ua')}">
                         <span class="flag-icon flag-icon-ua"/>
                     </a>
-                    <a class="dropdown-item" th:href="@{/menu/list(sessionLocale='en')}">
+                    <a class="dropdown-item" th:href="@{/cart(lang='en')}">
                         <span class="flag-icon flag-icon-us"/>
                     </a>
                 </div>
@@ -106,7 +106,7 @@
 </div>
 <div class="order" style="position: relative;">
 
-    <h2 th:text="'Sum:'${session.sum}"></h2>
+   Sum: <h2 th:text="${session.sum}"></h2>
     <a th:href="@{/cart/order}">
         <button type="button" class="btn btn-danger order-button" style="position: absolute; right: 10%" th:text="#{cart.order}"></button>
     </a>
