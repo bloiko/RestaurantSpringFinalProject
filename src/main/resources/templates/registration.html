@@ -11,56 +11,56 @@
 </head>
 <body>
 <article class="card-body mx-auto" style="max-width: 400px;">
-<!--
-    <h4 class="card-title mt-3 text-center"><fmt:message key="registration.registration"/></h4>
--->
-    <form th:action="@{/registration}" method="post">
-        <label class="errorMessage" th:value="${session.error_message}"/>
+    <h4 class="card-title mt-3 text-center" th:text="#{registration.registration}"/>
+    <form th:action="@{/registration}" method="post" th:object="${user}">
+            <div style="color: red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-user"></i> </span>
             </div>
-            <input name="first_name" class="form-control" placeholder="First Name" th:value="${first_name}" type="text">
+            <input name="first_name" class="form-control" th:field="*{firstName}" placeholder="First Name" id="firstName" th:value="${first_name}" type="text">
         </div>
+        <div style="color: red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-user"></i> </span>
             </div>
-            <input name="last_name" class="form-control" placeholder="Last Name" type="text" th:value="${last_name}">
+            <input name="last_name" class="form-control" th:field="*{lastName}" placeholder="Last Name" id="lastName" type="text" th:value="${last_name}">
         </div>
-        <label class="errorMessage" th:value="${session.username_error_message}"/>
+        <div style="color: red" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}"></div>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
             </div>
-            <input name="username" class="form-control" placeholder="Username" type="text">
+            <input name="username" class="form-control" th:field="*{userName}" placeholder="Username" id="username" type="text">
         </div>
-        <label class="errorMessage" th:value="${session.password_error_message}"/>
+        <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
             </div>
-            <input name="password" class="form-control" placeholder="Password" type="password">
+            <input name="password" class="form-control" th:field="*{password}" placeholder="Password" id="password" type="password">
         </div>
-        <label class="errorMessage" th:value="${session.email_error_message}"></label>
+        <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
             </div>
-            <input name="email" class="form-control" placeholder="Email" type="text" th:value="${email}">
+            <input name="email" class="form-control" th:field="*{email}" placeholder="Email" type="text" id="email" th:value="${email}">
         </div>
+        <div style="color: red" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-building"></i> </span>
             </div>
-            <input name="address" class="form-control" placeholder="Address" type="text" th:value="${address}">
+            <input name="address" class="form-control" th:field="*{address}" placeholder="Address" id="address" type="text" th:value="${address}">
         </div>
-        <label class="errorMessage" th:value="${session.phone_number_error_message}"/>
+        <div style="color: red" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
         <div class="form-group input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
             </div>
-            <input name="phoneNumber" class="form-control" placeholder="Phone Number" type="text" th:value="${phoneNumber}">
+            <input name="phoneNumber" class="form-control" th:field="*{phoneNumber}" placeholder="Phone Number" id="phoneNumber" type="text" th:value="${phoneNumber}">
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block">Submit</button>

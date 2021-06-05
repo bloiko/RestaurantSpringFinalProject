@@ -26,10 +26,8 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav">
                 <a href="/menu" class="nav-item nav-link" th:text="#{header.menu}"/>
-                <a href="/cart" th:text="#{header.cart}" class="nav-item nav-link active"
-                   th:if="${session.username!=null}"/>
-                <a href="/myorders" th:text="#{header.my_orders}" class="nav-item nav-link"
-                   th:if="${session.username!=null}"/>
+                <a href="/cart" th:text="#{header.cart}" class="nav-item nav-link active"/>
+                <a href="/myorders" th:text="#{header.my_orders}" class="nav-item nav-link"/>
             </div>
             <div class="nav-item dropdown ml-auto">
                 <a class="nav-link dropdown-toggle" href="" id="dropdown09" style="color:black;" data-toggle="dropdown"
@@ -55,7 +53,6 @@
                    th:text="#{header.logout}"/>
             </div>
 
-            <div th:if="${session.username!=null}">
                 <a th:href="@{/cart}">
             <span class="fa-stack fa-2x has-badge">
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
@@ -64,7 +61,6 @@
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
                 </span>
                 </a>
-            </div>
         </div>
     </nav>
 </div>
@@ -106,7 +102,7 @@
                 <td th:text="${foodItem.price}"></td>
                 <td th:text="${foodItem.category.name}" th:if="${session.lang!='ua'}"/>
                 <td th:text="${foodItem.category.nameUa}" th:if="${session.lang=='ua'}"/>
-                <td th:if="${session.username!=null}"><a th:href="@{/menu/order(foodId=${foodItem.id})}"
+                <td ><a th:href="@{/menu/order(foodId=${foodItem.id})}"
                                                          style="color:black;">
                     <button type="button" class="btn btn-dark" th:text="#{list_food.add_to_cart}"></button>
                 </a>

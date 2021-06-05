@@ -10,7 +10,7 @@
     <title>Login</title>
 </head>
 <body>
-<article class="card-body mx-auto" style="max-width: 400px;">
+<article class="card-body mx-auto" style="max-width: 400px;" th:action="@{/login-main}">
     <form th:action="@{/login-main}" th:method="post">
         <label style="color: red" th:text="${session.message}"></label>
         <div class="form-group input-group">
@@ -26,7 +26,7 @@
             <input name="password" class="form-control" th:placeholder="#{login.password}" type="password">
         </div>
         <div class="form-group">
-            <button style="height: 50px" type="submit" class="btn btn-primary btn-block" th:text="#{login.login}"></button>
+            <button style="height: 50px" type="submit" th:href="@{/login-main}" class="btn btn-primary btn-block" th:text="#{login.login}"></button>
         </div>
     </form>
 </article>

@@ -26,10 +26,8 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav">
                 <a href="/menu" class="nav-item nav-link" th:text="#{header.menu}"/>
-                <a href="/cart" th:text="#{header.cart}" class="nav-item nav-link active"
-                   th:if="${session.username!=null}"/>
-                <a href="/myorders" th:text="#{header.my_orders}" class="nav-item nav-link"
-                   th:if="${session.username!=null}"/>
+                <a href="/cart" th:text="#{header.cart}" class="nav-item nav-link active"/>
+                <a href="/myorders" th:text="#{header.my_orders}" class="nav-item nav-link"/>
             </div>
             <div class="nav-item dropdown ml-auto">
                 <a class="nav-link dropdown-toggle" href="" id="dropdown09" style="color:black;" data-toggle="dropdown"
@@ -39,10 +37,10 @@
                     <!-- <a href="#" th:text="#{header.language}"></a>-->
                 </a>
                 <div class="dropdown-menu" style="width: 20px">
-                    <a class="dropdown-item" th:href="@{/myorders(lang='ua')}">
+                    <a class="dropdown-item" th:href="@{/menu(lang='ua')}">
                         <span class="flag-icon flag-icon-ua"/>
                     </a>
-                    <a class="dropdown-item" th:href="@{/myorders(lang='en')}">
+                    <a class="dropdown-item" th:href="@{/menu(lang='en')}">
                         <span class="flag-icon flag-icon-us"/>
                     </a>
                 </div>
@@ -55,16 +53,14 @@
                    th:text="#{header.logout}"/>
             </div>
 
-            <div th:if="${session.username!=null}">
-                <a th:href="@{/cart}">
+            <a th:href="@{/cart}">
             <span class="fa-stack fa-2x has-badge">
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
                 </span>
-                    <span class="fa-stack fa-2x has-badge" th:text="${cart_size}">
+                <span class="fa-stack fa-2x has-badge" th:text="${cart_size}">
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
                 </span>
-                </a>
-            </div>
+            </a>
         </div>
     </nav>
 </div>

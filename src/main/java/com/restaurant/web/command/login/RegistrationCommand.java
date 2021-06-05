@@ -7,13 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.io.IOException;
 
 /**
@@ -36,27 +36,20 @@ public class RegistrationCommand {
     private UserService userService;
 
     @GetMapping
-    public String getRegistrationPage() {
+    public String getRegistrationPage(User user) {
         return "registration";
     }
 
     @PostMapping
-    public String execute(HttpServletRequest request, Model model) throws ServletException, IOException {
+    public String execute(@Valid  User user, BindingResult bindingResult) throws ServletException, IOException {
         log.debug("Command starts");
-        User user = getUserIfCorrectData(request);
-        if (user == null) {
-            log.info("User data is invalid");
-            prepareDataToTheRedirection(request, model);
-            log.trace("User data was prepared to the redirection");
-
-            log.debug("Command finished");
+        if (bindingResult.hasErrors()) {
             return "registration";
-        } else {
-            userService.addUserAndReturnId(user);
-            log.info("User was added to the database");
-            log.debug("Command finished");
-            return "login-main";
         }
+        userService.addUserAndReturnId(user);
+        log.info("User was added to the database");
+        log.debug("Command finished");
+        return "login-main";
     }
 
     private void prepareDataToTheRedirection(HttpServletRequest request, Model model) {
@@ -94,7 +87,7 @@ public class RegistrationCommand {
 
     }
 
-    private User getUserIfCorrectData(HttpServletRequest request) {
+    private User getUserIfCorrectData( HttpServletRequest request) {
         log.debug("Check data on correctness");
         boolean isCorrect = true;
         String firstName = request.getParameter(FIRST_NAME);
