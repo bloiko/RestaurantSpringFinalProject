@@ -39,7 +39,6 @@ public class FoodItemService {
             item.setId(0L);
             item.setFoodItem(foodItem);
             item.setQuantity(1);
-//           item = itemRepository.save(item);
             cart.add(item);
         } else {
             int quantity = cart.get(index).getQuantity() + 1;

@@ -34,14 +34,12 @@ public class CartOrderItemCommand {
     public String execute(HttpServletRequest request, Model model) throws IOException, ServletException {
         log.debug("Command starts");
         HttpSession session = request.getSession();
-        String username = (String) session.getAttribute("username");
-        log.trace("Set attribute to the session: username --> " + username);
-
+        String username = request.getUserPrincipal().getName();
+        log.trace("Get attribute: username --> " + username);
         User user;
         if (username == null) {
             session.setAttribute("command", "ORDER_IN_CART");
             log.trace("Set attribute to the session: command --> " + "ORDER_IN_CART");
-
             log.debug("Command finished");
             return "login-main";
         } else {

@@ -38,6 +38,7 @@ public class MenuListCommand {
         session.setAttribute(FILTER, filterBy);
 
         String sort = request.getParameter("sort");
+
         String sessionSort = (String) session.getAttribute("sort");
         String order = (String) session.getAttribute("order");
         order = getOppositeOrder(sort, sessionSort, order);
@@ -62,7 +63,6 @@ public class MenuListCommand {
         session.setAttribute("page", page);
         List<Item> cart = (List<Item>) session.getAttribute("cart");
         model.addAttribute("cart_size", cart!=null?cart.size():0);
-
         model.addAttribute("categories", foodItemService.getCategories());
         model.addAttribute("FOOD_LIST", foodItems);
         return "list-food";

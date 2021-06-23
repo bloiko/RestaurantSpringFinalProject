@@ -25,9 +25,11 @@
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav">
-                <a href="/menu" class="nav-item nav-link" th:text="#{header.menu}"/>
-                <a href="/cart" th:text="#{header.cart}" class="nav-item nav-link active"/>
-                <a href="/myorders" th:text="#{header.my_orders}" class="nav-item nav-link"/>
+                <a href="/menu" class="nav-item nav-link active" th:text="#{header.menu}"/>
+                <a href="/cart" th:if="${session.username!=null}" th:text="#{header.cart}"
+                   class="nav-item nav-link"/>
+                <a href="/myorders" th:if="${session.username!=null}" th:text="#{header.my_orders}"
+                   class="nav-item nav-link"/>
             </div>
             <div class="nav-item dropdown ml-auto">
                 <a class="nav-link dropdown-toggle" href="" id="dropdown09" style="color:black;" data-toggle="dropdown"
@@ -46,21 +48,21 @@
                 </div>
             </div>
             <div class="navbar-nav">
-                <a href="/registration" th:if="${session.username==null}" class="nav-item nav-link"
-                   th:text="#{header.registration}"/>
-                <a href="/login" th:if="${session.username==null}" class="nav-item nav-link" th:text="#{header.login}"/>
+                <a href="/registration" class="nav-item nav-link"
+                   th:text="#{header.registration}" th:if="${session.username==null}"/>
+                <a href="/login-main" th:if="${session.username==null}" class="nav-item nav-link"
+                   th:text="#{header.login}"/>
                 <a href="/logout" th:if="${session.username!=null}" class="nav-item nav-link"
                    th:text="#{header.logout}"/>
             </div>
-
-                <a th:href="@{/cart}">
+            <a th:href="@{/cart}" th:if="${session.username!=null}">
             <span class="fa-stack fa-2x has-badge">
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
                 </span>
-                    <span class="fa-stack fa-2x has-badge" th:text="${cart_size}">
+                <span class="fa-stack fa-2x has-badge" th:text="${cart_size}">
                     <i style="" class="fa fa-shopping-cart fa-stack-2x red-cart"></i>
                 </span>
-                </a>
+            </a>
         </div>
     </nav>
 </div>
@@ -89,9 +91,7 @@
                                    style="color:red;" th:text="#{list_food.price}">&#8597;</a></th>
                 <th scope="col"><a th:href="@{/menu(sort=category)}"
                                    style="color:red;" th:text="#{list_food.category}">&#8597;</a></th>
-                <th:if th:if="${session.get('username')!=null}">
-                    <th scope="col"></th>
-                </th:if>
+                <th scope="col" th:if="${session.username!=null}"></th>
             </tr>
             </thead>
             <tbody>
@@ -102,9 +102,10 @@
                 <td th:text="${foodItem.price}"></td>
                 <td th:text="${foodItem.category.name}" th:if="${session.lang!='ua'}"/>
                 <td th:text="${foodItem.category.nameUa}" th:if="${session.lang=='ua'}"/>
-                <td ><a th:href="@{/menu/order(foodId=${foodItem.id})}"
-                                                         style="color:black;">
-                    <button type="button" class="btn btn-dark" th:text="#{list_food.add_to_cart}"></button>
+                <td><a th:href="@{/menu/order(foodId=${foodItem.id})}"
+                       style="color:black;">
+                    <button type="button" class="btn btn-dark" th:text="#{list_food.add_to_cart}"
+                            th:if="${session.username!=null}"></button>
                 </a>
                 </td>
             </tr>

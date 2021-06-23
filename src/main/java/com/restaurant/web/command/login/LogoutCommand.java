@@ -14,11 +14,10 @@ import java.io.IOException;
  * Command that log out user.
  *
  * @author B.Loiko
- *
  */
 @Slf4j
 @Controller
-public class LogoutCommand  {
+public class LogoutCommand {
     @GetMapping("/logout")
     public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         log.debug("Controller starts");
@@ -27,7 +26,7 @@ public class LogoutCommand  {
         log.trace("Session attribute was removed : username");
         session.removeAttribute("cart");
         log.trace("Session attribute was removed : cart");
-
+        request.logout();
         log.debug("Controller finished");
         return "redirect:/menu";
     }

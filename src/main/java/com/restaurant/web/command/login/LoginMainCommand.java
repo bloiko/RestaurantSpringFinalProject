@@ -31,7 +31,7 @@ public class LoginMainCommand{
     public String getLoginPage(){
         return "login-main";
     }
-    @PostMapping("/login-main")
+    @PostMapping("/login")
     public String execute(HttpServletRequest request) throws ServletException, IOException {
         log.debug("Command starts");
         HttpSession session = request.getSession();
@@ -41,6 +41,8 @@ public class LoginMainCommand{
 
         String password = request.getParameter("password");
         log.trace("Get parameter from the request: password --> "+ password);
+
+        request.login(username,password);
             if (userService.isCorrectUser(username, password)) {
                 log.info("User "+username+" is correct user");
 

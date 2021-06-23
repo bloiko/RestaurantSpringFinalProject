@@ -32,8 +32,7 @@ public class MyOrdersCommand {
     @GetMapping("/myorders")
     public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         log.debug("Controller starts");
-        HttpSession session = request.getSession();
-        String username = (String) session.getAttribute("username");
+        String username = request.getUserPrincipal().getName();
         log.trace("Session attribute : username" + username);
 
         List<Order> orders = new LinkedList<>();

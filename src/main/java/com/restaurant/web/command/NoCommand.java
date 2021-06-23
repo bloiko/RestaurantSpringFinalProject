@@ -23,10 +23,8 @@ public class NoCommand {
 	public String execute(HttpServletRequest request,
 			HttpServletResponse response) throws IOException, ServletException {
 		log.debug("Command starts");
-		
 		processError(request,response);
 		log.info("Error was processed");
-
 		log.debug("Command finished");
 		return "error-page";
 	}

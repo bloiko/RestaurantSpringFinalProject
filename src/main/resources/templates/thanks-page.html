@@ -105,7 +105,7 @@
             <div class="navbar-nav">
                 <a href="/registration" th:if="${session.username==null}" class="nav-item nav-link"
                    th:text="#{header.registration}"/>
-                <a href="/login" th:if="${session.username==null}" class="nav-item nav-link" th:text="#{header.login}"/>
+                <a href="/login-main" th:if="${session.username==null}" class="nav-item nav-link" th:text="#{header.login}"/>
                 <a href="/logout" th:if="${session.username!=null}" class="nav-item nav-link"
                    th:text="#{header.logout}"/>
             </div>
