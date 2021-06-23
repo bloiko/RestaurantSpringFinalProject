@@ -21,9 +21,8 @@ import java.util.List;
 public class CartListCommand  {
 
     @GetMapping("/cart")
-    public String execute(HttpServletRequest request, Model model)  {
+    public String execute(HttpSession session)  {
         log.debug("Command starts");
-        HttpSession session = request.getSession();
         List<Item> items = (List<Item>) session.getAttribute("cart");
         if(items==null){
             items=new ArrayList<>();
