@@ -9,10 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -28,20 +27,12 @@ public class AdminChangeOrderStatusCommand {
     @Autowired
     private OrderStatusService orderStatusService;
 
-@GetMapping("/admin/change-order-status")
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @GetMapping("/admin/change-order-status")
+    public String execute(@RequestParam String status, @RequestParam String orderId) throws ServletException, IOException {
         log.debug("Command starts");
-
-        String statusName = request.getParameter("status");
-        log.trace("Get request parameter: status" + statusName);
-
-        String orderIdString = request.getParameter("orderId");
-        log.trace("Get request parameter: orderId" + orderIdString);
-
-
-        Order order = orderService.getOrder(orderIdString);
-        log.trace("Get from Service by id" + orderIdString + ": order --> " + order);
-        OrderStatus newStatus = orderStatusService.findByStatusName(statusName);
+        Order order = orderService.getOrder(orderId);
+        log.trace("Get from Service by id" + orderId + ": order --> " + order);
+        OrderStatus newStatus = orderStatusService.findByStatusName(status);
         orderService.updateOrder(order.getId(), newStatus);
         log.debug("Order was updated");
         log.debug("Command finished");

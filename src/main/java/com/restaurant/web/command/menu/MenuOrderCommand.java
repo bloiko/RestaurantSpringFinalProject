@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,10 +30,8 @@ public class MenuOrderCommand {
     private FoodItemService foodItemService;
 
     @GetMapping("/menu/order")
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        HttpSession session = request.getSession();
+    public String execute(@RequestParam String foodId, HttpSession session) throws IOException, ServletException {
         List<Item> cart = getCart(session);
-        String foodId = request.getParameter("foodId");
         foodItemService.addFoodItemToCart(cart, foodId);
         session.setAttribute("cart", cart);
         return "redirect:/menu";

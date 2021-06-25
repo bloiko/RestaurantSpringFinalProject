@@ -20,7 +20,7 @@ import java.io.IOException;
 public class ThanksCommand {
 
     @GetMapping("/thanks-page")
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public String execute() throws IOException, ServletException {
         log.debug("Command starts");
 
         log.debug("Command finished");
