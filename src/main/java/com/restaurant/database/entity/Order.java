@@ -1,10 +1,7 @@
 package com.restaurant.database.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,6 +15,7 @@ import java.util.List;
  * @author B.Loiko
  */
 @Data
+@Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor

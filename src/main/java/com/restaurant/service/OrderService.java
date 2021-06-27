@@ -34,11 +34,13 @@ public class OrderService {
     private ItemRepository itemRepository;
     @Transactional
     public Long addOrderAndGetId(List<Item> cart, User user) {
-        Order order = new Order();
-        order.setId(0L);
-        order.setUser(user);
-        order.setOrderDate(new Timestamp(new Date().getTime()));
-        order.setOrderStatus(statusRepository.findByStatusName("WAITING"));
+        Timestamp orderDate = new Timestamp(new Date().getTime());
+        OrderStatus orderStatus = statusRepository.findByStatusName("WAITING");
+        Order order = Order.builder()
+                .id(0L)
+                .user(user)
+                .orderDate(orderDate)
+                .orderStatus(orderStatus).build();
         order = orderRepository.save(order);
         if (cart != null && !cart.isEmpty()) {
             BigDecimal price = new BigDecimal(0);
