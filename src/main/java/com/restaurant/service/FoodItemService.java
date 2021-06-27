@@ -28,13 +28,13 @@ public class FoodItemService {
     private FoodRepository foodRepository;
     @Autowired
     private CategoryRepository categoryRepository;
-    @Autowired
-    private ItemRepository itemRepository;
-@Transactional
+
+    @Transactional
     public void addFoodItemToCart(List<Item> cart, String foodId) {
-        int index = isExisting(foodId, cart);
+        CartService cartService = new CartService();
+        int index = cartService.isExisting(Integer.parseInt(foodId), cart);
         if (cart.isEmpty() || index == -1) {
-            FoodItem foodItem =foodRepository.findById(Long.valueOf(foodId)).get();
+            FoodItem foodItem = foodRepository.findById(Long.valueOf(foodId)).get();
             Item item = Item.builder().id(0L).foodItem(foodItem).quantity(1).build();
             cart.add(item);
         } else {
@@ -43,19 +43,11 @@ public class FoodItemService {
         }
     }
 
-    public int isExisting(String id, List<Item> cart) {
-        int foodId = Integer.parseInt(id);
-        for (int i = 0; i < cart.size(); i++) {
-            if (cart.get(i).getFoodItem().getId() == foodId) {
-                return i;
-            }
-        }
-        return -1;
-    }
     @Transactional
-    public List<Category> getCategories(){
+    public List<Category> getCategories() {
         return categoryRepository.findAll();
     }
+
     @Transactional
     public List<FoodItem> getFoodItems() {
         return foodRepository.findAll();
@@ -64,9 +56,9 @@ public class FoodItemService {
     @Transactional
     public List<FoodItem> getFoodItems(MenuPage menuPage) {
         Sort sortBy;
-        if(menuPage.getSortBy()!=null) {
+        if (menuPage.getSortBy() != null) {
             sortBy = Sort.by(menuPage.getSortDirection(), menuPage.getSortBy());
-        }else{
+        } else {
             sortBy = Sort.by(menuPage.getSortDirection(), "category");
         }
         Pageable pageable = PageRequest.of(menuPage.getPageNumber(), menuPage.getPageSize(), sortBy);
