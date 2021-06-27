@@ -35,10 +35,7 @@ public class FoodItemService {
         int index = isExisting(foodId, cart);
         if (cart.isEmpty() || index == -1) {
             FoodItem foodItem =foodRepository.findById(Long.valueOf(foodId)).get();
-            Item item = new Item();
-            item.setId(0L);
-            item.setFoodItem(foodItem);
-            item.setQuantity(1);
+            Item item = Item.builder().id(0L).foodItem(foodItem).quantity(1).build();
             cart.add(item);
         } else {
             int quantity = cart.get(index).getQuantity() + 1;
@@ -64,22 +61,6 @@ public class FoodItemService {
         return foodRepository.findAll();
     }
 
-    /*   //TO Do
-       public List<FoodItem> getFoodItems(int page, int number, String sortBy, String order, String filter) throws DBException {
-           int offset = (page - 1) * number;
-           int itemsLimit = number;
-
-           if (sortBy == null && filter != null) {
-               return foodRepository.getFoodItemsWithSkipLimitFilter(itemsLimit, offset, filter);
-           } else if (sortBy == null && filter == null) {
-               return foodRepository.getFoodItemsWithSkipAndLimit(itemsLimit, offset);
-           } else if (filter == null && sortBy != null) {
-               return foodRepository.getFoodItemsWithSkipLimitAndOrder(itemsLimit, offset, sortBy, order);
-           } else {
-               return foodRepository.getFoodItemsWithFilterSkipLimitAndOrder(filter, itemsLimit, offset, sortBy, order);
-           }
-       }*/
-    //TO Do
     @Transactional
     public List<FoodItem> getFoodItems(MenuPage menuPage) {
         Sort sortBy;

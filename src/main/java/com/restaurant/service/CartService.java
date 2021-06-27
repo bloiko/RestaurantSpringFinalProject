@@ -1,8 +1,10 @@
 package com.restaurant.service;
-import com.restaurant.database.entity.*;
+
+import com.restaurant.database.entity.Item;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Cart service.
@@ -21,11 +23,9 @@ public class CartService {
     }
 
     public int isExisting(int id, List<Item> cart) {
-        for (int i = 0; i < cart.size(); i++) {
-            if (cart.get(i).getFoodItem().getId() == id) {
-                return i;
-            }
-        }
-        return -1;
+        Optional<Item> optionalItem = cart.stream()
+                .filter(a -> a.getFoodItem().getId() == id)
+                .findAny();
+        return optionalItem.isPresent() ? cart.indexOf(optionalItem.get()) : -1;
     }
 }

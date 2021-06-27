@@ -12,6 +12,7 @@ import java.io.Serializable;
  *
  */
 @Data
+@Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
