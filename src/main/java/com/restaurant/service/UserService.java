@@ -4,7 +4,6 @@ package com.restaurant.service;
 import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.UserRepository;
 import com.restaurant.database.entity.Order;
-import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,8 +12,6 @@ import javax.transaction.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * User service.
@@ -32,7 +29,7 @@ public class UserService {
     public boolean isCorrectAdmin(String userName, String password) {
         User user = userRepository.findByUserName(userName).get();
         return user != null && user.getUserName().equals(userName) && user.getPassword().equals(password)
-                && user.getRole().equals("ADMIN");
+                && user.getRole().getName().equals("ADMIN");
     }
     @Transactional
     public List<Order> getUserOrdersSortByOrderDateReversed(String username) {

@@ -3,7 +3,6 @@ package com.restaurant.service;
 
 import com.restaurant.database.dao.CategoryRepository;
 import com.restaurant.database.dao.FoodRepository;
-import com.restaurant.database.dao.ItemRepository;
 import com.restaurant.database.entity.Category;
 import com.restaurant.database.entity.FoodItem;
 import com.restaurant.database.entity.Item;
