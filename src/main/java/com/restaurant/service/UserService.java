@@ -28,13 +28,6 @@ public class UserService {
     @Autowired
     private OrderRepository orderListDAO;
 
-    /**
-     * Check if user with username and password is admin
-     *
-     * @param userName user name
-     * @param password user password.
-     * @return boolean if user is admin.
-     */
     @Transactional
     public boolean isCorrectAdmin(String userName, String password) {
         User user = userRepository.findByUserName(userName).get();
@@ -51,29 +44,10 @@ public class UserService {
     @Transactional
     public Long addUserAndReturnId(User user)  {
         Optional<User> optional = userRepository.findByUserName(user.getUserName());
-        Long userId = optional.isPresent() ? optional.get().getId():-1;
-        if (userId == -1) {
-           return  userRepository.save(user).getId();
-        }
-        return -1L;
+        return optional.isPresent()? userRepository.save(user).getId():-1L;
     }
 
-    public boolean isCorrectPhoneNumber(String phoneNumber) {
-        String patterns = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$"
-                + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$"
-                + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$";
-        Pattern pattern = Pattern.compile(patterns);
-        Matcher matcher = pattern.matcher(phoneNumber);
-        return matcher.matches();
-    }
-
-    public boolean isCorrectEmail(String email) {
-        String patterns = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
-        Pattern pattern = Pattern.compile(patterns);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-    @Transactional
+     @Transactional
     public boolean isCorrectUser(String userName, String password) {
 
        User  user = userRepository.findByUserName(userName).get();

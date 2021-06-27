@@ -25,13 +25,13 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/registration")
 public class RegistrationCommand {
-    public static final String PASSWORD = "password";
+/*    public static final String PASSWORD = "password";
     public static final String USERNAME = "username";
     public static final String PHONE_NUMBER = "phoneNumber";
     public static final String ADDRESS = "address";
     public static final String EMAIL = "email";
     public static final String LAST_NAME = "last_name";
-    public static final String FIRST_NAME = "first_name";
+    public static final String FIRST_NAME = "first_name";*/
     @Autowired
     private UserService userService;
 
@@ -52,7 +52,7 @@ public class RegistrationCommand {
         return "login-main";
     }
 
-    private void prepareDataToTheRedirection(HttpServletRequest request, Model model) {
+   /* private void prepareDataToTheRedirection(HttpServletRequest request, Model model) {
         String firstName = request.getParameter(FIRST_NAME);
         model.addAttribute(FIRST_NAME, firstName);
         log.trace("Set parameter to the request: FIRST_NAME --> " + firstName);
@@ -85,9 +85,9 @@ public class RegistrationCommand {
         model.addAttribute("command", "REDIRECT");
         log.trace("Set attribute to the request: command --> " + "REDIRECT");
 
-    }
+    }*/
 
-    private User getUserIfCorrectData( HttpServletRequest request) {
+   /* private User getUserIfCorrectData( HttpServletRequest request) {
         log.debug("Check data on correctness");
         boolean isCorrect = true;
         String firstName = request.getParameter(FIRST_NAME);
@@ -130,6 +130,6 @@ public class RegistrationCommand {
         } else {
             return null;
         }
-    }
+    }*/
 }
 
