@@ -19,7 +19,7 @@ import java.io.IOException;
 @Controller
 public class LogoutCommand {
     @GetMapping("/logout")
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public String execute(HttpServletRequest request) throws IOException, ServletException {
         log.debug("Controller starts");
         HttpSession session = request.getSession();
         session.removeAttribute("username");

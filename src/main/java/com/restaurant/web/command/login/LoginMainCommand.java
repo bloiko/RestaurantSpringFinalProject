@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import javax.servlet.ServletException;
@@ -32,16 +33,11 @@ public class LoginMainCommand{
         return "login-main";
     }
     @PostMapping("/login")
-    public String execute(HttpServletRequest request) throws ServletException, IOException {
+    public String execute(@RequestParam String username, @RequestParam String password,
+                          HttpServletRequest request) throws ServletException, IOException {
         log.debug("Command starts");
         HttpSession session = request.getSession();
         removePastErrorMessagesIfExist(session);
-        String username = request.getParameter("username");
-        log.trace("Get parameter from the request: username --> "+ username);
-
-        String password = request.getParameter("password");
-        log.trace("Get parameter from the request: password --> "+ password);
-
         request.login(username,password);
             if (userService.isCorrectUser(username, password)) {
                 log.info("User "+username+" is correct user");

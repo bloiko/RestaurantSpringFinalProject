@@ -30,7 +30,7 @@ public class MyOrdersCommand {
     private UserService userService;
 
     @GetMapping("/myorders")
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public String execute(HttpServletRequest request) throws IOException, ServletException {
         log.debug("Controller starts");
         String username = request.getUserPrincipal().getName();
         log.trace("Session attribute : username" + username);
