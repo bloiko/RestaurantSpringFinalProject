@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.ServletException;
@@ -24,6 +25,7 @@ import java.util.stream.IntStream;
  * @author B.Loiko
  */
 @Controller
+@CrossOrigin(origins = "http://localhost:8083")
 public class MenuListCommand {
     private static final int NUMBER_ITEMS_ON_PAGE = 5;
     public static final String FILTER = "filter";
