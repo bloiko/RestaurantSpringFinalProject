@@ -47,6 +47,9 @@ public class RegistrationCommand {
             return "registration";
         }
         userService.addUserAndReturnId(user);
+        if(user.getRole()==null){
+            user.setRole(new Role(1L,"USER"));
+        }
         log.info("User was added to the database");
         log.debug("Command finished");
         return "login-main";
