@@ -25,7 +25,6 @@ import java.util.stream.IntStream;
  * @author B.Loiko
  */
 @Controller
-@CrossOrigin(origins = "http://restaurant-spring-project.herokuapp.com/")
 public class MenuListCommand {
     private static final int NUMBER_ITEMS_ON_PAGE = 5;
     public static final String FILTER = "filter";
