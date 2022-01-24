@@ -20,41 +20,49 @@ import java.util.Optional;
  */
 @Service
 public class UserService {
+    private final UserRepository userRepository;
+
+    private final OrderRepository orderRepository;
+
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private OrderRepository orderListDAO;
+    public UserService(UserRepository userRepository, OrderRepository orderRepository) {
+        this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
+    }
 
     @Transactional
     public boolean isCorrectAdmin(String userName, String password) {
-        User user = userRepository.findByUserName(userName).get();
-        return user != null && user.getUserName().equals(userName) && user.getPassword().equals(password)
+        User user = getUserByUserName(userName);
+        return user != null && user.getPassword().equals(password)
                 && user.getRole().getName().equals("ADMIN");
     }
+
     @Transactional
     public List<Order> getUserOrdersSortByOrderDateReversed(String username) {
-        Long userId = userRepository.findByUserName(username).get().getId();
-        List<Order> orders = orderListDAO.findAllByUserId(userId);
+        Long userId = getUserByUserName(username).getId();
+        List<Order> orders = orderRepository.findAllByUserId(userId);
         orders.sort(Comparator.comparing(Order::getOrderDate).reversed());
         return orders;
     }
+
     @Transactional
-    public Long addUserAndReturnId(User user)  {
-        Optional<User> optional = userRepository.findByUserName(user.getUserName());
-        return optional.isPresent()? userRepository.save(user).getId():-1L;
+    public Long addUserAndReturnId(User user) {
+        User userFromRepository = getUserByUserName(user.getUserName());
+        return userFromRepository == null ? userRepository.save(user).getId() : -1L;
     }
 
-     @Transactional
+    @Transactional
     public boolean isCorrectUser(String userName, String password) {
+        User user = getUserByUserName(userName);
 
-       User  user = userRepository.findByUserName(userName).get();
         return user != null && user.getUserName().equals(userName) && user.getPassword().equals(password)
                 && (user.getRole().getName().equals("USER") ||
                 user.getRole().getName().equals("ADMIN"));
     }
+
     @Transactional
     public User getUserByUserName(String username) {
         Optional<User> optional = userRepository.findByUserName(username);
-        return optional.isPresent()?optional.get():null;
+        return optional.orElse(null);
     }
 }

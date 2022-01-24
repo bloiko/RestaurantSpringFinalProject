@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 

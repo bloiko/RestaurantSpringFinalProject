@@ -30,8 +30,8 @@ public class MenuListCommand {
     @Autowired
     private FoodItemService foodItemService;
 
-    @GetMapping("/menu")
-    public String execute(HttpServletRequest request, Model model) throws IOException, ServletException {
+    @GetMapping(value = {"/menu","/"})
+    public String execute(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession();
 
         String filterBy = getFilter(request, session);

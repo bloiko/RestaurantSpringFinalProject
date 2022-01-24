@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +28,7 @@ public class MenuOrderCommand {
     private FoodItemService foodItemService;
 
     @GetMapping("/menu/order")
-    public String execute(@RequestParam String foodId, HttpSession session) throws IOException, ServletException {
+    public String execute(@RequestParam String foodId, HttpSession session){
         List<Item> cart = getCart(session);
         foodItemService.addFoodItemToCart(cart, foodId);
         session.setAttribute("cart", cart);
