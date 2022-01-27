@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Food Item service.
@@ -51,6 +52,15 @@ public class FoodItemService {
     public List<FoodItem> getFoodItems() {
         return foodRepository.findAll();
     }
+
+    @Transactional
+    public List<FoodItem> getFoodItemsFilterBy(String filter) {
+        return foodRepository.findAll()
+                .stream()
+                .filter(a -> a.getCategory().getName().equals(filter))
+                .collect(Collectors.toList());
+    }
+
 
     @Transactional
     public List<FoodItem> getFoodItems(MenuPage menuPage) {
