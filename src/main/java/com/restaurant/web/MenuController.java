@@ -14,7 +14,7 @@ public class MenuController {
     private FoodItemService foodItemService;
 
     @GetMapping(value = {"/roma"})
-    public List<FoodItem> getAllItems(@RequestParam String filter) {
+    public List<FoodItem> getAllItemsByFilter(@RequestParam String filter) {
         return foodItemService.getFoodItemsFilterBy(filter);
     }
 

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class FoodItemService {
+    private static String ALL_CATEGORIES_FILTER = "all_categories";
     @Autowired
     private FoodRepository foodRepository;
     @Autowired
@@ -55,12 +56,12 @@ public class FoodItemService {
 
     @Transactional
     public List<FoodItem> getFoodItemsFilterBy(String filter) {
-        if(filter != null || !filter.isEmpty()) {
+        if (filter != null && !filter.isEmpty() && !ALL_CATEGORIES_FILTER.equals(filter)) {
             return foodRepository.findAll()
                     .stream()
                     .filter(a -> a.getCategory().getName().equals(filter))
                     .collect(Collectors.toList());
-        }else {
+        } else {
             return getFoodItems();
         }
     }
