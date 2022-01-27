@@ -30,9 +30,11 @@ public class FoodItemService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    CartService cartService;
+
     @Transactional
     public void addFoodItemToCart(List<Item> cart, String foodId) {
-        CartService cartService = new CartService();
         int index = cartService.isExisting(Integer.parseInt(foodId), cart);
         if (cart.isEmpty() || index == -1) {
             FoodItem foodItem = foodRepository.findById(Long.valueOf(foodId)).get();
