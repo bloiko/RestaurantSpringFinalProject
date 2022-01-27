@@ -55,10 +55,14 @@ public class FoodItemService {
 
     @Transactional
     public List<FoodItem> getFoodItemsFilterBy(String filter) {
-        return foodRepository.findAll()
-                .stream()
-                .filter(a -> a.getCategory().getName().equals(filter))
-                .collect(Collectors.toList());
+        if(filter != null || !filter.isEmpty()) {
+            return foodRepository.findAll()
+                    .stream()
+                    .filter(a -> a.getCategory().getName().equals(filter))
+                    .collect(Collectors.toList());
+        }else {
+            return getFoodItems();
+        }
     }
 
 
