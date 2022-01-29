@@ -31,3 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
+/restaurant_spring_system.sql
