@@ -56,7 +56,7 @@ public class User implements Serializable {
     @NotEmpty(message = "Phone number must be filled!")
     private String phoneNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     private Role role;
 

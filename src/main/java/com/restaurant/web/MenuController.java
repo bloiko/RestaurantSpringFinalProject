@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://restaurant-spring-project.herokuapp.com/")
 public class MenuController {
     @Autowired
     private FoodItemService foodItemService;
