@@ -13,7 +13,7 @@ public class MenuController {
     @Autowired
     private FoodItemService foodItemService;
 
-    @GetMapping(value = {"/roma"})
+    @GetMapping(value = {"/menu1"})
     public List<FoodItem> getAllItemsByFilter(@RequestParam String filter) {
         return foodItemService.getFoodItemsFilterBy(filter);
     }

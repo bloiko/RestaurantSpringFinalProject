@@ -56,8 +56,7 @@ public class UserService {
         User user = getUserByUserName(userName);
 
         return user != null && user.getUserName().equals(userName) && user.getPassword().equals(password)
-                && (user.getRole().getName().equals("USER") ||
-                user.getRole().getName().equals("ADMIN"));
+                && !user.getRole().getName().equals(null);
     }
 
     @Transactional
