@@ -1,24 +1,24 @@
-CREATE TABLE `category` (
+drop  table if exists category;
+CREATE TABLE IF NOT EXISTS `category` (
                             `id` int NOT NULL AUTO_INCREMENT,
                             `name` varchar(20) DEFAULT NULL,
-                            `nameUa` varchar(20) DEFAULT NULL,
                             PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
-
-CREATE TABLE `food_item` (
+drop  table if exists food_item;
+CREATE TABLE IF NOT EXISTS `food_item` (
                              `id` int NOT NULL AUTO_INCREMENT,
                              `name` varchar(45) DEFAULT NULL,
                              `price` int DEFAULT NULL,
-                             `image` varchar(250) DEFAULT NULL,
+                             `image` varchar(400) DEFAULT NULL,
                              `category_id` char(50) DEFAULT NULL,
-                             `nameFoodUa` varchar(60) DEFAULT NULL,
                              PRIMARY KEY (`id`),
                              UNIQUE KEY `food_item_id_uindex` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
-CREATE TABLE `food_order` (
+drop  table if exists food_order;
+CREATE TABLE IF NOT EXISTS `food_order` (
                               `id` int NOT NULL AUTO_INCREMENT,
                               `order_date` timestamp NULL DEFAULT NULL,
                               `user_id` int DEFAULT NULL,
@@ -26,40 +26,40 @@ CREATE TABLE `food_order` (
                               `order_price` bigint DEFAULT NULL,
                               PRIMARY KEY (`id`),
                               UNIQUE KEY `food_order_id_uindex` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=158 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
-
-CREATE TABLE `item` (
+drop  table if exists item;
+CREATE TABLE IF NOT EXISTS `item` (
                         `id` int NOT NULL AUTO_INCREMENT,
                         `food_id` int DEFAULT NULL,
                         `quantity` int DEFAULT NULL,
                         `order_id` int NOT NULL,
                         PRIMARY KEY (`id`),
                         UNIQUE KEY `item_id_uindex` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
-
-CREATE TABLE `role` (
+drop  table if exists role;
+CREATE TABLE IF NOT EXISTS `role` (
                         `role_id` int NOT NULL AUTO_INCREMENT,
                         `name` varchar(20) DEFAULT NULL,
                         PRIMARY KEY (`role_id`),
                         UNIQUE KEY `role_role_id_uindex` (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
-CREATE TABLE `status` (
+drop  table if exists status;
+CREATE TABLE IF NOT EXISTS `status` (
                           `id` int NOT NULL AUTO_INCREMENT,
                           `status_name` varchar(20) DEFAULT NULL,
-                          `status_name_ua` varchar(20) DEFAULT NULL,
                           PRIMARY KEY (`id`),
                           UNIQUE KEY `status_id_uindex` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
-
-CREATE TABLE `user` (
+drop  table if exists user;
+CREATE TABLE IF NOT EXISTS `user` (
                         `id` int NOT NULL AUTO_INCREMENT,
                         `first_name` varchar(25) DEFAULT NULL,
                         `last_name` varchar(25) DEFAULT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE `user` (
                         `role_id` int DEFAULT NULL,
                         PRIMARY KEY (`id`),
                         UNIQUE KEY `user_id_uindex` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 
 

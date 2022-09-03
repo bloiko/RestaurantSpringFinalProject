@@ -24,8 +24,6 @@ public class Category implements Comparable<Category> {
     private Long id;
     @Column(name = "name")
     private String name;
-/*    @Column(name = "nameUa")
-    private String nameUa;*/
 
     @Override
     public int compareTo(Category o) {

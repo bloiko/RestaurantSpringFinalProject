@@ -24,8 +24,6 @@ public class FoodItem implements Serializable {
     private Long id;
     @Column(name = "name")
     private String name;
-/*    @Column(name = "nameFoodUa")
-    private String nameUa;*/
     @Column(name = "price")
     private int price;
     @Column(name = "image")
