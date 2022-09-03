@@ -65,7 +65,6 @@
 		</dependency>
 
 
-		<!--JSP-->
 		<dependency>
 			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
