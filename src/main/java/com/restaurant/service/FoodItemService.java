@@ -7,7 +7,6 @@ import com.restaurant.database.entity.Category;
 import com.restaurant.database.entity.FoodItem;
 import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.MenuPage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,22 +22,28 @@ import java.util.stream.Collectors;
  * @author B.Loiko
  */
 @Service
+@Transactional
 public class FoodItemService {
-    private static String ALL_CATEGORIES_FILTER = "all_categories";
-    @Autowired
-    private FoodRepository foodRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private static final String ALL_CATEGORIES_FILTER = "all_categories";
+    private final FoodRepository foodRepository;
+    private final CategoryRepository categoryRepository;
+    private final CartService cartService;
 
-    @Autowired
-    CartService cartService;
+    public FoodItemService(FoodRepository foodRepository, CategoryRepository categoryRepository, CartService cartService) {
+        this.foodRepository = foodRepository;
+        this.categoryRepository = categoryRepository;
+        this.cartService = cartService;
+    }
 
-    @Transactional
     public void addFoodItemToCart(List<Item> cart, String foodId) {
         int index = cartService.isExisting(Integer.parseInt(foodId), cart);
         if (cart.isEmpty() || index == -1) {
             FoodItem foodItem = foodRepository.findById(Long.valueOf(foodId)).get();
-            Item item = Item.builder().id(0L).foodItem(foodItem).quantity(1).build();
+            Item item = Item.builder()
+                    .id(0L)
+                    .foodItem(foodItem)
+                    .quantity(1)
+                    .build();
             cart.add(item);
         } else {
             int quantity = cart.get(index).getQuantity() + 1;
@@ -46,17 +51,14 @@ public class FoodItemService {
         }
     }
 
-    @Transactional
     public List<Category> getCategories() {
         return categoryRepository.findAll();
     }
 
-    @Transactional
     public List<FoodItem> getFoodItems() {
         return foodRepository.findAll();
     }
 
-    @Transactional
     public List<FoodItem> getFoodItemsFilterBy(String filter) {
         if (filter != null && !filter.isEmpty() && !ALL_CATEGORIES_FILTER.equals(filter)) {
             return foodRepository.findAll()
@@ -68,8 +70,6 @@ public class FoodItemService {
         }
     }
 
-
-    @Transactional
     public List<FoodItem> getFoodItems(MenuPage menuPage) {
         Sort sortBy;
         if (menuPage.getSortBy() != null) {

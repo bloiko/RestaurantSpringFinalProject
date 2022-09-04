@@ -1,12 +1,8 @@
 package com.restaurant.web;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-
 /*@Configuration
 @EnableWebSecurity*/
-public class SecSecurityConfig /*extends WebSecurityConfigurerAdapter */{
+public class SecSecurityConfig /*extends WebSecurityConfigurerAdapter */ {
 /*    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

@@ -5,7 +5,6 @@ import com.restaurant.database.entity.User;
 import com.restaurant.service.OrderService;
 import com.restaurant.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +24,13 @@ import java.util.List;
 @Slf4j
 @Controller
 public class CartOrderItemCommand {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private OrderService orderService;
+    private final UserService userService;
+    private final OrderService orderService;
+
+    public CartOrderItemCommand(UserService userService, OrderService orderService) {
+        this.userService = userService;
+        this.orderService = orderService;
+    }
 
     @GetMapping("/cart/order")
     public String execute(HttpServletRequest request, Model model) throws IOException, ServletException {

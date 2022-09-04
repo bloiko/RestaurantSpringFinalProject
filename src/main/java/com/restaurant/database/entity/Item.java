@@ -9,7 +9,6 @@ import java.io.Serializable;
  * Item entity.
  *
  * @author B.Loiko
- *
  */
 @Data
 @Builder
@@ -17,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="item")
+@Table(name = "item")
 public class Item implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +30,6 @@ public class Item implements Serializable {
     private int quantity;
 
     @ManyToOne
-    @JoinColumn(name="order_id")
+    @JoinColumn(name = "order_id")
     private Order order;
 }

@@ -16,22 +16,21 @@ import java.util.List;
  */
 @Slf4j
 @Controller
-public class CartListCommand  {
+public class CartListCommand {
 
     @GetMapping("/cart")
-    public String execute(HttpSession session)  {
+    public String execute(HttpSession session) {
         log.debug("Command starts");
         List<Item> items = (List<Item>) session.getAttribute("cart");
-        if(items==null){
-            items=new ArrayList<>();
+        if (items == null) {
+            items = new ArrayList<>();
         }
         int sum = 0;
-        for (Item item : items){
-            sum +=item.getFoodItem().getPrice()*item.getQuantity();
+        for (Item item : items) {
+            sum += item.getFoodItem().getPrice() * item.getQuantity();
         }
-        session.setAttribute("sum",sum);
+        session.setAttribute("sum", sum);
         log.debug("Command finished");
         return "cart";
     }
-
 }

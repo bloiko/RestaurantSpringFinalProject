@@ -5,7 +5,6 @@ import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.OrderStatus;
 import com.restaurant.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,20 +21,23 @@ import java.util.List;
 @Slf4j
 @Controller
 public class AdminListCommand {
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
+
+    public AdminListCommand(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @GetMapping("/admin/list")
-    public String execute( Model model) throws ServletException, IOException {
+    public String execute(Model model) throws ServletException, IOException {
         log.debug("Command starts");
         List<OrderStatus> orderStatuses = orderService.getStatuses();
         log.trace("Get statuses from Service : statuses --> " + orderStatuses);
 
         List<Order> notDoneOrders = orderService.getNotDoneOrdersSortByIdDesc();
-       log.trace("Get not done orders from Service : notDoneOrders --> " + notDoneOrders);
+        log.trace("Get not done orders from Service : notDoneOrders --> " + notDoneOrders);
 
         List<Order> doneOrders = orderService.getDoneOrders();
-       log.trace("Get done orders from Service : doneOrders --> " + doneOrders);
+        log.trace("Get done orders from Service : doneOrders --> " + doneOrders);
 
         model.addAttribute("statusList", orderStatuses);
         log.trace("Set request parameter: statusList" + orderStatuses);

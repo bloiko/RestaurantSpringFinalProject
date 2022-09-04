@@ -9,6 +9,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.util.Locale;
+
 @Configuration
 public class LocaleConfigurer implements WebMvcConfigurer {
     @Bean
@@ -17,12 +18,14 @@ public class LocaleConfigurer implements WebMvcConfigurer {
         sessionLocaleResolver.setDefaultLocale(Locale.US);
         return sessionLocaleResolver;
     }
+
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor changeInterceptor = new LocaleChangeInterceptor();
         changeInterceptor.setParamName("lang");
         return changeInterceptor;
     }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());

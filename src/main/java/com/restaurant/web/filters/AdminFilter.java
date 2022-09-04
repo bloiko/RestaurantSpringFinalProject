@@ -1,18 +1,20 @@
 package com.restaurant.web.filters;
 
 import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+
 @Slf4j
 @WebFilter("/AdminController")
 public class AdminFilter implements Filter {
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
         log.debug("Filter creation starts");
         // do nothing
         log.debug("Filter creation finished");
@@ -25,13 +27,13 @@ public class AdminFilter implements Filter {
         HttpServletRequest servletRequest = (HttpServletRequest) request;
         HttpSession session = servletRequest.getSession();
         String username = (String) session.getAttribute("username_admin");
-        log.trace("Get attribute from the session: username_admin --> "+username);
+        log.trace("Get attribute from the session: username_admin --> " + username);
 
-        if ( username== null && servletRequest.getRequestURI().endsWith("/AdminController")) {
-            log.info("User "+ username+ " try to get to the admin page");
+        if (username == null && servletRequest.getRequestURI().endsWith("/AdminController")) {
+            log.info("User " + username + " try to get to the admin page");
 
             log.debug("Filter finished");
-            ((HttpServletResponse)response).sendRedirect("login-admin.html");
+            ((HttpServletResponse) response).sendRedirect("login-admin.html");
         } else {
             log.debug("Filter finished");
             chain.doFilter(request, response);

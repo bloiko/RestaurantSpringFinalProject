@@ -11,7 +11,7 @@ public class CharsetFilter implements Filter {
     private String encoding;
 
     @Override
-    public void init(FilterConfig config) throws ServletException {
+    public void init(FilterConfig config) {
         log.debug("Filter creation starts");
 
         encoding = config.getInitParameter("requestEncoding");

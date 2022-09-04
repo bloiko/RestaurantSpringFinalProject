@@ -8,7 +8,6 @@ import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.OrderStatus;
 import com.restaurant.database.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,14 +24,18 @@ import java.util.stream.Collectors;
  * @author B.Loiko
  */
 @Service
+@Transactional
 public class OrderService {
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private OrderStatusRepository statusRepository;
-    @Autowired
-    private ItemRepository itemRepository;
-    @Transactional
+    private final OrderRepository orderRepository;
+    private final OrderStatusRepository statusRepository;
+    private final ItemRepository itemRepository;
+
+    public OrderService(OrderRepository orderRepository, OrderStatusRepository statusRepository, ItemRepository itemRepository) {
+        this.orderRepository = orderRepository;
+        this.statusRepository = statusRepository;
+        this.itemRepository = itemRepository;
+    }
+
     public Long addOrderAndGetId(List<Item> cart, User user) {
         Timestamp orderDate = new Timestamp(new Date().getTime());
         OrderStatus orderStatus = statusRepository.findByStatusName("WAITING");
@@ -56,26 +59,26 @@ public class OrderService {
         }
         return order.getId();
     }
-    @Transactional
+
     public List<OrderStatus> getStatuses() {
         return statusRepository.findAll();
     }
-    @Transactional
+
     public List<Order> getDoneOrders() {
         return orderRepository.findAllByOrderStatus(statusRepository.findByStatusName("DONE"));
     }
-    @Transactional
+
     public List<Order> getNotDoneOrdersSortByIdDesc(){
         return orderRepository.findAllByOrderStatusNot(statusRepository.findByStatusName("DONE"))
                 .stream()
                 .sorted(Comparator.comparing(Order::getId).reversed())
                 .collect(Collectors.toList());
     }
-    @Transactional
+
     public Order getOrder(String orderIdString) {
         return orderRepository.getById(Long.valueOf(orderIdString));
     }
-    @Transactional
+
     public void updateOrder(Long id, OrderStatus newStatus) {
         Order order = orderRepository.getById( id);
         order.setOrderStatus(newStatus);

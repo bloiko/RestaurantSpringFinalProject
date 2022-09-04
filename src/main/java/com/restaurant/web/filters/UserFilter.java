@@ -8,12 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+
 @Slf4j
 @WebFilter(filterName = "UserFilter", urlPatterns = {"/*"})
 public class UserFilter implements Filter {
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
         log.debug("Filter creation starts");
         // do nothing
         log.debug("Filter creation finished");

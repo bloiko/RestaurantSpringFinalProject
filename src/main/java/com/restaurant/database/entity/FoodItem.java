@@ -11,13 +11,12 @@ import java.io.Serializable;
  * FoodItem entity.
  *
  * @author B.Loiko
- *
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="food_item")
+@Table(name = "food_item")
 public class FoodItem implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

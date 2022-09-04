@@ -4,14 +4,11 @@ package com.restaurant.web.command.menu;
 import com.restaurant.database.entity.Item;
 import com.restaurant.service.FoodItemService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +21,14 @@ import java.util.List;
 @Slf4j
 @Controller
 public class MenuOrderCommand {
-    @Autowired
-    private FoodItemService foodItemService;
+    private final FoodItemService foodItemService;
+
+    public MenuOrderCommand(FoodItemService foodItemService) {
+        this.foodItemService = foodItemService;
+    }
 
     @GetMapping("/menu/order")
-    public String execute(@RequestParam String foodId, HttpSession session){
+    public String execute(@RequestParam String foodId, HttpSession session) {
         List<Item> cart = getCart(session);
         foodItemService.addFoodItemToCart(cart, foodId);
         session.setAttribute("cart", cart);

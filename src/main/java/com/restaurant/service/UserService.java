@@ -19,6 +19,7 @@ import java.util.Optional;
  * @author B.Loiko
  */
 @Service
+@Transactional
 public class UserService {
     private final UserRepository userRepository;
 
@@ -30,14 +31,12 @@ public class UserService {
         this.orderRepository = orderRepository;
     }
 
-    @Transactional
     public boolean isCorrectAdmin(String userName, String password) {
         User user = getUserByUserName(userName);
         return user != null && user.getPassword().equals(password)
                 && user.getRole().getName().equals("ADMIN");
     }
 
-    @Transactional
     public List<Order> getUserOrdersSortByOrderDateReversed(String username) {
         Long userId = getUserByUserName(username).getId();
         List<Order> orders = orderRepository.findAllByUserId(userId);
@@ -45,13 +44,11 @@ public class UserService {
         return orders;
     }
 
-    @Transactional
     public Long addUserAndReturnId(User user) {
         User userFromRepository = getUserByUserName(user.getUserName());
         return userFromRepository == null ? userRepository.save(user).getId() : -1L;
     }
 
-    @Transactional
     public boolean isCorrectUser(String userName, String password) {
         User user = getUserByUserName(userName);
 
@@ -59,7 +56,6 @@ public class UserService {
                 && !user.getRole().getName().equals(null);
     }
 
-    @Transactional
     public User getUserByUserName(String username) {
         Optional<User> optional = userRepository.findByUserName(username);
         return optional.orElse(null);
