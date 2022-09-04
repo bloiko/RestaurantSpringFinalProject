@@ -11,13 +11,12 @@ import javax.persistence.*;
  * Category entity.
  *
  * @author B.Loiko
- *
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="category")
+@Table(name = "category")
 public class Category implements Comparable<Category> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

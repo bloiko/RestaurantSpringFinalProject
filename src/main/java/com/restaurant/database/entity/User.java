@@ -15,13 +15,12 @@ import java.io.Serializable;
  * User entity.
  *
  * @author B.Loiko
- *
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="user")
+@Table(name = "user")
 public class User implements Serializable {
     @Id
     @GeneratedValue

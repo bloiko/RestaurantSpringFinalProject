@@ -4,15 +4,13 @@ import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -25,15 +23,18 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/registration")
 public class RegistrationCommand {
-/*    public static final String PASSWORD = "password";
-    public static final String USERNAME = "username";
-    public static final String PHONE_NUMBER = "phoneNumber";
-    public static final String ADDRESS = "address";
-    public static final String EMAIL = "email";
-    public static final String LAST_NAME = "last_name";
-    public static final String FIRST_NAME = "first_name";*/
-    @Autowired
-    private UserService userService;
+    /*    public static final String PASSWORD = "password";
+        public static final String USERNAME = "username";
+        public static final String PHONE_NUMBER = "phoneNumber";
+        public static final String ADDRESS = "address";
+        public static final String EMAIL = "email";
+        public static final String LAST_NAME = "last_name";
+        public static final String FIRST_NAME = "first_name";*/
+    private final UserService userService;
+
+    public RegistrationCommand(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public String getRegistrationPage(User user) {
@@ -41,14 +42,14 @@ public class RegistrationCommand {
     }
 
     @PostMapping
-    public String execute(@Valid  User user, BindingResult bindingResult) throws ServletException, IOException {
+    public String execute(@Valid User user, BindingResult bindingResult) throws ServletException, IOException {
         log.debug("Command starts");
         if (bindingResult.hasErrors()) {
             return "registration";
         }
         userService.addUserAndReturnId(user);
-        if(user.getRole()==null){
-            user.setRole(new Role(1L,"USER"));
+        if (user.getRole() == null) {
+            user.setRole(new Role(1L, "USER"));
         }
         log.info("User was added to the database");
         log.debug("Command finished");

@@ -3,6 +3,7 @@ package com.restaurant.service;
 import com.restaurant.database.entity.Item;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
  * @author B.Loiko
  */
 @Service
+@Transactional
 public class CartService {
 
     public List<Item> removeItemFromCart(List<Item> cart, String itemId) {
@@ -26,6 +28,6 @@ public class CartService {
         Optional<Item> optionalItem = cart.stream()
                 .filter(a -> a.getFoodItem().getId() == id)
                 .findAny();
-        return optionalItem.isPresent() ? cart.indexOf(optionalItem.get()) : -1;
+        return optionalItem.map(cart::indexOf).orElse(-1);
     }
 }

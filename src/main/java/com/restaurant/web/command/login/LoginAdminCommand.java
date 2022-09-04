@@ -2,7 +2,6 @@ package com.restaurant.web.command.login;
 
 import com.restaurant.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +19,11 @@ import java.io.IOException;
 @Slf4j
 @Controller
 public class LoginAdminCommand {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public LoginAdminCommand(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/login-admin")
     public String execute(@RequestParam String username, @RequestParam String password,

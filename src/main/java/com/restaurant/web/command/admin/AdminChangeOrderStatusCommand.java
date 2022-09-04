@@ -6,7 +6,6 @@ import com.restaurant.database.entity.OrderStatus;
 import com.restaurant.service.OrderService;
 import com.restaurant.service.OrderStatusService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,10 +21,13 @@ import java.io.IOException;
 @Slf4j
 @Controller
 public class AdminChangeOrderStatusCommand {
-    @Autowired
-    private OrderService orderService;
-    @Autowired
-    private OrderStatusService orderStatusService;
+    private final OrderService orderService;
+    private final OrderStatusService orderStatusService;
+
+    public AdminChangeOrderStatusCommand(OrderService orderService, OrderStatusService orderStatusService) {
+        this.orderService = orderService;
+        this.orderStatusService = orderStatusService;
+    }
 
     @GetMapping("/admin/change-order-status")
     public String execute(@RequestParam String status, @RequestParam String orderId) throws ServletException, IOException {
