@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `user` (
                         `first_name` varchar(25) DEFAULT NULL,
                         `last_name` varchar(25) DEFAULT NULL,
                         `username` varchar(25) DEFAULT NULL,
-                        `password` varchar(30) DEFAULT NULL,
+                        `password` varchar(100) DEFAULT NULL,
                         `email` varchar(25) DEFAULT NULL,
                         `address` varchar(25) DEFAULT NULL,
                         `phone_number` varchar(25) DEFAULT NULL,

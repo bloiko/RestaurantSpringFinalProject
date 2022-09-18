@@ -2,17 +2,21 @@ package com.restaurant.service;
 
 
 import com.restaurant.database.dao.OrderRepository;
+import com.restaurant.database.dao.RoleRepository;
 import com.restaurant.database.dao.UserRepository;
 import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.OrderStatus;
 import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
+import com.restaurant.security.jwt.JwtProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
@@ -40,6 +44,17 @@ class UserServiceTest {
     @MockBean
     private OrderRepository orderRepository;
 
+    @MockBean
+    private AuthenticationManager authenticationManager;
+
+    @MockBean
+    private RoleRepository roleRepository;
+
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private JwtProvider jwtProvider;
     @Test
     void isCorrectAdmin() {
         when(userRepository.findByUserName(USER_NAME)).thenReturn(Optional.of(buildAdminUser()));
