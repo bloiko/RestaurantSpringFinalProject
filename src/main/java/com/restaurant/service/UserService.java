@@ -57,11 +57,15 @@ public class UserService {
         log.info("New user attempting to sign in");
         Optional<String> token = Optional.empty();
         Optional<User> user = userRepository.findByUserName(username);
-        if (user.isPresent()) {
+        if (!user.isPresent()) {
+            return Optional.empty();
+        }
+        boolean isPasswordCorrect = passwordEncoder.matches(password, user.get().getPassword());
+        if (isPasswordCorrect) {
             try {
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
                 token = Optional.of(jwtProvider.createToken(username, user.get().getRole()));
-            } catch (AuthenticationException e){
+            } catch (AuthenticationException e) {
                 log.info("Log in failed for user {}", username);
             }
         }

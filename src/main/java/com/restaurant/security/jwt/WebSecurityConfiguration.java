@@ -30,7 +30,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/order").permitAll()
                 .antMatchers("/orders").permitAll()
                 .antMatchers("/actuator/prometheus").permitAll()
-                .antMatchers("/actuator/**").hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers("/menu").permitAll()
+                .antMatchers("/swagger-ui").permitAll()
+                .antMatchers("/**").permitAll()
+                .antMatchers("/actuator/**").hasAnyAuthority("ADMIN")
                 .anyRequest().authenticated();
 
         http.csrf().disable();
