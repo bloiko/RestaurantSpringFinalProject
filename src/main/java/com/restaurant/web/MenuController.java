@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController
+@RestController("/menu1")
 public class MenuController {
     private final FoodItemService foodItemService;
 
@@ -16,7 +16,7 @@ public class MenuController {
         this.foodItemService = foodItemService;
     }
 
-    @GetMapping(value = {"/menu"})
+    @GetMapping
     public List<FoodItem> getAllItemsByFilter(@RequestParam String filter) {
         return foodItemService.getFoodItemsFilterBy(filter);
     }
