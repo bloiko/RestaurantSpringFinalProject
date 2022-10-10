@@ -45,8 +45,8 @@ public class User implements Serializable {
     private String password;
 
     @Column(name = "email")
-//    @NotEmpty(message = "Email must be filled!")
-//    @Email(message = "Incorrect email format!")
+    @NotEmpty(message = "Email must be filled!")
+    @Email(message = "Incorrect email format!")
     private String email;
 
     @Column(name = "address")
@@ -57,13 +57,22 @@ public class User implements Serializable {
 //    @NotEmpty(message = "Phone number must be filled!")
     private String phoneNumber;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     private Role role;
 
     public User(String username, String password, Role role) {
         this.userName = username;
         this.password = password;
+        this.role = role;
+    }
+
+    public User(String username, String password, String firstName, String lastName, String email, Role role) {
+        this.userName = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
         this.role = role;
     }
 }

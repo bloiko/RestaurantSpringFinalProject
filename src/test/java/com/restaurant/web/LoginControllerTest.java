@@ -3,6 +3,7 @@ package com.restaurant.web;
 import com.restaurant.database.entity.User;
 import com.restaurant.service.UserService;
 import com.restaurant.web.dto.LoginRequest;
+import com.restaurant.web.dto.RegistrationRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ class LoginControllerTest {
 
     @Test
     void loginTest() {
-        LoginRequest loginRequest = new LoginRequest(USER_NAME, PASSWORD, "firstName", "lastName");
+        LoginRequest loginRequest = new LoginRequest(USER_NAME, PASSWORD);
         when(userService.login(USER_NAME, PASSWORD)).thenReturn("token");
 
         String response = loginController.login(loginRequest);
@@ -41,16 +42,16 @@ class LoginControllerTest {
 
     @Test
     void registrationTest() {
-        LoginRequest loginRequest = new LoginRequest(USER_NAME, PASSWORD, "firstName", "lastName");
+        RegistrationRequest registrationRequest = new RegistrationRequest(USER_NAME, PASSWORD, "firstName", "lastName", "email@email.com");
         User expectedUser = User.builder()
                 .userName(USER_NAME)
                 .password(PASSWORD)
                 .firstName("firstName")
                 .lastName("lastName")
                 .build();
-        when(userService.register(USER_NAME, PASSWORD, "firstName", "lastName")).thenReturn(expectedUser);
+        when(userService.register(registrationRequest)).thenReturn(expectedUser);
 
-        User user = loginController.register(loginRequest);
+        User user = loginController.register(registrationRequest);
 
         assertEquals(expectedUser, user);
     }
