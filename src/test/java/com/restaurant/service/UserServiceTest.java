@@ -9,6 +9,7 @@ import com.restaurant.database.entity.OrderStatus;
 import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.security.jwt.JwtProvider;
+import com.restaurant.web.dto.RegistrationRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ class UserServiceTest {
 
     @MockBean
     private UserRepository userRepository;
+
+    @MockBean
+    private EmailService emailService;
 
     @MockBean
     private OrderRepository orderRepository;
@@ -172,7 +176,8 @@ class UserServiceTest {
     void registrationTestReturnBadRequest() {
         when(userRepository.findByUserName(USER_NAME)).thenReturn(Optional.of(buildSimpleUser()));
 
-        HttpServerErrorException exception = assertThrows(HttpServerErrorException.class, () -> userService.register(USER_NAME, PASSWORD, null, null));
+        RegistrationRequest registrationRequest = new RegistrationRequest(USER_NAME, PASSWORD, null, null, null);
+        HttpServerErrorException exception = assertThrows(HttpServerErrorException.class, () -> userService.register(registrationRequest));
 
         assertEquals(exception.getStatusCode(), HttpStatus.BAD_REQUEST);
         assertEquals(exception.getMessage(), "400 User already exists");
