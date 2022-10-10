@@ -10,11 +10,13 @@ import com.restaurant.database.entity.User;
 import com.restaurant.security.jwt.JwtProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 
 import javax.transaction.Transactional;
 import java.util.Comparator;
@@ -53,13 +55,14 @@ public class UserService {
         this.jwtProvider = jwtProvider;
     }
 
-    public Optional<String> login(String username, String password) {
+    public String login(String username, String password) {
         log.info("New user attempting to sign in");
         Optional<String> token = Optional.empty();
         Optional<User> user = userRepository.findByUserName(username);
         if (!user.isPresent()) {
-            return Optional.empty();
+            throw new HttpServerErrorException(HttpStatus.FORBIDDEN, "Unknown user");
         }
+
         boolean isPasswordCorrect = passwordEncoder.matches(password, user.get().getPassword());
         if (isPasswordCorrect) {
             try {
@@ -69,10 +72,10 @@ public class UserService {
                 log.info("Log in failed for user {}", username);
             }
         }
-        return token;
+        return token.orElseThrow(() -> new HttpServerErrorException(HttpStatus.FORBIDDEN, "Password is not correct"));
     }
 
-    public Optional<User> register(String username, String password, String firstName, String lastName) {
+    public User register(String username, String password, String firstName, String lastName) {
         log.info("New user attempting to sign in");
         Optional<User> user = Optional.empty();
         if (!userRepository.findByUserName(username).isPresent()) {
@@ -81,7 +84,7 @@ public class UserService {
                     passwordEncoder.encode(password),
                     role.get())));
         }
-        return user;
+        return user.orElseThrow(() -> new HttpServerErrorException(HttpStatus.BAD_REQUEST, "User already exists"));
     }
 
     public boolean isCorrectAdmin(String userName, String password) {

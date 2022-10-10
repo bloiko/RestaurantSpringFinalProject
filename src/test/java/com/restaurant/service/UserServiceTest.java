@@ -15,9 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -141,6 +143,39 @@ class UserServiceTest {
         User result = userService.getUserByUserName(USER_NAME);
 
         assertNull(result);
+    }
+
+
+    @Test
+    void loginTestReturnUnknownUser() {
+        when(userRepository.findByUserName(USER_NAME)).thenReturn(Optional.empty());
+
+        HttpServerErrorException exception = assertThrows(HttpServerErrorException.class, () -> userService.login(USER_NAME, PASSWORD));
+
+        assertEquals(exception.getStatusCode(), HttpStatus.FORBIDDEN);
+        assertEquals(exception.getMessage(), "403 Unknown user");
+    }
+
+    @Test
+    void loginTestReturnIncorrectPassword() {
+        when(userRepository.findByUserName(USER_NAME)).thenReturn(Optional.of(buildSimpleUser()));
+        String incorrectPassword = "incorrectPassword";
+        when(passwordEncoder.matches(PASSWORD, incorrectPassword)).thenReturn(false);
+
+        HttpServerErrorException exception = assertThrows(HttpServerErrorException.class, () -> userService.login(USER_NAME, incorrectPassword));
+
+        assertEquals(exception.getStatusCode(), HttpStatus.FORBIDDEN);
+        assertEquals(exception.getMessage(), "403 Password is not correct");
+    }
+
+    @Test
+    void registrationTestReturnBadRequest() {
+        when(userRepository.findByUserName(USER_NAME)).thenReturn(Optional.of(buildSimpleUser()));
+
+        HttpServerErrorException exception = assertThrows(HttpServerErrorException.class, () -> userService.register(USER_NAME, PASSWORD, null, null));
+
+        assertEquals(exception.getStatusCode(), HttpStatus.BAD_REQUEST);
+        assertEquals(exception.getMessage(), "400 User already exists");
     }
 
     private static User buildAdminUser() {
