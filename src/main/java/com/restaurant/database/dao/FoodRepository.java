@@ -23,6 +23,8 @@ public interface FoodRepository extends JpaRepository<FoodItem, Long> {
     @Override
     Page<FoodItem> findAll(Pageable pageable);
 
+    List<FoodItem> findAllByCategoryName(String name);
+
     Page<FoodItem> findAllByCategory(Category category, Pageable pageable);
 }
 

@@ -5,14 +5,12 @@ import com.restaurant.service.UserService;
 import com.restaurant.web.dto.LoginRequest;
 import com.restaurant.web.dto.RegistrationRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static io.jsonwebtoken.lang.Assert.hasText;
+import static org.springframework.util.Assert.hasText;
 
 @RestController
+@RequestMapping("/security")
 public class LoginController {
     private final UserService userService;
 

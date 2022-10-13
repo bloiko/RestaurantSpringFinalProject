@@ -7,6 +7,7 @@ import com.restaurant.database.entity.Category;
 import com.restaurant.database.entity.FoodItem;
 import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.MenuPage;
+import com.restaurant.web.dto.MenuFilterBy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,7 +15,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.restaurant.web.dto.MenuFilterBy.ALL_CATEGORIES;
+
 
 /**
  * Food Item service.
@@ -24,7 +27,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class FoodItemService {
-    private static final String ALL_CATEGORIES_FILTER = "all_categories";
     private final FoodRepository foodRepository;
     private final CategoryRepository categoryRepository;
     private final CartService cartService;
@@ -59,12 +61,9 @@ public class FoodItemService {
         return foodRepository.findAll();
     }
 
-    public List<FoodItem> getFoodItemsFilterBy(String filter) {
-        if (filter != null && !filter.isEmpty() && !ALL_CATEGORIES_FILTER.equals(filter)) {
-            return foodRepository.findAll()
-                    .stream()
-                    .filter(a -> a.getCategory().getName().equals(filter))
-                    .collect(Collectors.toList());
+    public List<FoodItem> getFoodItemsFilterBy(MenuFilterBy filter) {
+        if (!ALL_CATEGORIES.equals(filter)) {
+            return foodRepository.findAllByCategoryName(filter.getValue());
         } else {
             return getFoodItems();
         }
