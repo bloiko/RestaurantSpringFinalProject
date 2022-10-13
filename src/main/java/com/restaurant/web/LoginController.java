@@ -22,7 +22,7 @@ public class LoginController {
     public String login(@RequestBody LoginRequest loginRequest) {
         hasText(loginRequest.getUsername(), "Username must be specified");
         hasText(loginRequest.getPassword(), "Password must be specified");
-        return userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+        return userService.login(null, loginRequest.getPassword());
     }
 
     @PostMapping("/signup")
