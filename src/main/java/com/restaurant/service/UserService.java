@@ -40,6 +40,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final OrderRepository orderRepository;
+
     private final AuthenticationManager authenticationManager;
 
     private final RoleRepository roleRepository;
@@ -96,14 +97,19 @@ public class UserService {
 
     private User registerUserInDb(RegistrationRequest registrationRequest) {
         log.info("New user attempting to sign in");
-        Optional<User> user = Optional.empty();
+        Optional<User> user = userRepository.findByUserName(registrationRequest.getUsername());
 
-        if (!userRepository.findByUserName(registrationRequest.getUsername()).isPresent()) {
-            Optional<Role> role = roleRepository.findByName("USER");
-            user = Optional.of(userRepository.save(buildUserFromRequest(registrationRequest, role)));
+        if (user.isPresent()) {
+            throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, "User already exists");
         }
 
-        return user.orElseThrow(() -> new HttpServerErrorException(HttpStatus.BAD_REQUEST, "User already exists"));
+        return createUser(registrationRequest).orElse(null);
+    }
+
+    @NotNull
+    private Optional<User> createUser(RegistrationRequest registrationRequest) {
+        Optional<Role> role = roleRepository.findByName("USER");
+        return Optional.of(userRepository.save(buildUserFromRequest(registrationRequest, role)));
     }
 
     @NotNull

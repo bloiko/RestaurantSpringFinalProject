@@ -62,11 +62,11 @@ public class FoodItemService {
     }
 
     public List<FoodItem> getFoodItemsFilterBy(MenuFilterBy filter) {
-        if (!ALL_CATEGORIES.equals(filter)) {
-            return foodRepository.findAllByCategoryName(filter.getValue());
-        } else {
+        if (ALL_CATEGORIES.equals(filter)) {
             return getFoodItems();
         }
+
+        return foodRepository.findAllByCategoryName(filter.getValue());
     }
 
     public List<FoodItem> getFoodItems(MenuPage menuPage) {
@@ -81,8 +81,8 @@ public class FoodItemService {
         if (menuPage.getFilterBy() == null) {
             return foodRepository.findAll(pageable).getContent();
         } else {
-            return foodRepository.findAllByCategory(categoryRepository.findByName(filterBy),
-                    pageable).getContent();
+            Category categoryName = categoryRepository.findByName(filterBy);
+            return foodRepository.findAllByCategory(categoryName, pageable).getContent();
         }
     }
 }
