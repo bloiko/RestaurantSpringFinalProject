@@ -80,7 +80,7 @@ public class OrderService {
     }
 
     public void updateOrder(Long id, OrderStatus newStatus) {
-        Order order = orderRepository.getById( id);
+        Order order = orderRepository.getById(id);
         order.setOrderStatus(newStatus);
         orderRepository.save(order);
     }

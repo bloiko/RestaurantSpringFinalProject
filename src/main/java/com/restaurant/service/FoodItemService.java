@@ -76,13 +76,13 @@ public class FoodItemService {
         } else {
             sortBy = Sort.by(menuPage.getSortDirection(), "category");
         }
-        Pageable pageable = PageRequest.of(menuPage.getPageNumber(), menuPage.getPageSize(), sortBy);
+        Pageable pageable = PageRequest.of(menuPage.getPageNumber() - 1, menuPage.getPageSize(), sortBy);
         String filterBy = menuPage.getFilterBy();
         if (menuPage.getFilterBy() == null) {
             return foodRepository.findAll(pageable).getContent();
         } else {
-            Category categoryName = categoryRepository.findByName(filterBy);
-            return foodRepository.findAllByCategory(categoryName, pageable).getContent();
+            Category category = categoryRepository.findByName(filterBy);
+            return foodRepository.findAllByCategory(category, pageable).getContent();
         }
     }
 }
