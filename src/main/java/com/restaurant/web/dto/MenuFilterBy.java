@@ -13,9 +13,9 @@ public enum MenuFilterBy {
         this.value = value;
     }
 
+    @JsonValue
     private final String value;
 
-    @JsonValue
     public String getValue() {
         return value;
     }
