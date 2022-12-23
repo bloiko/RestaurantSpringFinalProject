@@ -34,14 +34,20 @@ public class MyOrdersCommand {
         String username = request.getUserPrincipal().getName();
         log.trace("Session attribute : username" + username);
 
-        List<Order> orders = new LinkedList<>();
-        if (username != null) {
-            orders = userService.getUserOrdersSortByOrderDateReversed(username);
-        }
+        List<Order> orders = getOrdersByUsername(username);
+
         request.setAttribute("ORDERS_LIST", orders);
         log.trace("Session attribute : username" + username);
 
         log.debug("Controller finished");
         return "my-orders";
+    }
+
+    private List<Order> getOrdersByUsername(String username) {
+        List<Order> orders = new LinkedList<>();
+        if (username != null) {
+            orders = userService.getUserOrdersSortByOrderDateReversed(username);
+        }
+        return orders;
     }
 }
