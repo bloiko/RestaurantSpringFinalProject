@@ -65,22 +65,17 @@ public class UserService {
 
     public String login(String username, String password) {
         log.info("New user attempting to sign in");
-        Optional<String> token = Optional.empty();
-        Optional<User> user = userRepository.findByUserName(username);
-        if (!user.isPresent()) {
-            throw new HttpServerErrorException(HttpStatus.FORBIDDEN, "Unknown user");
-        }
+        User user = validateUserExistence(username);
 
-        boolean isPasswordCorrect = passwordEncoder.matches(password, user.get().getPassword());
-        if (isPasswordCorrect) {
-            try {
-                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-                token = Optional.of(jwtProvider.createToken(username, user.get().getRole()));
-            } catch (AuthenticationException e) {
-                log.info("Log in failed for user {}", username);
-            }
+        validatePassword(password, user);
+
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            return jwtProvider.createToken(username, user.getRole());
+        } catch (AuthenticationException e) {
+            log.info("Log in failed for user {}", username);
+            throw new RuntimeException(e);
         }
-        return token.orElseThrow(() -> new HttpServerErrorException(HttpStatus.FORBIDDEN, "Password is not correct"));
     }
 
     public User register(RegistrationRequest registrationRequest) {
@@ -122,9 +117,25 @@ public class UserService {
                 role.get());
     }
 
+    @NotNull
+    private User validateUserExistence(String username) {
+        User user = getUserByUserName(username);
+        if (user == null) {
+            throw new HttpServerErrorException(HttpStatus.FORBIDDEN, "Unknown username");
+        }
+        return user;
+    }
+
+    private void validatePassword(String password, User user) {
+        boolean isPasswordCorrect = passwordEncoder.matches(password, user.getPassword());
+        if (!isPasswordCorrect) {
+            throw new HttpServerErrorException(HttpStatus.FORBIDDEN, "Password is not correct");
+        }
+    }
+
     public boolean isCorrectAdmin(String userName, String password) {
         User user = getUserByUserName(userName);
-        return user != null && user.getPassword().equals(password)
+        return user.getPassword().equals(password)
                 && user.getRole().getName().equals("ADMIN");
     }
 
@@ -142,13 +153,17 @@ public class UserService {
 
     public boolean isCorrectUser(String userName, String password) {
         User user = getUserByUserName(userName);
+        if (user == null) {
+            return false;
+        }
 
-        return user != null && user.getUserName().equals(userName) && user.getPassword().equals(password)
-                && !user.getRole().getName().equals(null);
+        boolean isPasswordCorrect = passwordEncoder.matches(password, user.getPassword());
+        return user.getUserName().equals(userName) && isPasswordCorrect;
     }
 
     public User getUserByUserName(String username) {
-        Optional<User> optional = userRepository.findByUserName(username);
-        return optional.orElse(null);
+        Optional<User> optionalUser = userRepository.findByUserName(username);
+
+        return optionalUser.orElse(null);
     }
 }
