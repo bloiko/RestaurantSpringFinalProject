@@ -12,9 +12,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,10 +52,9 @@ public class LoginControllerIT {
 
         assertNotNull(token);
         assertEquals(USER_NAME, jwtProvider.getUsername(token));
-//        TODO: uncomment this validation
-//        List<GrantedAuthority> jwtProviderRoles = jwtProvider.getRoles(token);
-//        assertEquals(1, jwtProviderRoles.size());
-//        assertEquals("USER", jwtProviderRoles.get(0).getAuthority());
+        List<GrantedAuthority> jwtProviderRoles = jwtProvider.getRoles(token);
+        assertEquals(1, jwtProviderRoles.size());
+        assertEquals("USER", jwtProviderRoles.get(0).getAuthority());
     }
 
     @Test

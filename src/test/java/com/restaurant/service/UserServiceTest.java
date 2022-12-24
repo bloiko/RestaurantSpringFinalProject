@@ -106,6 +106,7 @@ class UserServiceTest {
     @Test
     void isCorrectUserWithRoleUser() {
         when(userRepository.findByUserName(USER_NAME)).thenReturn(Optional.of(buildSimpleUser()));
+        when(passwordEncoder.matches(PASSWORD, PASSWORD)).thenReturn(true);
 
         boolean result = userService.isCorrectUser(USER_NAME, PASSWORD);
 
@@ -115,6 +116,7 @@ class UserServiceTest {
     @Test
     void isCorrectUserWithRoleAdmin() {
         when(userRepository.findByUserName(USER_NAME)).thenReturn(Optional.of(buildAdminUser()));
+        when(passwordEncoder.matches(PASSWORD, PASSWORD)).thenReturn(true);
 
         boolean result = userService.isCorrectUser(USER_NAME, PASSWORD);
 
@@ -156,8 +158,8 @@ class UserServiceTest {
 
         HttpServerErrorException exception = assertThrows(HttpServerErrorException.class, () -> userService.login(USER_NAME, PASSWORD));
 
-        assertEquals(exception.getStatusCode(), HttpStatus.FORBIDDEN);
-        assertEquals(exception.getMessage(), "403 Unknown user");
+        assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
+        assertEquals("403 Unknown username", exception.getMessage());
     }
 
     @Test
@@ -168,8 +170,8 @@ class UserServiceTest {
 
         HttpServerErrorException exception = assertThrows(HttpServerErrorException.class, () -> userService.login(USER_NAME, incorrectPassword));
 
-        assertEquals(exception.getStatusCode(), HttpStatus.FORBIDDEN);
-        assertEquals(exception.getMessage(), "403 Password is not correct");
+        assertEquals(HttpStatus.FORBIDDEN, exception.getStatusCode());
+        assertEquals("403 Password is not correct", exception.getMessage());
     }
 
     @Test
@@ -179,8 +181,8 @@ class UserServiceTest {
         RegistrationRequest registrationRequest = new RegistrationRequest(USER_NAME, PASSWORD, null, null, null);
         HttpServerErrorException exception = assertThrows(HttpServerErrorException.class, () -> userService.register(registrationRequest));
 
-        assertEquals(exception.getStatusCode(), HttpStatus.BAD_REQUEST);
-        assertEquals(exception.getMessage(), "400 User already exists");
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        assertEquals("400 User already exists", exception.getMessage());
     }
 
     private static User buildAdminUser() {
