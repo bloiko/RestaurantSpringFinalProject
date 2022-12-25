@@ -178,7 +178,7 @@ class UserServiceTest {
     void registrationTestReturnBadRequest() {
         when(userRepository.findByUserName(USER_NAME)).thenReturn(Optional.of(buildSimpleUser()));
 
-        RegistrationRequest registrationRequest = new RegistrationRequest(USER_NAME, PASSWORD, null, null, null);
+        RegistrationRequest registrationRequest = new RegistrationRequest(null, PASSWORD, USER_NAME, null, null);
         HttpServerErrorException exception = assertThrows(HttpServerErrorException.class, () -> userService.register(registrationRequest));
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
