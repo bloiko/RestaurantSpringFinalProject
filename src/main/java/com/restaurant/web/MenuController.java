@@ -27,8 +27,8 @@ public class MenuController {
         return foodItemService.getFoodItemsFilterBy(filter);
     }
 
-    @PostMapping(value = {"/menu1", "/"})
-    public GetMenuResponse getMenuPage(MenuPage menuPageRequest) {
+    @PostMapping(value = {"/menu1"})
+    public GetMenuResponse getMenuPage(@RequestBody MenuPage menuPageRequest) {
         return menuService.getMenuPage(menuPageRequest);
     }
 }

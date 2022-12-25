@@ -29,11 +29,11 @@ public class User implements Serializable {
     private Long id;
 
     @Column(name = "first_name")
-//    @NotEmpty(message = "First name must be filled!")
+    @NotEmpty(message = "First name must be filled!")
     private String firstName;
 
     @Column(name = "last_name")
-//    @NotEmpty(message = "Last name must be filled!")
+    @NotEmpty(message = "Last name must be filled!")
     private String lastName;
 
     @Column(name = "username")
