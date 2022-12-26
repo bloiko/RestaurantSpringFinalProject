@@ -12,7 +12,6 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 public class RegistrationRequest {
     @NotEmpty(message = "First name must be filled!")
     private String firstName;
