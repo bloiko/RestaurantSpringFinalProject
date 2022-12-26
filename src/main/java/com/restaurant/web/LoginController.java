@@ -3,6 +3,7 @@ package com.restaurant.web;
 import com.restaurant.database.entity.User;
 import com.restaurant.service.UserService;
 import com.restaurant.web.dto.LoginRequest;
+import com.restaurant.web.dto.LoginResponse;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
 import org.springframework.http.HttpStatus;
@@ -22,10 +23,11 @@ public class LoginController {
     }
 
     @PostMapping(path = "/signin")
-    public String login(@RequestBody LoginRequest loginRequest) {
+    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
         hasText(loginRequest.getUsername(), "Username must be specified");
         hasText(loginRequest.getPassword(), "Password must be specified");
-        return userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+        String token = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+        return new LoginResponse(token);
     }
 
     @PostMapping("/signup")

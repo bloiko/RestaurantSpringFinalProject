@@ -4,6 +4,7 @@ import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.service.UserService;
 import com.restaurant.web.dto.LoginRequest;
+import com.restaurant.web.dto.LoginResponse;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
 import org.junit.jupiter.api.Test;
@@ -39,9 +40,9 @@ class LoginControllerTest {
         LoginRequest loginRequest = new LoginRequest(USER_NAME, PASSWORD);
         when(userService.login(USER_NAME, PASSWORD)).thenReturn("token");
 
-        String response = loginController.login(loginRequest);
+        LoginResponse response = loginController.login(loginRequest);
 
-        assertEquals("token", response);
+        assertEquals("token", response.getToken());
     }
 
     @Test

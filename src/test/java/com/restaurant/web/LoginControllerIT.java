@@ -6,6 +6,7 @@ import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.security.jwt.JwtProvider;
 import com.restaurant.web.dto.LoginRequest;
+import com.restaurant.web.dto.LoginResponse;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
 import org.jetbrains.annotations.NotNull;
@@ -49,11 +50,11 @@ public class LoginControllerIT {
         LoginRequest loginRequest = new LoginRequest(USER_NAME, PASSWORD);
         userRepository.save(buildUser());
 
-        String token = loginController.login(loginRequest);
+        LoginResponse response = loginController.login(loginRequest);
 
-        assertNotNull(token);
-        assertEquals(USER_NAME, jwtProvider.getUsername(token));
-        List<GrantedAuthority> jwtProviderRoles = jwtProvider.getRoles(token);
+        assertNotNull(response);
+        assertEquals(USER_NAME, jwtProvider.getUsername(response.getToken()));
+        List<GrantedAuthority> jwtProviderRoles = jwtProvider.getRoles(response.getToken());
         assertEquals(1, jwtProviderRoles.size());
         assertEquals("USER", jwtProviderRoles.get(0).getAuthority());
     }
