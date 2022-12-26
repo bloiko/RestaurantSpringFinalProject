@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @Transactional
 @SpringBootTest(classes = RestaurantApplication.class)
+@TestPropertySource(locations="classpath:application-test.properties")
+@Sql({"classpath:db-test/test-user-data.sql"})
 public class LoginControllerIT {
 
     public static final String USER_NAME = "username";
