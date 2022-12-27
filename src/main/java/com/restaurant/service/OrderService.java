@@ -2,7 +2,6 @@ package com.restaurant.service;
 
 
 import com.restaurant.database.dao.FoodRepository;
-import com.restaurant.database.dao.ItemRepository;
 import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.OrderStatusRepository;
 import com.restaurant.database.entity.*;
@@ -20,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hibernate.internal.util.collections.CollectionHelper.isNotEmpty;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * Order service.
@@ -36,44 +35,46 @@ public class OrderService {
 
     private final OrderStatusRepository statusRepository;
 
-    private final ItemRepository itemRepository;
+    private final UserService userService;
 
-    private UserService userService;
+    private final FoodRepository foodRepository;
 
-    private FoodRepository foodRepository;
-
-    public OrderService(OrderRepository orderRepository, OrderStatusRepository statusRepository, ItemRepository itemRepository, UserService userService, FoodRepository foodRepository) {
+    public OrderService(OrderRepository orderRepository, OrderStatusRepository statusRepository, UserService userService, FoodRepository foodRepository) {
         this.orderRepository = orderRepository;
         this.statusRepository = statusRepository;
-        this.itemRepository = itemRepository;
         this.userService = userService;
         this.foodRepository = foodRepository;
     }
 
-    public Long addOrderAndGetId(List<Item> cart, User user) {
-        Timestamp orderDate = new Timestamp(new Date().getTime());
-        OrderStatus orderStatus = statusRepository.findByStatusName(WAITING_STATUS);
+    public Long addOrderAndGetId(List<Item> items, User user) {
+        if (isEmpty(items)) {
+            throw new IllegalArgumentException("List of items cannot be null or empty");
+        }
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
+
+        OrderStatus waitingStatus = statusRepository.findByStatusName(WAITING_STATUS);
+
         Order order = Order.builder()
                 .id(0L)
                 .user(user)
-                .orderDate(orderDate)
-                .orderStatus(orderStatus)
+                .orderDate(new Timestamp(new Date().getTime()))
+                .orderStatus(waitingStatus)
+                .items(items)
+                .orderPrice(getPriceSumOfAllItems(items))
                 .build();
 
-        order = orderRepository.save(order);
-        if (isNotEmpty(cart)) {
-            BigDecimal price = new BigDecimal(0);
-            for (int i = 0; i < cart.size(); i++) {
-                Item item = cart.get(i);
-                cart.get(i).setOrder(order);
-                cart.set(i, itemRepository.save(item));
-                price = price.add(new BigDecimal(item.getQuantity() * item.getFoodItem().getPrice()));
-            }
-            order.setOrderPrice(price);
-            order.setItems(cart);
-            order = orderRepository.save(order);
+        return orderRepository.save(order).getId();
+    }
+
+    @NotNull
+    private static BigDecimal getPriceSumOfAllItems(List<Item> items) {
+        BigDecimal price = new BigDecimal(0);
+        for (Item item : items) {
+            price = price.add(new BigDecimal(item.getQuantity() * item.getFoodItem().getPrice()));
         }
-        return order.getId();
+        return price;
     }
 
     public List<OrderStatus> getStatuses() {
@@ -111,8 +112,8 @@ public class OrderService {
     @NotNull
     private List<Item> createItems(List<FoodItemDto> foodItemsDto) {
         List<Long> foodItemIds = foodItemsDto.stream()
-                                             .map(FoodItemDto::getId)
-                                             .collect(Collectors.toList());
+                .map(FoodItemDto::getId)
+                .collect(Collectors.toList());
 
         List<FoodItem> foodItemsFromDb = foodRepository.findAllById(foodItemIds);
 
@@ -124,8 +125,7 @@ public class OrderService {
     private User getCurrentUser() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = userDetails.getUsername();
-        User user = userService.getUserByUserName(username);
-        return user;
+        return userService.getUserByUserName(username);
     }
 
     @NotNull

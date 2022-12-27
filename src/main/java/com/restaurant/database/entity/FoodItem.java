@@ -19,7 +19,7 @@ import java.io.Serializable;
 @Table(name = "food_item")
 public class FoodItem implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
     @Column(name = "name")
     private String name;

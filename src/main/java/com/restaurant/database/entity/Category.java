@@ -19,7 +19,7 @@ import javax.persistence.*;
 @Table(name = "category")
 public class Category implements Comparable<Category> {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
     @Column(name = "name")
     private String name;

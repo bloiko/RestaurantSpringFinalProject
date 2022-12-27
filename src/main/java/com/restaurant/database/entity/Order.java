@@ -23,7 +23,7 @@ import java.util.List;
 @Table(name = "food_order")
 public class Order implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @Column(name = "order_date")
@@ -36,7 +36,7 @@ public class Order implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", orphanRemoval = true)
     private List<Item> items;
 
     @OneToOne(cascade = CascadeType.ALL)
