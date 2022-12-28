@@ -22,6 +22,7 @@ import java.io.IOException;
 @Slf4j
 @Controller
 @RequestMapping("/registration")
+@Deprecated
 public class RegistrationCommand {
     /*    public static final String PASSWORD = "password";
         public static final String USERNAME = "username";

@@ -37,6 +37,7 @@ public class FoodItemService {
         this.cartService = cartService;
     }
 
+    @Deprecated
     public void addFoodItemToCart(List<Item> cart, String foodId) {
         int index = cartService.isExisting(Integer.parseInt(foodId), cart);
         if (cart.isEmpty() || index == -1) {

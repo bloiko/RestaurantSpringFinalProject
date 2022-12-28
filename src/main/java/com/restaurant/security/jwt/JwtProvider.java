@@ -15,10 +15,9 @@ public class JwtProvider {
 
     private final String ROLES_KEY = "roles";
 
-    private JwtParser parser;
+    private final String secretKey;
 
-    private String secretKey;
-    private long validityInMilliseconds;
+    private final long validityInMilliseconds;
 
     @Autowired
     public JwtProvider(@Value("${security.jwt.token.secret-key:secret-key-for-encryption}") String secretKey,

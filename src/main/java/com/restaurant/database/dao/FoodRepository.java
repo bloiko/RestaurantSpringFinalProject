@@ -9,19 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface FoodRepository extends JpaRepository<FoodItem, Long> {
-
-    @Override
-    List<FoodItem> findAll();
-
-    @Override
-    Optional<FoodItem> findById(Long aLong);
-
-    @Override
-    Page<FoodItem> findAll(Pageable pageable);
 
     List<FoodItem> findAllByCategoryName(String name);
 

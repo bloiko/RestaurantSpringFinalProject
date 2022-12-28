@@ -85,6 +85,8 @@ class MenuControllerIT {
         List<FoodItem> sortedFoodItems = sortItemsByComparator(actualFoodItems, FoodItem::getName, sortDirection);
         assertEquals(sortedFoodItems, actualFoodItems);
         assertTrue(menuResponse.getFoodItems().size() <= pageSize);
+        assertTrue(menuResponse.getFoodItems().size() > 0);
+
     }
 
     @Test
@@ -103,6 +105,7 @@ class MenuControllerIT {
         List<FoodItem> sortedFoodItems = sortItemsByComparator(actualFoodItems, foodItem -> foodItem.getCategory().getName(), sortDirection);
         assertEquals(sortedFoodItems, actualFoodItems);
         assertTrue(menuResponse.getFoodItems().size() <= pageSize);
+        assertTrue(menuResponse.getFoodItems().size() > 0);
     }
 
     private List<FoodItem> sortItemsByComparator(List<FoodItem> actualFoodItems,

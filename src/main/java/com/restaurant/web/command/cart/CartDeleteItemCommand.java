@@ -17,6 +17,7 @@ import java.util.List;
  */
 @Slf4j
 @Controller
+@Deprecated
 public class CartDeleteItemCommand {
     private final CartService cartService;
 

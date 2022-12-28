@@ -23,6 +23,7 @@ import java.util.List;
  */
 @Slf4j
 @Controller
+@Deprecated
 public class CartOrderItemCommand {
     private final UserService userService;
     private final OrderService orderService;

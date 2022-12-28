@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    @Override
-    Item getById(Long aLong);
 
     Item findByFoodItemAndQuantity(FoodItem foodItem, int quantity);
 }

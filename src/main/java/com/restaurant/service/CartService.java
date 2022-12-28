@@ -14,6 +14,7 @@ import java.util.Optional;
  */
 @Service
 @Transactional
+@Deprecated
 public class CartService {
 
     public List<Item> removeItemFromCart(List<Item> cart, String itemId) {

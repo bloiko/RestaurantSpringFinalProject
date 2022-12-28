@@ -9,6 +9,7 @@ import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.security.jwt.JwtProvider;
 import com.restaurant.web.dto.RegistrationRequest;
+import com.restaurant.web.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * User service.
@@ -165,5 +168,29 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findByUserName(username);
 
         return optionalUser.orElse(null);
+    }
+
+    public User getUserDetailsById(Long userId) {
+        return userRepository.getById(userId);
+    }
+
+    public User updateUserDetails(Long userId, UserDto userDto) {
+        if(isEmpty(userId)){
+            throw new IllegalArgumentException("userId cannot be null or empty");
+        }
+        
+        User user = userRepository.getById(userId);
+        populateDtoToUser(userDto, user);
+
+        return userRepository.save(user);
+    }
+
+    private static void populateDtoToUser(UserDto userDto, User user) {
+        user.setUserName(userDto.getUsername());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setAddress(userDto.getAddress());
+        user.setPhoneNumber(userDto.getPhoneNumber());
     }
 }

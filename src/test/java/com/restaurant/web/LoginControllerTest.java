@@ -60,7 +60,7 @@ class LoginControllerTest {
         UserDto user = loginController.register(registrationRequest);
 
         assertEquals(expectedUser.getId(), user.getId());
-        assertEquals(expectedUser.getUserName(), user.getUserName());
+        assertEquals(expectedUser.getUserName(), user.getUsername());
         assertEquals(expectedUser.getEmail(), user.getEmail());
         assertEquals(expectedUser.getFirstName(), user.getFirstName());
         assertEquals(expectedUser.getLastName(), user.getLastName());

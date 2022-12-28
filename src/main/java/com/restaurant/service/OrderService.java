@@ -31,6 +31,8 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 public class OrderService {
     public static final String WAITING_STATUS = "WAITING";
 
+    public static final String DONE_STATUS = "DONE";
+
     private final OrderRepository orderRepository;
 
     private final OrderStatusRepository statusRepository;
@@ -82,11 +84,11 @@ public class OrderService {
     }
 
     public List<Order> getDoneOrders() {
-        return orderRepository.findAllByOrderStatus(statusRepository.findByStatusName("DONE"));
+        return orderRepository.findAllByOrderStatus(statusRepository.findByStatusName(DONE_STATUS));
     }
 
     public List<Order> getNotDoneOrdersSortByIdDesc() {
-        return orderRepository.findAllByOrderStatusNot(statusRepository.findByStatusName("DONE"))
+        return orderRepository.findAllByOrderStatusNot(statusRepository.findByStatusName(DONE_STATUS))
                 .stream()
                 .sorted(Comparator.comparing(Order::getId).reversed())
                 .collect(Collectors.toList());

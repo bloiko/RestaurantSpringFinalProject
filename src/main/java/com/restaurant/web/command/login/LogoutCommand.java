@@ -16,6 +16,7 @@ import java.io.IOException;
  */
 @Slf4j
 @Controller
+@Deprecated
 public class LogoutCommand {
     @GetMapping("/logout")
     public String execute(HttpServletRequest request) throws IOException, ServletException {
