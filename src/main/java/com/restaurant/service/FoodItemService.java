@@ -8,6 +8,8 @@ import com.restaurant.database.entity.FoodItem;
 import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.MenuPage;
 import com.restaurant.web.dto.MenuFilterBy;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,8 +29,12 @@ import static com.restaurant.web.dto.MenuFilterBy.ALL_CATEGORIES;
 @Service
 @Transactional
 public class FoodItemService {
+    public static final String DEFAULT_SORT_BY_FILTER = "category";
+
     private final FoodRepository foodRepository;
+
     private final CategoryRepository categoryRepository;
+
     private final CartService cartService;
 
     public FoodItemService(FoodRepository foodRepository, CategoryRepository categoryRepository, CartService cartService) {
@@ -71,19 +77,28 @@ public class FoodItemService {
     }
 
     public List<FoodItem> getFoodItems(MenuPage menuPage) {
-        Sort sortBy;
-        if (menuPage.getSortBy() != null) {
-            sortBy = Sort.by(menuPage.getSortDirection(), menuPage.getSortBy());
+        Sort sort = getSortFromDto(menuPage);
+
+        Pageable pageable = PageRequest.of(menuPage.getPageNumber() - 1, menuPage.getPageSize(), sort);
+
+        return getFoodItems(menuPage.getFilterBy(), pageable);
+    }
+
+    private List<FoodItem> getFoodItems(String filterBy, Pageable pageable) {
+        boolean filterAllCategories = filterBy == null;
+        Page<FoodItem> foodItemsPage;
+        if (filterAllCategories) {
+            foodItemsPage = foodRepository.findAll(pageable);
         } else {
-            sortBy = Sort.by(menuPage.getSortDirection(), "category");
+            foodItemsPage = foodRepository.findAllByCategoryName(filterBy, pageable);
         }
-        Pageable pageable = PageRequest.of(menuPage.getPageNumber() - 1, menuPage.getPageSize(), sortBy);
-        String filterBy = menuPage.getFilterBy();
-        if (menuPage.getFilterBy() == null) {
-            return foodRepository.findAll(pageable).getContent();
-        } else {
-            Category category = categoryRepository.findByName(filterBy);
-            return foodRepository.findAllByCategory(category, pageable).getContent();
-        }
+        return foodItemsPage.getContent();
+    }
+
+    @NotNull
+    private static Sort getSortFromDto(MenuPage menuPage) {
+        String sortBy = menuPage.getSortBy() != null ? menuPage.getSortBy() : DEFAULT_SORT_BY_FILTER;
+
+        return Sort.by(menuPage.getSortDirection(), sortBy);
     }
 }

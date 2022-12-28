@@ -20,11 +20,6 @@ public class MenuService {
     }
 
     public GetMenuResponse getMenuPage(MenuPage menuPage) {
-        String filter = menuPage.getFilterBy();
-        if (isEmpty(filter)) {
-            throw new IllegalArgumentException("filter cannot be null");
-        }
-
         List<FoodItem> filteredFoodItems = foodItemService.getFoodItems(menuPage);
 
         int numOfPages = getNumOfPages(filteredFoodItems, menuPage.getPageSize());
