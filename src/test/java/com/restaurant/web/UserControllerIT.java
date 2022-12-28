@@ -3,15 +3,20 @@ package com.restaurant.web;
 import com.restaurant.RestaurantApplication;
 import com.restaurant.database.dao.UserRepository;
 import com.restaurant.database.entity.User;
+import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.validation.Valid;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,6 +43,9 @@ class UserControllerIT {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Test
     void getUserDetailsById() {
@@ -80,5 +88,17 @@ class UserControllerIT {
         assertNotNull(userFromDb.getRole());
         assertNotNull(userFromDb.getPassword());
         assertNull(response.getPassword());
+    }
+
+    @Test
+    public void updatePassword() {
+        final long userId = 1L;
+        @Valid PasswordDto passwordDto = new PasswordDto("password", "newPassword");
+
+        ResponseEntity<Boolean> response = userController.updatePassword(userId, passwordDto);
+
+        assertEquals(ResponseEntity.ok(Boolean.TRUE) ,response);
+        User userFromDb = userRepository.getById(userId);
+        assertTrue(passwordEncoder.matches("newPassword", userFromDb.getPassword()));
     }
 }

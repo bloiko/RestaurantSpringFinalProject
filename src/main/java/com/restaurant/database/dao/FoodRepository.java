@@ -15,7 +15,7 @@ public interface FoodRepository extends JpaRepository<FoodItem, Long> {
 
     List<FoodItem> findAllByCategoryName(String name);
 
-    Page<FoodItem> findAllByCategory(Category category, Pageable pageable);
+    Page<FoodItem> findAllByCategoryName(String name, Pageable pageable);
 }
 
 

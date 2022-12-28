@@ -1,12 +1,11 @@
 package com.restaurant.web.dto;
 
+import com.restaurant.web.util.password.ValidPassword;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
 @Data
@@ -23,6 +22,7 @@ public class RegistrationRequest {
     private String username;
 
     @NotEmpty(message = "Password must be filled!")
+    @ValidPassword
     private String password;
 
     @NotEmpty(message = "Email must be filled!")

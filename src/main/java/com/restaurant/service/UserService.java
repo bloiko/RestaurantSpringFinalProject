@@ -8,6 +8,7 @@ import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.security.jwt.JwtProvider;
+import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
@@ -192,5 +193,26 @@ public class UserService {
         user.setEmail(userDto.getEmail());
         user.setAddress(userDto.getAddress());
         user.setPhoneNumber(userDto.getPhoneNumber());
+    }
+
+    public void updatePassword(Long userId, PasswordDto passwordDto) {
+        if(isEmpty(userId)){
+            throw new IllegalArgumentException("userId cannot be null or empty");
+        }
+
+        User user = userRepository.getById(userId);
+
+        validateEqualityOfPasswords(passwordDto.getOldPassword(), user.getPassword());
+
+        user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
+        userRepository.save(user);
+    }
+
+    private void validateEqualityOfPasswords(String oldPassword, String currentPassword) {
+        boolean isOldPasswordCorrect = passwordEncoder.matches(oldPassword, currentPassword);
+
+        if(!isOldPasswordCorrect){
+            throw new IllegalArgumentException("Old password is not correct");
+        }
     }
 }
