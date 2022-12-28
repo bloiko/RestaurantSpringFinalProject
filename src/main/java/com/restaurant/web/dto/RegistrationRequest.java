@@ -23,7 +23,6 @@ public class RegistrationRequest {
     private String username;
 
     @NotEmpty(message = "Password must be filled!")
-    @Min(value = 8, message = "Password must be greater than or equal to 8!")
     private String password;
 
     @NotEmpty(message = "Email must be filled!")

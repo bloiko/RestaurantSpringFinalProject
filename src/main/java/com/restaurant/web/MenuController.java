@@ -23,6 +23,7 @@ public class MenuController {
     }
 
     @GetMapping("/menu1")
+    @Deprecated //Categories cannot be enum
     public List<FoodItem> getAllItemsByFilter(@RequestParam MenuFilterBy filter) {
         return foodItemService.getFoodItemsFilterBy(filter);
     }

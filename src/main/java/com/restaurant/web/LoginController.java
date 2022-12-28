@@ -5,6 +5,7 @@ import com.restaurant.service.UserService;
 import com.restaurant.web.dto.LoginRequest;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
+import com.restaurant.web.mapper.UserDtoMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,8 @@ import static org.springframework.util.Assert.hasText;
 @RequestMapping("/security")
 public class LoginController {
     private final UserService userService;
+
+    private final UserDtoMapper userDtoMapper = new UserDtoMapper();
 
     public LoginController(UserService userService) {
         this.userService = userService;
@@ -32,17 +35,6 @@ public class LoginController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto register(@Valid @RequestBody RegistrationRequest registrationDto) {
         User user = userService.register(registrationDto);
-        return mapUserToDto(user);
-    }
-
-    private UserDto mapUserToDto(User user) {
-        return UserDto.builder()
-                .id(user.getId())
-                .userName(user.getUserName())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .role(user.getRole().getName())
-                .build();
+        return userDtoMapper.mapUserToDto(user);
     }
 }

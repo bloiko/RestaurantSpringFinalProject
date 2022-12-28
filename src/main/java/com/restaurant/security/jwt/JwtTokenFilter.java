@@ -18,7 +18,7 @@ public class JwtTokenFilter extends GenericFilterBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenFilter.class);
     private static final String BEARER = "Bearer";
 
-    private MyUserDetailsService userDetailsService;
+    private final MyUserDetailsService userDetailsService;
 
     public JwtTokenFilter(MyUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -29,12 +29,9 @@ public class JwtTokenFilter extends GenericFilterBean {
             throws IOException, ServletException {
         LOGGER.info("Process request to check for a JSON Web Token ");
         String headerValue = ((HttpServletRequest) req).getHeader("Authorization");
-        getBearerToken(headerValue).ifPresent(token -> {
-            userDetailsService.loadUserByJwtToken(token).ifPresent(userDetails -> {
-                SecurityContextHolder.getContext().setAuthentication(
-                        new PreAuthenticatedAuthenticationToken(userDetails, "", userDetails.getAuthorities()));
-            });
-        });
+        getBearerToken(headerValue).flatMap(userDetailsService::loadUserByJwtToken)
+                .ifPresent(userDetails -> SecurityContextHolder.getContext().setAuthentication(
+                new PreAuthenticatedAuthenticationToken(userDetails, "", userDetails.getAuthorities())));
 
         filterChain.doFilter(req, res);
     }

@@ -5,6 +5,7 @@ import com.restaurant.database.dao.FoodRepository;
 import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.UserRepository;
 import com.restaurant.database.entity.FoodItem;
+import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.Order;
 import com.restaurant.web.dto.FoodItemDto;
 import com.restaurant.web.dto.OrderRequest;
@@ -19,6 +20,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.util.Lists.newArrayList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,9 +43,6 @@ class OrderControllerIT {
     private FoodRepository foodRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private OrderRepository orderRepository;
 
     @Test
@@ -57,11 +57,10 @@ class OrderControllerIT {
         assertEquals(USER_NAME, orderFromDb.getUser().getUserName());
         FoodItem foodItem1 = foodRepository.getById(1L);
         FoodItem foodItem2 = foodRepository.getById(2L);
-
-        //TODO add validation of data from DB
-//        assertTrue(orderFromDb.getItems().get(0).equals(foodItem1));
-//        assertTrue(orderFromDb.getItems().get(1).equals(foodItem2));
-        assertTrue(orderFromDb.getItems().size() == 2);
+        List<Item> itemList = orderFromDb.getItems();
+        assertEquals(2, itemList.size());
+        assertEquals(foodItem1.getId(), itemList.get(0).getId());
+        assertEquals(foodItem2.getId(), itemList.get(1).getId());
         assertEquals(foodItem1.getPrice() * 2 + foodItem2.getPrice() * 5, orderFromDb.getOrderPrice().longValue());
         assertNotNull(orderFromDb.getOrderDate());
     }

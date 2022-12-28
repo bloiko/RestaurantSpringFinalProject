@@ -70,7 +70,7 @@ public class LoginControllerIT {
 
         assertNotNull(user);
         assertNotNull(user.getId());
-        assertEquals(registerRequest.getUsername(), user.getUserName());
+        assertEquals(registerRequest.getUsername(), user.getUsername());
         assertEquals(registerRequest.getEmail(), user.getEmail());
         assertEquals(registerRequest.getFirstName(), user.getFirstName());
         assertEquals(registerRequest.getLastName(), user.getLastName());

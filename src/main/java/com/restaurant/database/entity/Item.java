@@ -19,10 +19,10 @@ import java.io.Serializable;
 @Table(name = "item")
 public class Item implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "food_id", referencedColumnName = "id")
     private FoodItem foodItem;
 

@@ -19,7 +19,7 @@ import javax.persistence.*;
 @Table(name = "status")
 public class OrderStatus {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
     @Column(name = "status_name")
     private String statusName;

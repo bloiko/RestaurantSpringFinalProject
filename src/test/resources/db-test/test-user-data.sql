@@ -5,4 +5,4 @@ INSERT INTO role(role_id, name) VALUES (1,'USER'),
 
 /*insert users*/
 INSERT INTO user(id, first_name, last_name, username, password, email, address, phone_number, role_id)
-VALUES (1,'first_name', 'last_name', 'usernameTest', 'password', 'email@email.com', null, null, 1);
+VALUES (1,'first_name', 'last_name', 'usernameTest', 'password', 'email@email.com', 'address', '0896755549', 1);

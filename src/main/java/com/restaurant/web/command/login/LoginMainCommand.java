@@ -20,6 +20,7 @@ import java.io.IOException;
  */
 @Slf4j
 @Controller
+@Deprecated
 public class LoginMainCommand {
     public static final String COMMAND = "command";
     private final UserService userService;

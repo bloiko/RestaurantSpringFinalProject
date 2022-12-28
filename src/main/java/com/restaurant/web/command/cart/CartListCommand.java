@@ -16,6 +16,7 @@ import java.util.List;
  */
 @Slf4j
 @Controller
+@Deprecated
 public class CartListCommand {
 
     @GetMapping("/cart")
