@@ -6,6 +6,7 @@ import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.security.jwt.JwtProvider;
 import com.restaurant.web.dto.LoginRequest;
+import com.restaurant.web.dto.LoginResponse;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
 import org.jetbrains.annotations.NotNull;
@@ -53,29 +54,28 @@ public class LoginControllerIT {
         LoginRequest loginRequest = new LoginRequest(USER_NAME, PASSWORD);
         userRepository.save(buildUser());
 
-        String token = loginController.login(loginRequest);
+        LoginResponse response = loginController.login(loginRequest);
 
-        assertNotNull(token);
-        assertEquals(USER_NAME, jwtProvider.getUsername(token));
-        List<GrantedAuthority> jwtProviderRoles = jwtProvider.getRoles(token);
+        assertNotNull(response);
+        assertNotNull(response.getAuthToken());
+        assertEquals(USER_NAME, jwtProvider.getUsername(response.getAuthToken()));
+        List<GrantedAuthority> jwtProviderRoles = jwtProvider.getRoles(response.getAuthToken());
         assertEquals(1, jwtProviderRoles.size());
         assertEquals("USER", jwtProviderRoles.get(0).getAuthority());
     }
 
     @Test
     public void testCorrectRegistration() {
-        RegistrationRequest registerRequest = new RegistrationRequest(USER_NAME, PASSWORD, "firstName", "lastName", "email@mail.com");
+        RegistrationRequest registerRequest = new RegistrationRequest("firstName", "lastName", USER_NAME, PASSWORD, "email@mail.com");
 
-        UserDto user = loginController.register(registerRequest);
+        LoginResponse response = loginController.register(registerRequest);
 
-        assertNotNull(user);
-        assertNotNull(user.getId());
-        assertEquals(registerRequest.getUsername(), user.getUsername());
-        assertEquals(registerRequest.getEmail(), user.getEmail());
-        assertEquals(registerRequest.getFirstName(), user.getFirstName());
-        assertEquals(registerRequest.getLastName(), user.getLastName());
-        assertEquals("USER", user.getRole());
-        assertEquals(null, user.getPassword());
+        assertNotNull(response);
+        assertNotNull(response.getAuthToken());
+        assertEquals(USER_NAME, jwtProvider.getUsername(response.getAuthToken()));
+        List<GrantedAuthority> jwtProviderRoles = jwtProvider.getRoles(response.getAuthToken());
+        assertEquals(1, jwtProviderRoles.size());
+        assertEquals("USER", jwtProviderRoles.get(0).getAuthority());
     }
 
     @NotNull

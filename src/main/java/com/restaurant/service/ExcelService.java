@@ -20,8 +20,10 @@ import org.springframework.http.MediaType;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -73,47 +75,44 @@ public class ExcelService {
         Font font = workbook.createFont();
         font.setFontName("Arial");
 
+
+        sheet.autoSizeColumn(0);
         CellStyle cellStyle = workbook.createCellStyle();
         cellStyle.setFont(font);
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
         cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-
+        cellStyle.setWrapText(true);
         for (Order order : orderList) {
             int columnNo = 0;
-            Row row = sheet.createRow(rowNo);
-            populateCell(sheet, row, columnNo++,
-                    String.valueOf(order.getId()), cellStyle);
-            populateCell(sheet, row, columnNo++,
-                    String.valueOf(order.getOrderDate()), cellStyle);
-            User orderUser = order.getUser();
-            populateCell(sheet, row, columnNo++,
-                    orderUser.getFirstName() + " " + orderUser.getLastName(), cellStyle);
-            populateCell(sheet, row, columnNo++,
-                    orderUser.getEmail(), cellStyle);
-            populateCell(sheet, row, columnNo++,
-                    order.getOrderStatus().getStatusName(), cellStyle);
-
-            List<Item> items = order.getItems();
-            StringBuilder stringBuilder = new StringBuilder();
-            items.forEach(item -> {
-                stringBuilder.append(item.getFoodItem().getName())
-                             .append("    ")
-                             .append(item.getQuantity())
-                             .append(" items * ")
-                             .append(item.getFoodItem().getPrice())
-                             .append("$")
-                             .append(" = ")
-                             .append(order.getOrderPrice())
-                             .append("$")
-                             .append("\n");
+            List<Function<Order, String>> functions = new ArrayList<>();
+            functions.add(orderFunc -> String.valueOf(orderFunc.getId()));
+            functions.add(orderFunc -> String.valueOf(orderFunc.getOrderDate()));
+            functions.add(orderFunc -> orderFunc.getUser().getFirstName() + " " + orderFunc.getUser().getLastName());
+            functions.add(orderFunc -> orderFunc.getUser().getEmail());
+            functions.add(orderFunc -> orderFunc.getOrderStatus().getStatusName());
+            functions.add(orderFunc -> {
+                List<Item> items = orderFunc.getItems();
+                StringBuilder stringBuilder = new StringBuilder();
+                items.forEach(item -> {
+                    stringBuilder.append(item.getFoodItem().getName())
+                            .append("    ")
+                            .append(item.getQuantity())
+                            .append(" items * ")
+                            .append(item.getFoodItem().getPrice())
+                            .append("$")
+                            .append(" = ")
+                            .append(item.getQuantity() * item.getFoodItem().getPrice())
+                            .append("$")
+                            .append("\n");
+                });
+                return stringBuilder.toString();
             });
-            if(stringBuilder.length() > 1) {
-                stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length() - 1);
+
+            Row row = sheet.createRow(rowNo);
+            for (Function<Order, String> function : functions) {
+                populateCell(sheet, row, columnNo++,
+                        function.apply(order), cellStyle);
             }
-            sheet.autoSizeColumn(0);
-            cellStyle.setWrapText(true);
-            populateCell(sheet, row, columnNo++,
-                    stringBuilder.toString(), cellStyle);
             rowNo++;
         }
     }

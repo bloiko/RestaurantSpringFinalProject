@@ -3,6 +3,7 @@ package com.restaurant.web;
 import com.restaurant.database.entity.User;
 import com.restaurant.service.UserService;
 import com.restaurant.web.dto.LoginRequest;
+import com.restaurant.web.dto.LoginResponse;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
 import com.restaurant.web.mapper.UserDtoMapper;
@@ -25,16 +26,15 @@ public class LoginController {
     }
 
     @PostMapping(path = "/signin")
-    public String login(@RequestBody LoginRequest loginRequest) {
+    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
         hasText(loginRequest.getUsername(), "Username must be specified");
         hasText(loginRequest.getPassword(), "Password must be specified");
-        return userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+        return LoginResponse.of(userService.login(loginRequest.getUsername(), loginRequest.getPassword()));
     }
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto register(@Valid @RequestBody RegistrationRequest registrationDto) {
-        User user = userService.register(registrationDto);
-        return userDtoMapper.mapUserToDto(user);
+    public LoginResponse register(@Valid @RequestBody RegistrationRequest registrationDto) {
+        return LoginResponse.of(userService.register(registrationDto));
     }
 }
