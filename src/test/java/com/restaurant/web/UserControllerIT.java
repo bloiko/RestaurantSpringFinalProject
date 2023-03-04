@@ -1,7 +1,11 @@
 package com.restaurant.web;
 
 import com.restaurant.RestaurantApplication;
+import com.restaurant.database.dao.ItemRepository;
+import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.UserRepository;
+import com.restaurant.database.entity.Item;
+import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.User;
 import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.UserDto;
@@ -17,6 +21,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @SpringBootTest(classes = RestaurantApplication.class)
 @TestPropertySource(locations="classpath:application-test.properties")
-@Sql({"classpath:db-test/test-user-data.sql"})
+@Sql({"classpath:db-test/test-food-and-user-data.sql"})
 class UserControllerIT {
     public static final String NEW_USER_NAME = "NEW_USER_NAME";
 
@@ -43,6 +49,12 @@ class UserControllerIT {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -100,5 +112,52 @@ class UserControllerIT {
         assertEquals(ResponseEntity.ok(Boolean.TRUE) ,response);
         User userFromDb = userRepository.getById(userId);
         assertTrue(passwordEncoder.matches("newPassword", userFromDb.getPassword()));
+    }
+
+    @Test
+    public void getAllUsersDetails() {
+        List<User> users = userRepository.findAll();
+
+        List<UserDto> usersDetails =  userController.getAllUsersDetails();
+
+        assertEquals(users.size(), usersDetails.size());
+        usersDetails.forEach(usersDetail -> {
+            User expectedUser = users.stream()
+                    .filter(user -> user.getId().equals(usersDetail.getId()))
+                    .findAny()
+                    .orElseGet(() -> null);
+            assertNotNull(expectedUser);
+            assertEquals(expectedUser.getUserName(), usersDetail.getUsername());
+            assertEquals(expectedUser.getFirstName(), usersDetail.getFirstName());
+            assertEquals(expectedUser.getLastName(), usersDetail.getLastName());
+            assertEquals(expectedUser.getEmail(), usersDetail.getEmail());
+            assertEquals(expectedUser.getRole().getName(), usersDetail.getRole());
+            assertEquals(expectedUser.getPhoneNumber(), usersDetail.getPhoneNumber());
+            assertEquals(expectedUser.getAddress(), usersDetail.getAddress());
+            assertNull(usersDetail.getPassword());
+        });
+    }
+
+    //TODO rewrite saving initial data in sql script
+    @Test
+    public void deleteUserById() {
+        final long expectedUserId = 1L;
+        long expectedItemToDelete = 1L;
+        Optional<User> userToDelete = userRepository.findById(expectedUserId);
+        assertTrue(userToDelete.isPresent());
+        List<Order> orderListToDelete = orderRepository.findAllByUserId(expectedUserId);
+        assertTrue(orderListToDelete.size() > 0);
+        Optional<Item> itemToDelete = itemRepository.findById(expectedItemToDelete);
+        assertTrue(itemToDelete.isPresent());
+
+        String actualUserId = userController.deleteUserById(expectedUserId);
+
+        assertEquals(String.valueOf(expectedUserId), actualUserId);
+        Optional<User> deletedUser = userRepository.findById(expectedUserId);
+        assertFalse(deletedUser.isPresent());
+        List<Order> deletedOrderList = orderRepository.findAllByUserId(expectedUserId);
+        assertEquals(0, deletedOrderList.size());
+        Optional<Item> deletedItem = itemRepository.findById(expectedItemToDelete);
+        assertFalse(deletedItem.isPresent());
     }
 }

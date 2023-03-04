@@ -7,6 +7,7 @@ import com.restaurant.database.entity.Category;
 import com.restaurant.database.entity.FoodItem;
 import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.MenuPage;
+import com.restaurant.web.dto.FoodItemRequest;
 import com.restaurant.web.dto.MenuFilterBy;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 import static com.restaurant.web.dto.MenuFilterBy.ALL_CATEGORIES;
 
@@ -41,6 +43,40 @@ public class FoodItemService {
         this.foodRepository = foodRepository;
         this.categoryRepository = categoryRepository;
         this.cartService = cartService;
+    }
+
+    public FoodItemRequest addNewFoodItem(FoodItemRequest request) {
+        Optional<Category> optionalCategory = categoryRepository.findById(request.getCategoryId());
+        if (!optionalCategory.isPresent()) {
+            throw new IllegalArgumentException("Category not exists with this id " + request.getCategoryId());
+        }
+
+        FoodItem foodItem = new FoodItem(0L, request.getName(), request.getPrice(), request.getImage(), optionalCategory.get());
+        foodRepository.save(foodItem);
+
+        request.setId(foodItem.getId());
+        return request;
+    }
+
+    public FoodItemRequest updateFoodItem(FoodItemRequest request) {
+        Optional<Category> optionalCategory = categoryRepository.findById(request.getCategoryId());
+        if (!optionalCategory.isPresent()) {
+            throw new IllegalArgumentException("Category not exists with this id " + request.getCategoryId());
+        }
+        Optional<FoodItem> optionalFoodItem = foodRepository.findById(request.getId());
+        if (!optionalFoodItem.isPresent()) {
+            throw new IllegalArgumentException("FoodItem not exists with this id " + request.getId());
+        }
+
+        FoodItem foodItem = optionalFoodItem.get();
+        foodItem.setCategory(optionalCategory.get());
+        foodItem.setName(request.getName());
+        foodItem.setImage(request.getImage());
+        foodItem.setPrice(request.getPrice());
+        foodRepository.save(foodItem);
+
+        request.setId(foodItem.getId());
+        return request;
     }
 
     @Deprecated
