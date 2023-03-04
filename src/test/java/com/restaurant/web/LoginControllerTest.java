@@ -4,6 +4,7 @@ import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.service.UserService;
 import com.restaurant.web.dto.LoginRequest;
+import com.restaurant.web.dto.LoginResponse;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -39,9 +41,10 @@ class LoginControllerTest {
         LoginRequest loginRequest = new LoginRequest(USER_NAME, PASSWORD);
         when(userService.login(USER_NAME, PASSWORD)).thenReturn("token");
 
-        String response = loginController.login(loginRequest);
+        LoginResponse response = loginController.login(loginRequest);
 
-        assertEquals("token", response);
+        assertNotNull(response);
+        assertEquals("token", response.getAuthToken());
     }
 
     @Test
@@ -55,16 +58,11 @@ class LoginControllerTest {
                 .email(EMAIL)
                 .role(new Role(1L, "USER"))
                 .build();
-        when(userService.register(registrationRequest)).thenReturn(expectedUser);
+        when(userService.register(registrationRequest)).thenReturn("token");
 
-        UserDto user = loginController.register(registrationRequest);
+        LoginResponse loginResponse = loginController.register(registrationRequest);
 
-        assertEquals(expectedUser.getId(), user.getId());
-        assertEquals(expectedUser.getUserName(), user.getUsername());
-        assertEquals(expectedUser.getEmail(), user.getEmail());
-        assertEquals(expectedUser.getFirstName(), user.getFirstName());
-        assertEquals(expectedUser.getLastName(), user.getLastName());
-        assertEquals("USER", user.getRole());
-        assertEquals(null, user.getPassword());
+        assertNotNull(loginResponse);
+        assertEquals("token", loginResponse.getAuthToken());
     }
 }

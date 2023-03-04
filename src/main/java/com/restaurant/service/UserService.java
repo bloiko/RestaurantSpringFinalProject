@@ -82,7 +82,7 @@ public class UserService {
         }
     }
 
-    public User register(RegistrationRequest registrationRequest) {
+    public String register(RegistrationRequest registrationRequest) {
         User registeredUserInDb = registerUserInDb(registrationRequest);
 
         try {
@@ -91,14 +91,24 @@ public class UserService {
             log.error("Cannot send email to user with email = {}", registeredUserInDb.getEmail());
         }
 
-        return registeredUserInDb;
+        if (registeredUserInDb == null){
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
+        }
+
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(registrationRequest.getUsername(), registrationRequest.getPassword()));
+            return jwtProvider.createToken(registeredUserInDb.getUserName(), registeredUserInDb.getRole());
+        } catch (AuthenticationException e) {
+            log.info("Failed to authenticate after registration", e);
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error during authentication");
+        }
     }
 
     private User registerUserInDb(RegistrationRequest registrationRequest) {
-        log.info("New user attempting to sign in");
-        Optional<User> user = userRepository.findByUserName(registrationRequest.getUsername());
+        log.info("New optionalUser attempting to sign in");
+        Optional<User> optionalUser = userRepository.findByUserName(registrationRequest.getUsername());
 
-        if (user.isPresent()) {
+        if (optionalUser.isPresent()) {
             throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, "User already exists");
         }
 
