@@ -51,7 +51,7 @@ public class MyUserDetailsService implements UserDetailsService {
                             .disabled(false)
                             .build());
         }
-        return Optional.empty();
+        throw new IllegalArgumentException("Jwt Token is not valid");
     }
 
     public Optional<UserDetails> loadUserByJwtTokenAndDatabase(String jwtToken) {
