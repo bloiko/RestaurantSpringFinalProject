@@ -18,6 +18,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByOrderStatusNot(OrderStatus status);
 
     List<Order> findAllByUserId(Long userId);
+
+    void deleteAllByUserId(Long userId);
 }
 
 

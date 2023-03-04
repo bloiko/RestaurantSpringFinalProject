@@ -138,4 +138,8 @@ public class OrderService {
     private static int getQuantityByFoodItemId(List<FoodItemDto> foodItemsDto, Long foodItemId) {
         return foodItemsDto.stream().filter(foodItemDto -> foodItemDto.getId().equals(foodItemId)).findAny().get().getQuantity();
     }
+
+    public void deleteOrdersByUser(User user) {
+        orderRepository.deleteAllByUserId(user.getId());
+    }
 }

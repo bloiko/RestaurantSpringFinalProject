@@ -22,7 +22,7 @@ public class Item implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
     @JoinColumn(name = "food_id", referencedColumnName = "id")
     private FoodItem foodItem;
 

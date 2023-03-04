@@ -215,4 +215,25 @@ public class UserService {
             throw new IllegalArgumentException("Old password is not correct");
         }
     }
+
+    public String deleteUserById(Long userId) {
+        if(isEmpty(userId)){
+            throw new IllegalArgumentException("User id is incorrect");
+        }
+
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if(!userOptional.isPresent()){
+            throw new IllegalArgumentException("User is not present in db with specified id");
+        }
+
+        orderRepository.deleteAllByUserId(userOptional.get().getId());
+        userOptional.ifPresent(userRepository::delete);
+
+        return String.valueOf(userId);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 }

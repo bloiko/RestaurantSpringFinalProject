@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
@@ -41,5 +43,17 @@ public class UserController {
         userService.updatePassword(userId, passwordDto);
 
         return ResponseEntity.ok(Boolean.TRUE);
+    }
+
+    @GetMapping ("/all")
+    public List<UserDto> getAllUsersDetails() {
+        List<User> users = userService.getAllUsers();
+
+        return users.stream().map(userDtoMapper::mapUserToDto).collect(Collectors.toList());
+    }
+
+    @DeleteMapping ("/{userId}")
+    public String deleteUserById(@PathVariable Long userId) {
+        return userService.deleteUserById(userId);
     }
 }
