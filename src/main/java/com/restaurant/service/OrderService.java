@@ -67,6 +67,9 @@ public class OrderService {
                 .orderPrice(getPriceSumOfAllItems(items))
                 .build();
 
+        for (Item item : items){
+            item.setOrder(order);
+        }
         return orderRepository.save(order).getId();
     }
 
