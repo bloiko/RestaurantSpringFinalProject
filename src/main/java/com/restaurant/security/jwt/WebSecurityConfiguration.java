@@ -26,6 +26,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/security/**").permitAll()
                 .antMatchers("/users/**").permitAll()
+                .antMatchers("/user/**").permitAll()
                 .antMatchers("/order").permitAll()
                 .antMatchers("/orders").permitAll()
                 .antMatchers("/actuator/prometheus").permitAll()
