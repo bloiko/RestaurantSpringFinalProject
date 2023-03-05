@@ -52,9 +52,6 @@ public class OrderService {
         if (isEmpty(items)) {
             throw new IllegalArgumentException("List of items cannot be null or empty");
         }
-        if (user == null) {
-            throw new IllegalArgumentException("User cannot be null");
-        }
 
         OrderStatus waitingStatus = statusRepository.findByStatusName(WAITING_STATUS);
 
@@ -109,6 +106,9 @@ public class OrderService {
 
     public Long orderFoodItems(List<FoodItemDto> foodItemsDto) {
         User user = getCurrentUser();
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
 
         List<Item> itemsToOrder = createItems(foodItemsDto);
         return addOrderAndGetId(itemsToOrder, user);
