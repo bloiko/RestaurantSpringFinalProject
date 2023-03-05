@@ -2,6 +2,7 @@ package com.restaurant.security.jwt;
 
 import com.restaurant.database.dao.UserRepository;
 import com.restaurant.database.entity.User;
+import com.restaurant.web.exception.UnauthorizedException;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -51,7 +52,7 @@ public class MyUserDetailsService implements UserDetailsService {
                             .disabled(false)
                             .build());
         }
-        return Optional.empty();
+        throw new UnauthorizedException("Unauthorized user");
     }
 
     public Optional<UserDetails> loadUserByJwtTokenAndDatabase(String jwtToken) {

@@ -4,16 +4,18 @@ import com.restaurant.database.entity.User;
 import com.restaurant.service.UserService;
 import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.UserDto;
+import com.restaurant.web.exception.ResourceNotFoundException;
 import com.restaurant.web.mapper.UserDtoMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -30,16 +32,20 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public UserDto getUserDetailsById(@PathVariable Long userId) {
-        User user = userService.getUserDetailsById(userId);
+        Optional<User> optionalUser = userService.getUserDetailsById(userId);
 
-        return userDtoMapper.mapUserToDto(user);
+        if(!optionalUser.isPresent()){
+            throw new ResourceNotFoundException("User not found");
+        }
+
+        return userDtoMapper.mapUserToDto(optionalUser.get());
     }
 
     @GetMapping("/profile")
     public UserDto getUserDetailsById() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication userDetails = SecurityContextHolder.getContext().getAuthentication();
 
-        User user = userService.getUserByUserName(userDetails.getUsername());
+        User user = userService.getUserByUserName(userDetails.getName());
 
         if (user == null) {
             throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, "User not found");

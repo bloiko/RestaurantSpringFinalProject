@@ -11,6 +11,7 @@ import com.restaurant.security.jwt.JwtProvider;
 import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
+import com.restaurant.web.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,8 +182,8 @@ public class UserService {
         return optionalUser.orElse(null);
     }
 
-    public User getUserDetailsById(Long userId) {
-        return userRepository.getById(userId);
+    public Optional<User> getUserDetailsById(Long userId) {
+        return userRepository.findById(userId);
     }
 
     public User updateUserDetails(Long userId, UserDto userDto) {
@@ -190,10 +191,15 @@ public class UserService {
             throw new IllegalArgumentException("userId cannot be null or empty");
         }
         
-        User user = userRepository.getById(userId);
-        populateDtoToUser(userDto, user);
+        Optional<User> optionalUser = userRepository.findById(userId);
 
-        return userRepository.save(user);
+        if(!optionalUser.isPresent()){
+            throw new ResourceNotFoundException("User not found");
+        }
+
+        populateDtoToUser(userDto, optionalUser.get());
+
+        return userRepository.save(optionalUser.get());
     }
 
     private static void populateDtoToUser(UserDto userDto, User user) {

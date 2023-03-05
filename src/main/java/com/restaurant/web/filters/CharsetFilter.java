@@ -14,8 +14,8 @@ public class CharsetFilter implements Filter {
     public void init(FilterConfig config) {
         log.debug("Filter creation starts");
 
-        encoding = config.getInitParameter("requestEncoding");
-        if (encoding == null) encoding = "UTF-8";
+//        encoding = config.getInitParameter("requestEncoding");
+//        if (encoding == null) encoding = "UTF-8";
 
         log.debug("Filter creation finished");
     }
