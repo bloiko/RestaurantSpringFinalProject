@@ -18,16 +18,16 @@ import java.io.PrintWriter;
 @Slf4j
 @Controller
 public class NoCommand {
-    @GetMapping("/error")
-    public String execute(HttpServletRequest request,
-                          HttpServletResponse response) throws IOException, ServletException {
-        log.debug("Command starts");
-        processError(request, response);
-        log.info("Error was processed");
-        log.debug("Command finished");
-        return "error-page";
-    }
-
+//    @GetMapping("/error")
+//    public String execute(HttpServletRequest request,
+//                          HttpServletResponse response) throws IOException, ServletException {
+//        log.debug("Command starts");
+//        processError(request, response);
+//        log.info("Error was processed");
+//        log.debug("Command finished");
+//        return "error-page";
+//    }
+//
     private void processError(HttpServletRequest request,
                               HttpServletResponse response) throws IOException {
         // Analyze the servlet exception

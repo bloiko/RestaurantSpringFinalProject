@@ -37,8 +37,7 @@ public class ReportController {
         ResourceDTO resourceDTO = excelService.exportMonthOrders(new Timestamp(startDate), new Timestamp(endDate));
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-Disposition",
-                "attachment; filename=" + "Order.xlsx");
+        httpHeaders.add("Content-Disposition", "attachment; filename=" + "Order.xlsx");
 
         return ResponseEntity.ok()
                 .contentType(resourceDTO.getMediaType())
