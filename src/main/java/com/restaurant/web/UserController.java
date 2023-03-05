@@ -5,8 +5,12 @@ import com.restaurant.service.UserService;
 import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.UserDto;
 import com.restaurant.web.mapper.UserDtoMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpServerErrorException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -28,6 +32,18 @@ public class UserController {
     public UserDto getUserDetailsById(@PathVariable Long userId) {
         User user = userService.getUserDetailsById(userId);
 
+        return userDtoMapper.mapUserToDto(user);
+    }
+
+    @GetMapping("/profile")
+    public UserDto getUserDetailsById() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        User user = userService.getUserByUserName(userDetails.getUsername());
+
+        if (user == null) {
+            throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, "User not found");
+        }
         return userDtoMapper.mapUserToDto(user);
     }
 
