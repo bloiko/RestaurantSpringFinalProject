@@ -30,8 +30,11 @@ public class JwtTokenFilter extends GenericFilterBean {
         LOGGER.info("Process request to check for a JSON Web Token ");
         String headerValue = ((HttpServletRequest) req).getHeader("Authorization");
         getBearerToken(headerValue).flatMap(userDetailsService::loadUserByJwtToken)
-                .ifPresent(userDetails -> SecurityContextHolder.getContext().setAuthentication(
-                new PreAuthenticatedAuthenticationToken(userDetails, "", userDetails.getAuthorities())));
+                .ifPresent(userDetails -> {
+                    SecurityContextHolder.getContext().setAuthentication(
+                            new PreAuthenticatedAuthenticationToken(userDetails, "", userDetails.getAuthorities()));
+                    LOGGER.info("User is authenticated with userName " + userDetails.getUsername());
+                });
 
         filterChain.doFilter(req, res);
     }
