@@ -1,14 +1,15 @@
 package com.restaurant.service;
 
 import com.restaurant.database.dao.OrderRepository;
+import com.restaurant.database.dao.UserRepository;
 import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.Order;
+import com.restaurant.database.entity.User;
 import com.restaurant.service.dto.ExcelBuilderDto;
 import com.restaurant.web.dto.ResourceDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -20,20 +21,27 @@ import java.util.function.Function;
 @Transactional(readOnly = true)
 public class ExcelService {
 
-    private final ExcelBuilderService excelBuilderService;
+    private final ExcelBuilderService<User> excelUserBuilderService;
+
+    private final ExcelBuilderService<Order> excelOrderBuilderService;
 
     private final OrderRepository orderRepository;
 
-    public ExcelService(ExcelBuilderService excelBuilderService, OrderRepository orderRepository) {
-        this.excelBuilderService = excelBuilderService;
+    private final UserRepository userRepository;
+
+    public ExcelService(ExcelBuilderService<User> excelUserBuilderService, ExcelBuilderService<Order> excelOrderBuilderService,
+                        OrderRepository orderRepository, UserRepository userRepository) {
+        this.excelUserBuilderService = excelUserBuilderService;
+        this.excelOrderBuilderService = excelOrderBuilderService;
         this.orderRepository = orderRepository;
+        this.userRepository = userRepository;
     }
 
 
     public ResourceDTO exportMonthOrders(Timestamp startDate, Timestamp endDate) {
         List<Order> orderList = orderRepository.findAllByOrderDateBetween(startDate, endDate);
         String[] columnNames = {"Order ID", "Order Date", "User Full Name", "User Email",
-                                "Order Status", "Food Item + Quantity + Price of one Item"};
+                "Order Status", "Food Item + Quantity + Price of one Item"};
         List<Function<Order, String>> functions = new ArrayList<>();
         functions.add(orderFunc -> String.valueOf(orderFunc.getId()));
         functions.add(orderFunc -> String.valueOf(orderFunc.getOrderDate()));
@@ -43,27 +51,48 @@ public class ExcelService {
         functions.add(orderFunc -> {
             List<Item> items = orderFunc.getItems();
             StringBuilder stringBuilder = new StringBuilder();
-            items.forEach(item -> {
-                stringBuilder.append(item.getFoodItem().getName())
-                        .append("    ")
-                        .append(item.getQuantity())
-                        .append(" items * ")
-                        .append(item.getFoodItem().getPrice())
-                        .append("$")
-                        .append(" = ")
-                        .append(item.getQuantity() * item.getFoodItem().getPrice())
-                        .append("$")
-                        .append("\n");
-            });
+            items.forEach(item -> stringBuilder.append(item.getFoodItem().getName())
+                    .append("    ")
+                    .append(item.getQuantity())
+                    .append(" items * ")
+                    .append(item.getFoodItem().getPrice())
+                    .append("$")
+                    .append(" = ")
+                    .append(item.getQuantity() * item.getFoodItem().getPrice())
+                    .append("$")
+                    .append("\n"));
             return stringBuilder.toString();
         });
-        ExcelBuilderDto excelBuilderDto = ExcelBuilderDto.builder()
+        ExcelBuilderDto<Order> excelBuilderDto = ExcelBuilderDto.<Order>builder()
                 .fileName("ORDERS")
-                .orderList(orderList)
+                .list(orderList)
                 .columnNames(columnNames)
                 .cellFunctions(functions)
                 .build();
 
-        return excelBuilderService.exportWithExcelBuilder(excelBuilderDto);
+        return excelOrderBuilderService.exportWithExcelBuilder(excelBuilderDto);
+    }
+
+    public ResourceDTO exportUsers() {
+        List<User> usersList = userRepository.findAll();
+        String[] columnNames = {"ID", "Username", "First Name", "Last Name",
+                "Email", "Phone number", "Address", "User Role"};
+        List<Function<User, String>> functions = new ArrayList<>();
+        functions.add(user -> String.valueOf(user.getId()));
+        functions.add(User::getUserName);
+        functions.add(User::getFirstName);
+        functions.add(User::getLastName);
+        functions.add(User::getEmail);
+        functions.add(User::getPhoneNumber);
+        functions.add(User::getAddress);
+        functions.add(user -> user.getRole().getName());
+        ExcelBuilderDto<User> excelBuilderDto = ExcelBuilderDto.<User>builder()
+                .fileName("USERS")
+                .list(usersList)
+                .columnNames(columnNames)
+                .cellFunctions(functions)
+                .build();
+
+        return excelUserBuilderService.exportWithExcelBuilder(excelBuilderDto);
     }
 }

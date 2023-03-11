@@ -3,12 +3,10 @@ package com.restaurant.service;
 import com.restaurant.database.entity.FoodItem;
 import com.restaurant.database.entity.MenuPage;
 import com.restaurant.web.dto.GetMenuResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-
-import static org.thymeleaf.util.StringUtils.isEmpty;
 
 @Service
 @Transactional
@@ -20,20 +18,13 @@ public class MenuService {
     }
 
     public GetMenuResponse getMenuPage(MenuPage menuPage) {
-        List<FoodItem> filteredFoodItems = foodItemService.getFoodItems(menuPage);
+        Page<FoodItem> pageFoodItems = foodItemService.getFoodItems(menuPage);
 
-        int numOfPages = getNumOfPages(filteredFoodItems, menuPage.getPageSize());
         return GetMenuResponse.builder()
                 .page(menuPage.getPageNumber())
-                .numOfPages(numOfPages)
+                .numOfPages(pageFoodItems.getTotalPages())
                 .categories(foodItemService.getCategories())
-                .foodItems(filteredFoodItems)
+                .foodItems(pageFoodItems.getContent())
                 .build();
-    }
-
-    private int getNumOfPages(List<FoodItem> foodItems, int itemsPerPage) {
-        int modOfTheDivision = foodItems.size() % itemsPerPage;
-        int incorrectNumOfPages = foodItems.size() / itemsPerPage;
-        return modOfTheDivision == 0 ? incorrectNumOfPages : incorrectNumOfPages + 1;
     }
 }

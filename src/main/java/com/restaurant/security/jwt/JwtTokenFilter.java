@@ -1,18 +1,16 @@
 package com.restaurant.security.jwt;
 
-import com.restaurant.web.exception.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Optional;
 
-@WebFilter(filterName = "JwtTokenFilter", urlPatterns = {"/*"})
 public class JwtTokenFilter implements Filter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenFilter.class);
     private static final String BEARER = "Bearer";
@@ -29,8 +27,9 @@ public class JwtTokenFilter implements Filter {
         LOGGER.info("Process request to check for a JSON Web Token ");
         if (((HttpServletRequest) req).getRequestURI().contains("/security")) {
             filterChain.doFilter(req, res);
+            return;
         }
-        String headerValue = ((HttpServletRequest) req).getHeader("Authorization");
+        String headerValue = ((HttpServletRequest) req).getHeader(HttpHeaders.AUTHORIZATION);
         getBearerToken(headerValue).flatMap(userDetailsService::loadUserByJwtToken)
                 .ifPresent(userDetails -> {
                     SecurityContextHolder.getContext().setAuthentication(
@@ -45,6 +44,6 @@ public class JwtTokenFilter implements Filter {
         if (headerVal != null && headerVal.startsWith(BEARER)) {
             return Optional.of(headerVal.replace(BEARER, "").trim());
         }
-        throw new UnauthorizedException("Unauthorized user");
+        throw new IllegalArgumentException("Bearer token is not in valid format");
     }
 }

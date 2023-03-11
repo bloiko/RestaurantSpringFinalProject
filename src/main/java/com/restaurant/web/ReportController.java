@@ -19,7 +19,7 @@ import java.util.Date;
 @RequestMapping("/report")
 public class ReportController {
 
-    private ExcelService excelService;
+    private final ExcelService excelService;
 
     public ReportController(ExcelService excelService) {
         this.excelService = excelService;
@@ -38,6 +38,19 @@ public class ReportController {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-Disposition", "attachment; filename=" + "Order.xlsx");
+
+        return ResponseEntity.ok()
+                .contentType(resourceDTO.getMediaType())
+                .headers(httpHeaders)
+                .body(resourceDTO.getResource());
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<Resource> exportMonthOrders() {
+        ResourceDTO resourceDTO = excelService.exportUsers();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Disposition", "attachment; filename=" + "Users.xlsx");
 
         return ResponseEntity.ok()
                 .contentType(resourceDTO.getMediaType())

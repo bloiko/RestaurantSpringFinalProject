@@ -2,13 +2,13 @@ package com.restaurant.web;
 
 import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.Order;
-import com.restaurant.service.OrderService;
 import com.restaurant.service.UserService;
 import com.restaurant.web.dto.FoodItemResponse;
 import com.restaurant.web.dto.MyOrdersDto;
 import com.restaurant.web.dto.MyOrdersResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,15 +17,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @RequestMapping
 public class MyOrdersController {
-    private final OrderService orderService;
 
     private final UserService userService;
 
-    public MyOrdersController(OrderService orderService, UserService userService) {
-        this.orderService = orderService;
+    public MyOrdersController(UserService userService) {
         this.userService = userService;
     }
 
