@@ -112,7 +112,7 @@ public class FoodItemService {
         return foodRepository.findAllByCategoryName(filter.getValue());
     }
 
-    public List<FoodItem> getFoodItems(MenuPage menuPage) {
+    public Page<FoodItem> getFoodItems(MenuPage menuPage) {
         Sort sort = getSortFromDto(menuPage);
 
         Pageable pageable = PageRequest.of(menuPage.getPageNumber() - 1, menuPage.getPageSize(), sort);
@@ -120,7 +120,7 @@ public class FoodItemService {
         return getFoodItems(menuPage.getFilterBy(), pageable);
     }
 
-    private List<FoodItem> getFoodItems(String filterBy, Pageable pageable) {
+    private Page<FoodItem> getFoodItems(String filterBy, Pageable pageable) {
         boolean filterAllCategories = filterBy == null;
         Page<FoodItem> foodItemsPage;
         if (filterAllCategories) {
@@ -128,7 +128,7 @@ public class FoodItemService {
         } else {
             foodItemsPage = foodRepository.findAllByCategoryName(filterBy, pageable);
         }
-        return foodItemsPage.getContent();
+        return foodItemsPage;
     }
 
     @NotNull

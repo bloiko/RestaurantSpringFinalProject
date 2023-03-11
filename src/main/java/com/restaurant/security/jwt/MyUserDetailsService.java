@@ -2,7 +2,7 @@ package com.restaurant.security.jwt;
 
 import com.restaurant.database.dao.UserRepository;
 import com.restaurant.database.entity.User;
-import com.restaurant.web.exception.UnauthorizedException;
+import com.restaurant.web.exception.ForbiddenException;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -52,14 +52,6 @@ public class MyUserDetailsService implements UserDetailsService {
                             .disabled(false)
                             .build());
         }
-        throw new UnauthorizedException("Unauthorized user");
-    }
-
-    public Optional<UserDetails> loadUserByJwtTokenAndDatabase(String jwtToken) {
-        if (jwtProvider.isValidToken(jwtToken)) {
-            return Optional.of(loadUserByUsername(jwtProvider.getUsername(jwtToken)));
-        } else {
-            return Optional.empty();
-        }
+        throw new ForbiddenException("Unauthorized user");
     }
 }

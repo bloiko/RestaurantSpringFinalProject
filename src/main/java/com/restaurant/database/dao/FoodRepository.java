@@ -1,7 +1,6 @@
 package com.restaurant.database.dao;
 
 
-import com.restaurant.database.entity.Category;
 import com.restaurant.database.entity.FoodItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,5 @@
 package com.restaurant.service;
 
-import com.restaurant.database.dao.OrderRepository;
-import com.restaurant.database.entity.Order;
 import com.restaurant.service.dto.ExcelBuilderDto;
 import com.restaurant.web.dto.ResourceDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -15,30 +13,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 @Slf4j
 @Service
 @Transactional(readOnly = true)
-public class ExcelBuilderService {
-
-    private final OrderRepository orderRepository;
+public class ExcelBuilderService <T> {
 
 
-    public ExcelBuilderService(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
-
-    public ResourceDTO exportWithExcelBuilder(ExcelBuilderDto excelBuilderDto) {;
+    public ResourceDTO exportWithExcelBuilder(ExcelBuilderDto<T> excelBuilderDto) {;
         Resource resource = prepareExcel(excelBuilderDto);
         return ResourceDTO.builder().resource(resource).
                 mediaType(MediaType.parseMediaType
                         ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")).build();
     }
 
-    private Resource prepareExcel(ExcelBuilderDto excelBuilderDto) {
+    private Resource prepareExcel(ExcelBuilderDto<T> excelBuilderDto) {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet(excelBuilderDto.getFileName());
 
@@ -55,7 +45,7 @@ public class ExcelBuilderService {
     }
 
     private void populateOrderData(Workbook workbook, Sheet sheet,
-                                   ExcelBuilderDto excelBuilderDto) {
+                                   ExcelBuilderDto<T> excelBuilderDto) {
         int rowNo = 1;
         Font font = workbook.createFont();
         font.setFontName("Arial");
@@ -66,10 +56,10 @@ public class ExcelBuilderService {
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
         cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         cellStyle.setWrapText(true);
-        for (Order order : excelBuilderDto.getOrderList()) {
+        for (T order : excelBuilderDto.getList()) {
             int columnNo = 0;
             Row row = sheet.createRow(rowNo);
-            for (Function<Order, String> function : excelBuilderDto.getCellFunctions()) {
+            for (Function<T, String> function : excelBuilderDto.getCellFunctions()) {
                 populateCell(sheet, row, columnNo++, function.apply(order), cellStyle);
             }
             rowNo++;

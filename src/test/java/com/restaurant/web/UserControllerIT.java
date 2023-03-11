@@ -125,7 +125,7 @@ class UserControllerIT {
             User expectedUser = users.stream()
                     .filter(user -> user.getId().equals(usersDetail.getId()))
                     .findAny()
-                    .orElseGet(() -> null);
+                    .orElse(null);
             assertNotNull(expectedUser);
             assertEquals(expectedUser.getUserName(), usersDetail.getUsername());
             assertEquals(expectedUser.getFirstName(), usersDetail.getFirstName());

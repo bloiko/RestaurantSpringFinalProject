@@ -1,12 +1,9 @@
 package com.restaurant.web;
 
-import com.restaurant.database.entity.Role;
-import com.restaurant.database.entity.User;
 import com.restaurant.service.UserService;
 import com.restaurant.web.dto.LoginRequest;
 import com.restaurant.web.dto.LoginResponse;
 import com.restaurant.web.dto.RegistrationRequest;
-import com.restaurant.web.dto.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,14 +47,6 @@ class LoginControllerTest {
     @Test
     void registrationTest() {
         RegistrationRequest registrationRequest = new RegistrationRequest(USER_NAME, PASSWORD, "firstName", "lastName", EMAIL);
-        User expectedUser = User.builder()
-                .userName(USER_NAME)
-                .password(PASSWORD)
-                .firstName("firstName")
-                .lastName("lastName")
-                .email(EMAIL)
-                .role(new Role(1L, "USER"))
-                .build();
         when(userService.register(registrationRequest)).thenReturn("token");
 
         LoginResponse loginResponse = loginController.register(registrationRequest);

@@ -1,6 +1,5 @@
 package com.restaurant.service.dto;
 
-import com.restaurant.database.entity.Order;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,13 +8,13 @@ import java.util.function.Function;
 
 @Data
 @Builder
-public class ExcelBuilderDto {
+public class ExcelBuilderDto<T> {
 
     private String fileName;
 
-    private List<Order> orderList;
+    private List<T> list;
 
     private String[] columnNames;
 
-    private List<Function<Order, String>> cellFunctions;
+    private List<Function<T, String>> cellFunctions;
 }

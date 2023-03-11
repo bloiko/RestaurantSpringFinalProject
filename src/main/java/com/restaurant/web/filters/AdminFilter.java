@@ -30,8 +30,6 @@ public class AdminFilter implements Filter {
         log.trace("Get attribute from the session: username_admin --> " + username);
 
         if (username == null && servletRequest.getRequestURI().endsWith("/AdminController")) {
-            log.info("User " + username + " try to get to the admin page");
-
             log.debug("Filter finished");
             ((HttpServletResponse) response).sendRedirect("login-admin.html");
         } else {

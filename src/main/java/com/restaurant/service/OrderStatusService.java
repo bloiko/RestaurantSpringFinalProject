@@ -22,10 +22,6 @@ public class OrderStatusService {
         this.orderStatusRepository = orderStatusRepository;
     }
 
-    public List<OrderStatus> findAll(){
-        return orderStatusRepository.findAll();
-    }
-
     public OrderStatus findByStatusName(String name){
         return orderStatusRepository.findByStatusName(name);
     }
