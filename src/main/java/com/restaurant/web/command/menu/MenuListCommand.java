@@ -2,7 +2,7 @@ package com.restaurant.web.command.menu;
 
 
 import com.restaurant.database.entity.Item;
-import com.restaurant.database.entity.MenuPage;
+import com.restaurant.web.dto.MenuPage;
 import com.restaurant.service.MenuService;
 import com.restaurant.web.dto.GetMenuResponse;
 import org.springframework.data.domain.Sort;
