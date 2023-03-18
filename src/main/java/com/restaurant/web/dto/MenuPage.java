@@ -1,4 +1,4 @@
-package com.restaurant.database.entity;
+package com.restaurant.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -2,10 +2,13 @@ package com.restaurant.web;
 
 import com.restaurant.database.entity.User;
 import com.restaurant.service.UserService;
+import com.restaurant.web.dto.GetUsersResponse;
 import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.UserDto;
+import com.restaurant.web.dto.UsersPage;
 import com.restaurant.web.exception.ResourceNotFoundException;
 import com.restaurant.web.mapper.UserDtoMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -73,6 +76,22 @@ public class UserController {
         List<User> users = userService.getAllUsers();
 
         return users.stream().map(userDtoMapper::mapUserToDto).collect(Collectors.toList());
+    }
+
+    @GetMapping("/pageable")
+    public GetUsersResponse getAllUsersDetailsByPage(@RequestBody UsersPage usersPage) {
+        Page<User> users = userService.getAllUsersByPage(usersPage);
+
+        List<UserDto> userDtos = users.getContent()
+                .stream()
+                .map(userDtoMapper::mapUserToDto)
+                .collect(Collectors.toList());
+
+        return GetUsersResponse.builder()
+                .page(usersPage.getPageNumber())
+                .numOfPages(users.getTotalPages())
+                .users(userDtos)
+                .build();
     }
 
     @DeleteMapping ("/{userId}")

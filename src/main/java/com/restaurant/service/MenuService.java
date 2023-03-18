@@ -1,7 +1,7 @@
 package com.restaurant.service;
 
 import com.restaurant.database.entity.FoodItem;
-import com.restaurant.database.entity.MenuPage;
+import com.restaurant.web.dto.MenuPage;
 import com.restaurant.web.dto.GetMenuResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;

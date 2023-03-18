@@ -3,7 +3,7 @@ package com.restaurant.web;
 import com.restaurant.RestaurantApplication;
 import com.restaurant.database.dao.FoodRepository;
 import com.restaurant.database.entity.FoodItem;
-import com.restaurant.database.entity.MenuPage;
+import com.restaurant.web.dto.MenuPage;
 import com.restaurant.web.dto.GetMenuResponse;
 import com.restaurant.web.dto.MenuFilterBy;
 import org.jetbrains.annotations.NotNull;

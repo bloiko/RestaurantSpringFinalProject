@@ -4,6 +4,7 @@ package com.restaurant.service;
 import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.RoleRepository;
 import com.restaurant.database.dao.UserRepository;
+import com.restaurant.database.entity.FoodItem;
 import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
@@ -11,10 +12,15 @@ import com.restaurant.security.jwt.JwtProvider;
 import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
+import com.restaurant.web.dto.UsersPage;
 import com.restaurant.web.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,6 +48,8 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Service
 @Transactional
 public class UserService {
+    private static final String DEFAULT_SORT_BY_FILTER = "userName";
+    private static final String ALL = "ALL";
     private final UserRepository userRepository;
 
     private final OrderRepository orderRepository;
@@ -251,5 +259,23 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public Page<User> getAllUsersByPage(UsersPage usersPage) {
+        Sort sort = getSortFromDto(usersPage);
+
+        Pageable pageable = PageRequest.of(usersPage.getPageNumber() - 1, usersPage.getPageSize(), sort);
+
+        return getAllUsersByPageable(pageable);
+    }
+
+    private Sort getSortFromDto(UsersPage usersPage) {
+        String sortBy = usersPage.getSortBy() != null ? usersPage.getSortBy() : DEFAULT_SORT_BY_FILTER;
+
+        return Sort.by(usersPage.getSortDirection(), sortBy);
+    }
+
+    private Page<User> getAllUsersByPageable(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 }

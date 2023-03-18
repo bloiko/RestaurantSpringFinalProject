@@ -6,7 +6,7 @@ import com.restaurant.database.dao.FoodRepository;
 import com.restaurant.database.entity.Category;
 import com.restaurant.database.entity.FoodItem;
 import com.restaurant.database.entity.Item;
-import com.restaurant.database.entity.MenuPage;
+import com.restaurant.web.dto.MenuPage;
 import com.restaurant.web.dto.FoodItemRequest;
 import com.restaurant.web.dto.MenuFilterBy;
 import org.jetbrains.annotations.NotNull;
@@ -20,8 +20,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static com.restaurant.web.dto.MenuFilterBy.ALL_CATEGORIES;
-
 
 /**
  * Food Item service.
@@ -32,6 +30,8 @@ import static com.restaurant.web.dto.MenuFilterBy.ALL_CATEGORIES;
 @Transactional
 public class FoodItemService {
     public static final String DEFAULT_SORT_BY_FILTER = "category";
+
+    public static final String ALL_CATEGORIES = "All categories";
 
     private final FoodRepository foodRepository;
 
@@ -105,7 +105,7 @@ public class FoodItemService {
     }
 
     public List<FoodItem> getFoodItemsFilterBy(MenuFilterBy filter) {
-        if (ALL_CATEGORIES.equals(filter)) {
+        if (MenuFilterBy.ALL_CATEGORIES.equals(filter)) {
             return getFoodItems();
         }
 
@@ -121,14 +121,11 @@ public class FoodItemService {
     }
 
     private Page<FoodItem> getFoodItems(String filterBy, Pageable pageable) {
-        boolean filterAllCategories = filterBy == null;
-        Page<FoodItem> foodItemsPage;
-        if (filterAllCategories) {
-            foodItemsPage = foodRepository.findAll(pageable);
+        if (filterBy == null || filterBy.equals(ALL_CATEGORIES)) {
+            return foodRepository.findAll(pageable);
         } else {
-            foodItemsPage = foodRepository.findAllByCategoryName(filterBy, pageable);
+            return foodRepository.findAllByCategoryName(filterBy, pageable);
         }
-        return foodItemsPage;
     }
 
     @NotNull

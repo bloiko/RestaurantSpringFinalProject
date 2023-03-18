@@ -1,7 +1,7 @@
 package com.restaurant.web;
 
 import com.restaurant.database.entity.FoodItem;
-import com.restaurant.database.entity.MenuPage;
+import com.restaurant.web.dto.MenuPage;
 import com.restaurant.service.FoodItemService;
 import com.restaurant.service.MenuService;
 import com.restaurant.web.dto.GetMenuResponse;
