@@ -1,13 +1,16 @@
 package com.restaurant.security.jwt;
 
+import com.restaurant.web.exception.ForbiddenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -30,13 +33,18 @@ public class JwtTokenFilter implements Filter {
             return;
         }
         String headerValue = ((HttpServletRequest) req).getHeader(HttpHeaders.AUTHORIZATION);
-        getBearerToken(headerValue).flatMap(userDetailsService::loadUserByJwtToken)
-                .ifPresent(userDetails -> {
-                    SecurityContextHolder.getContext().setAuthentication(
-                            new PreAuthenticatedAuthenticationToken(userDetails, "", userDetails.getAuthorities()));
-                    LOGGER.info("User is authenticated with userName " + userDetails.getUsername());
-                });
-
+        try {
+            getBearerToken(headerValue).flatMap(userDetailsService::loadUserByJwtToken)
+                    .ifPresent(userDetails -> {
+                        SecurityContextHolder.getContext().setAuthentication(
+                                new PreAuthenticatedAuthenticationToken(userDetails, "", userDetails.getAuthorities()));
+                        LOGGER.info("User is authenticated with userName " + userDetails.getUsername());
+                    });
+        } catch (ForbiddenException ex) {
+            ((HttpServletResponse) res).sendError(HttpStatus.FORBIDDEN.value(), ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            ((HttpServletResponse) res).sendError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        }
         filterChain.doFilter(req, res);
     }
 
