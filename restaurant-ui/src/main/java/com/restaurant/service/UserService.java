@@ -4,11 +4,12 @@ package com.restaurant.service;
 import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.RoleRepository;
 import com.restaurant.database.dao.UserRepository;
-import com.restaurant.database.entity.FoodItem;
 import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.security.jwt.JwtProvider;
+import com.restaurant.messaging.email.EmailMessagesSender;
+import com.restaurant.messaging.email.EmailService;
 import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
@@ -64,9 +65,11 @@ public class UserService {
 
     private final EmailService emailService;
 
+    private final EmailMessagesSender emailMessagesSender;
+
     @Autowired
     public UserService(UserRepository userRepository, OrderRepository orderRepository, AuthenticationManager authenticationManager,
-                       RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider, EmailService emailService) {
+                       RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider, EmailService emailService, EmailMessagesSender emailMessagesSender) {
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
         this.authenticationManager = authenticationManager;
@@ -74,6 +77,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
         this.emailService = emailService;
+        this.emailMessagesSender = emailMessagesSender;
     }
 
     public String login(String username, String password) {
@@ -94,11 +98,12 @@ public class UserService {
     public String register(RegistrationRequest registrationRequest) {
         User registeredUserInDb = registerUserInDb(registrationRequest);
 
-        try {
-            emailService.sendSuccessfulRegistrationEmail(registrationRequest);
-        } catch (MessagingException | IOException e) {
-            log.error("Cannot send email to user with email = {}", registeredUserInDb.getEmail());
-        }
+        emailMessagesSender.send(registrationRequest);
+//        try {
+//            emailService.sendSuccessfulRegistrationEmail(registrationRequest);
+//        } catch (MessagingException | IOException e) {
+//            log.error("Cannot send email to user with email = {}", registeredUserInDb.getEmail());
+//        }
 
         if (registeredUserInDb == null){
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");

@@ -9,6 +9,8 @@ import com.restaurant.database.entity.OrderStatus;
 import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.security.jwt.JwtProvider;
+import com.restaurant.messaging.email.EmailMessagesSender;
+import com.restaurant.messaging.email.EmailService;
 import com.restaurant.web.dto.RegistrationRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +63,10 @@ class UserServiceTest {
 
     @MockBean
     private JwtProvider jwtProvider;
+
+    @MockBean
+    private EmailMessagesSender emailMessagesSender;
+
     @Test
     void isCorrectAdmin() {
         when(userRepository.findByUserName(USER_NAME)).thenReturn(Optional.of(buildAdminUser()));

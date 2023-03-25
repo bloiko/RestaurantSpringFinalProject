@@ -15,7 +15,6 @@ public class PasswordDto {
     @NotEmpty(message = "Old password must be filled!")
     private String oldPassword;
 
-    @NotEmpty(message = "New password must be filled!")
     @ValidPassword
     private String newPassword;
 }
