@@ -5,6 +5,7 @@ import com.restaurant.database.dao.UserRepository;
 import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.security.jwt.JwtProvider;
+import com.restaurant.messaging.email.EmailMessagesSender;
 import com.restaurant.web.dto.LoginRequest;
 import com.restaurant.web.dto.LoginResponse;
 import com.restaurant.web.dto.RegistrationRequest;
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
@@ -48,6 +50,8 @@ public class LoginControllerIT {
     @Autowired
     private JwtProvider jwtProvider;
 
+    @MockBean
+    private EmailMessagesSender emailMessagesSender;
 
     @Test
     public void testCorrectLogin() {

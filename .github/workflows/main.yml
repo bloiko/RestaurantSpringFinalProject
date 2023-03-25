@@ -34,5 +34,5 @@ jobs:
     
       - name: Step 5 - What is in the target folder?
         run: |
-           cd target
+           cd restaurant-ui/target
            ls -a
