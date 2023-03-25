@@ -2,6 +2,7 @@ package com.restaurant.web;
 
 import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.Order;
+import com.restaurant.database.entity.PromoCode;
 import com.restaurant.service.UserService;
 import com.restaurant.web.dto.FoodItemResponse;
 import com.restaurant.web.dto.MyOrdersDto;
@@ -37,9 +38,16 @@ public class MyOrdersController {
     }
 
     private MyOrdersResponse mapToMyOrdersResponse(List<Order> orders) {
-        List<MyOrdersDto> orderDtos = orders.stream().map(order -> new MyOrdersDto(order.getId(), order.getOrderDate(),
-                order.getOrderPrice().intValue(), mapToFoodItemResponse(order.getItems()),
-                order.getOrderStatus().getStatusName()))
+        List<MyOrdersDto> orderDtos = orders.stream().map(order -> {
+                    PromoCode promoCode = order.getPromoCode();
+                    int discount = 0;
+                    if (promoCode != null) {
+                        discount = promoCode.getDiscount();
+                    }
+                    return new MyOrdersDto(order.getId(), order.getOrderDate(),
+                            order.getOrderPrice().intValue(), mapToFoodItemResponse(order.getItems()),
+                            order.getOrderStatus().getStatusName(), discount);
+                })
                 .collect(Collectors.toList());
         return new MyOrdersResponse(orderDtos);
     }

@@ -4,6 +4,7 @@ package com.restaurant.service;
 import com.restaurant.database.dao.FoodRepository;
 import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.OrderStatusRepository;
+import com.restaurant.database.dao.PromoCodeRepository;
 import com.restaurant.database.entity.*;
 import com.restaurant.web.dto.FoodItemDto;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,7 @@ import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -41,16 +43,27 @@ public class OrderService {
 
     private final FoodRepository foodRepository;
 
-    public OrderService(OrderRepository orderRepository, OrderStatusRepository statusRepository, UserService userService, FoodRepository foodRepository) {
+    private final PromoCodeRepository promoCodeRepository;
+
+    public OrderService(OrderRepository orderRepository, OrderStatusRepository statusRepository, UserService userService, FoodRepository foodRepository, PromoCodeRepository promoCodeRepository) {
         this.orderRepository = orderRepository;
         this.statusRepository = statusRepository;
         this.userService = userService;
         this.foodRepository = foodRepository;
+        this.promoCodeRepository = promoCodeRepository;
     }
 
-    public Long addOrderAndGetId(List<Item> items, User user) {
+    public Long addOrderAndGetId(List<Item> items, User user, String promoCode) {
         if (isEmpty(items)) {
             throw new IllegalArgumentException("List of items cannot be null or empty");
+        }
+
+        Optional<PromoCode> promoCodeOptional = promoCodeRepository.findByCode(promoCode);
+        int discount = 0;
+        PromoCode promoCodeObject = null;
+        if(promoCodeOptional.isPresent()){
+            promoCodeObject = promoCodeOptional.get();
+            discount = promoCodeObject.getDiscount();
         }
 
         OrderStatus waitingStatus = statusRepository.findByStatusName(WAITING_STATUS);
@@ -61,7 +74,8 @@ public class OrderService {
                 .orderDate(new Timestamp(new Date().getTime()))
                 .orderStatus(waitingStatus)
                 .items(items)
-                .orderPrice(getPriceSumOfAllItems(items))
+                .orderPrice(getPriceSumOfAllItems(items, discount))
+                .promoCode(promoCodeObject)
                 .build();
 
         for (Item item : items){
@@ -71,12 +85,13 @@ public class OrderService {
     }
 
     @NotNull
-    private static BigDecimal getPriceSumOfAllItems(List<Item> items) {
+    private static BigDecimal getPriceSumOfAllItems(List<Item> items, int discount) {
         BigDecimal price = new BigDecimal(0);
         for (Item item : items) {
             price = price.add(new BigDecimal(item.getQuantity() * item.getFoodItem().getPrice()));
         }
-        return price;
+        BigDecimal priceDiscount = price.multiply(new BigDecimal(discount).divide(new BigDecimal(100)));
+        return price.subtract(priceDiscount);
     }
 
     public List<OrderStatus> getStatuses() {
@@ -104,14 +119,15 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public Long orderFoodItems(List<FoodItemDto> foodItemsDto) {
+    public Long orderFoodItems(List<FoodItemDto> foodItemsDto, String promoCode) {
         User user = getCurrentUser();
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
         }
 
         List<Item> itemsToOrder = createItems(foodItemsDto);
-        return addOrderAndGetId(itemsToOrder, user);
+
+        return addOrderAndGetId(itemsToOrder, user, promoCode);
     }
 
     @NotNull

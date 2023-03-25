@@ -18,6 +18,6 @@ public class OrderController {
 
     @PostMapping("/cart/order1")
     public Long orderCart(@RequestBody OrderRequest orderRequest) {
-        return orderService.orderFoodItems(orderRequest.getFoodItems());
+        return orderService.orderFoodItems(orderRequest.getFoodItems(), orderRequest.getPromoCode());
     }
 }
