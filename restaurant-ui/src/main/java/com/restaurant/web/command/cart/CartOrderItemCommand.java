@@ -51,7 +51,7 @@ public class CartOrderItemCommand {
         }
 
         List<Item> cart = (List<Item>) session.getAttribute("cart");
-        Long orderId = orderService.addOrderAndGetId(cart, user);
+        Long orderId = orderService.addOrderAndGetId(cart, user, "");
         model.addAttribute("orderId", orderId);
         log.trace("Set attribute to the request: orderId --> " + orderId);
 

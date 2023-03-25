@@ -22,4 +22,6 @@ public class MyOrdersDto {
 
     private String orderStatus;
 
+    private int promoCodeDiscount = 0;
+
 }
