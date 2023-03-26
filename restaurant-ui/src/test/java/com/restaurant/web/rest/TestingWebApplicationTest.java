@@ -26,12 +26,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TestingWebApplicationTest {
 
-    @Value(value="${local.server.port}")
+    public static final String VALID_BEARER_TOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjp7ImF1dGhvcml0eSI6IkFETUlOIn0sImlhdCI6MTY3OTgzMzQwNCwiZXhwIjoxNjc5ODUxNDA0fQ.MyXqiCzhuaASOcffSClkwTaSJ2bZYimI12Y9o--ndBE";
+
+    @Value(value = "${local.server.port}")
     private int port;
 
     @Autowired
     private TestRestTemplate restTemplate;
-
 
     @Test
     public void shouldReturnForbiddenStatus() throws URISyntaxException {
@@ -55,5 +56,29 @@ public class TestingWebApplicationTest {
         ResponseEntity<String> responseEntity = this.restTemplate.exchange(requestEntity, String.class);
 
         assertThat(responseEntity.getStatusCode().value()).isEqualTo(400);
+    }
+
+    @Test
+    public void shouldReturnSuccessWhenDoReportOrders() throws URISyntaxException {
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.put(HttpHeaders.AUTHORIZATION, singletonList(VALID_BEARER_TOKEN));
+        URI url = new URI("http://localhost:" + port + "/report/orders/month");
+        RequestEntity<Object> requestEntity = new RequestEntity<>(headers, HttpMethod.GET, url);
+
+        ResponseEntity<String> responseEntity = this.restTemplate.exchange(requestEntity, String.class);
+
+        assertThat(responseEntity.getStatusCode().value()).isEqualTo(200);
+    }
+
+    @Test
+    public void shouldReturnSuccessWhenDoReportUsers() throws URISyntaxException {
+        MultiValueMap<String, String> headers = new HttpHeaders();
+        headers.put(HttpHeaders.AUTHORIZATION, singletonList(VALID_BEARER_TOKEN));
+        URI url = new URI("http://localhost:" + port + "/report/users");
+        RequestEntity<Object> requestEntity = new RequestEntity<>(headers, HttpMethod.GET, url);
+
+        ResponseEntity<String> responseEntity = this.restTemplate.exchange(requestEntity, String.class);
+
+        assertThat(responseEntity.getStatusCode().value()).isEqualTo(200);
     }
 }

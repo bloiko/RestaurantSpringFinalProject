@@ -76,16 +76,16 @@ class OrderControllerIT {
         setSecurityContext();
         String promoCode = "PROMOCODE_20";
         int discount = 20;
-        promoCodeRepository.save(new PromoCode(promoCode, discount));
-        OrderRequest orderRequest = new OrderRequest(newArrayList(new FoodItemDto(1L, 2), new FoodItemDto(2L, 5)), promoCode);
+        promoCodeRepository.save(new PromoCode(promoCode, discount, true));
+        OrderRequest orderRequest = new OrderRequest(newArrayList(new FoodItemDto(3L, 2), new FoodItemDto(4L, 5)), promoCode);
 
         Long orderId = orderController.orderCart(orderRequest);
 
         Order orderFromDb = orderRepository.getById(orderId);
         assertEquals(orderId, orderFromDb.getId());
         assertEquals(USER_NAME, orderFromDb.getUser().getUserName());
-        FoodItem foodItem1 = foodRepository.getById(1L);
-        FoodItem foodItem2 = foodRepository.getById(2L);
+        FoodItem foodItem1 = foodRepository.getById(3L);
+        FoodItem foodItem2 = foodRepository.getById(4L);
         List<Item> itemList = orderFromDb.getItems();
         assertEquals(2, itemList.size());
         assertEquals(foodItem1.getId(), itemList.get(0).getId());
