@@ -61,7 +61,7 @@ public class OrderService {
         Optional<PromoCode> promoCodeOptional = promoCodeRepository.findByCode(promoCode);
         int discount = 0;
         PromoCode promoCodeObject = null;
-        if(promoCodeOptional.isPresent()){
+        if(promoCodeOptional.isPresent() && promoCodeOptional.get().isActive()){
             promoCodeObject = promoCodeOptional.get();
             discount = promoCodeObject.getDiscount();
         }

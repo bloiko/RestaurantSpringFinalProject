@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PromoCodeDto {
-    private boolean exists;
+    private boolean active;
 
     private String code;
 

@@ -4,6 +4,7 @@ import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.UserRepository;
 import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.Order;
+import com.restaurant.database.entity.PromoCode;
 import com.restaurant.database.entity.User;
 import com.restaurant.service.dto.ExcelBuilderDto;
 import com.restaurant.web.dto.ResourceDTO;
@@ -41,7 +42,7 @@ public class ExcelService {
     public ResourceDTO exportMonthOrders(Timestamp startDate, Timestamp endDate) {
         List<Order> orderList = orderRepository.findAllByOrderDateBetween(startDate, endDate);
         String[] columnNames = {"Order ID", "Order Date", "User Full Name", "User Email",
-                "Order Status", "Food Item + Quantity + Price of one Item"};
+                "Order Status", "Food Item + Quantity + Price of one Item", "Full price", "Discount"};
         List<Function<Order, String>> functions = new ArrayList<>();
         functions.add(orderFunc -> String.valueOf(orderFunc.getId()));
         functions.add(orderFunc -> String.valueOf(orderFunc.getOrderDate()));
@@ -63,6 +64,12 @@ public class ExcelService {
                     .append("\n"));
             return stringBuilder.toString();
         });
+        functions.add(orderFunc -> orderFunc.getOrderPrice() + "$");
+        functions.add(orderFunc -> {
+            PromoCode promoCode = orderFunc.getPromoCode();
+            return promoCode != null ? String.valueOf(promoCode.getDiscount()) : String.valueOf(0);
+        });
+
         ExcelBuilderDto<Order> excelBuilderDto = ExcelBuilderDto.<Order>builder()
                 .fileName("ORDERS")
                 .list(orderList)

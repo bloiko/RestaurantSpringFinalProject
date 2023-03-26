@@ -28,4 +28,7 @@ public class PromoCode {
     @Min(value = 0, message = "Discount should not be less than 0")
     @Max(value = 50, message = "Discount must not be greater than 50")
     private int discount;
+
+    @Column(name = "active")
+    private boolean active;
 }
