@@ -24,7 +24,7 @@ public class EmailMessagesReceiver {
         log.info("Registration request was taken into handling: " + registrationRequest);
         try {
             emailService.sendSuccessfulRegistrationEmail(registrationRequest);
-        } catch (MessagingException | IOException e) {
+        } catch (Exception e) {
             log.error("Cannot send email to user with email = {}", registrationRequest.getEmail());
         }
     }

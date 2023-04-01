@@ -1,6 +1,8 @@
 package com.restaurant.service;
 
 
+import com.restaurant.database.entity.ActionType;
+import com.restaurant.database.entity.EntityType;
 import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.RoleRepository;
 import com.restaurant.database.dao.UserRepository;
@@ -9,7 +11,6 @@ import com.restaurant.database.entity.Role;
 import com.restaurant.database.entity.User;
 import com.restaurant.security.jwt.JwtProvider;
 import com.restaurant.messaging.email.EmailMessagesSender;
-import com.restaurant.messaging.email.EmailService;
 import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
@@ -30,9 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 
-import javax.mail.MessagingException;
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +49,6 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Transactional
 public class UserService {
     private static final String DEFAULT_SORT_BY_FILTER = "userName";
-    private static final String ALL = "ALL";
     private final UserRepository userRepository;
 
     private final OrderRepository orderRepository;
@@ -63,21 +61,22 @@ public class UserService {
 
     private final JwtProvider jwtProvider;
 
-    private final EmailService emailService;
-
     private final EmailMessagesSender emailMessagesSender;
+
+    private final AuditSender auditSender;
 
     @Autowired
     public UserService(UserRepository userRepository, OrderRepository orderRepository, AuthenticationManager authenticationManager,
-                       RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider, EmailService emailService, EmailMessagesSender emailMessagesSender) {
+                       RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider, EmailMessagesSender emailMessagesSender,
+                       AuditSender auditSender) {
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
         this.authenticationManager = authenticationManager;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtProvider = jwtProvider;
-        this.emailService = emailService;
         this.emailMessagesSender = emailMessagesSender;
+        this.auditSender = auditSender;
     }
 
     public String login(String username, String password) {
@@ -98,12 +97,11 @@ public class UserService {
     public String register(RegistrationRequest registrationRequest) {
         User registeredUserInDb = registerUserInDb(registrationRequest);
 
-        emailMessagesSender.send(registrationRequest);
-//        try {
-//            emailService.sendSuccessfulRegistrationEmail(registrationRequest);
-//        } catch (MessagingException | IOException e) {
-//            log.error("Cannot send email to user with email = {}", registeredUserInDb.getEmail());
-//        }
+        try {
+            emailMessagesSender.send(registrationRequest);
+        } catch (Exception e) {
+            log.error("Cannot send email to user with email = {}", registeredUserInDb.getEmail());
+        }
 
         if (registeredUserInDb == null){
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
@@ -111,6 +109,8 @@ public class UserService {
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(registrationRequest.getUsername(), registrationRequest.getPassword()));
+
+            auditSender.addAudit(registeredUserInDb.getId(), EntityType.USER, ActionType.CREATE_USER);
             return jwtProvider.createToken(registeredUserInDb.getUserName(), registeredUserInDb.getRole());
         } catch (AuthenticationException e) {
             log.info("Failed to authenticate after registration", e);
@@ -211,8 +211,10 @@ public class UserService {
         }
 
         populateDtoToUser(userDto, optionalUser.get());
+        User user = userRepository.save(optionalUser.get());
 
-        return userRepository.save(optionalUser.get());
+        auditSender.addAudit(userId, EntityType.USER, ActionType.UPDATE_USER_DETAILS);
+        return user;
     }
 
     private static void populateDtoToUser(UserDto userDto, User user) {
@@ -235,6 +237,8 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
         userRepository.save(user);
+
+        auditSender.addAudit(userId, EntityType.USER, ActionType.UPDATE_USER_PASSWORD);
     }
 
     private void validateEqualityOfPasswords(String oldPassword, String currentPassword) {
@@ -258,6 +262,8 @@ public class UserService {
 
         orderRepository.deleteAllByUserId(userOptional.get().getId());
         userOptional.ifPresent(userRepository::delete);
+
+        auditSender.addAudit(userId, EntityType.USER, ActionType.DELETE_USER);
 
         return String.valueOf(userId);
     }

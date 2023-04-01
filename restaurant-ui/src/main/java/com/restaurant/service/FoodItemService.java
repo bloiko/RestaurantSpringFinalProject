@@ -1,6 +1,8 @@
 package com.restaurant.service;
 
 
+import com.restaurant.database.entity.ActionType;
+import com.restaurant.database.entity.EntityType;
 import com.restaurant.database.dao.CategoryRepository;
 import com.restaurant.database.dao.FoodRepository;
 import com.restaurant.database.entity.Category;
@@ -39,10 +41,14 @@ public class FoodItemService {
 
     private final CartService cartService;
 
-    public FoodItemService(FoodRepository foodRepository, CategoryRepository categoryRepository, CartService cartService) {
+    private final AuditSender auditSender;
+
+    public FoodItemService(FoodRepository foodRepository, CategoryRepository categoryRepository, CartService cartService,
+                           AuditSender auditSender) {
         this.foodRepository = foodRepository;
         this.categoryRepository = categoryRepository;
         this.cartService = cartService;
+        this.auditSender = auditSender;
     }
 
     public FoodItemRequest addNewFoodItem(FoodItemRequest request) {
@@ -55,6 +61,8 @@ public class FoodItemService {
         foodRepository.save(foodItem);
 
         request.setId(foodItem.getId());
+
+        auditSender.addAudit(foodItem.getId(), EntityType.FOOD_ITEM, ActionType.CREATE_FOOD_ITEM);
         return request;
     }
 
@@ -74,8 +82,9 @@ public class FoodItemService {
         foodItem.setImage(request.getImage());
         foodItem.setPrice(request.getPrice());
         foodRepository.save(foodItem);
-
         request.setId(foodItem.getId());
+
+        auditSender.addAudit(foodItem.getId(), EntityType.FOOD_ITEM, ActionType.UPDATE_FOOD_ITEM);
         return request;
     }
 

@@ -1,6 +1,8 @@
 package com.restaurant.service;
 
 
+import com.restaurant.database.entity.ActionType;
+import com.restaurant.database.entity.EntityType;
 import com.restaurant.database.dao.FoodRepository;
 import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.OrderStatusRepository;
@@ -45,12 +47,16 @@ public class OrderService {
 
     private final PromoCodeRepository promoCodeRepository;
 
-    public OrderService(OrderRepository orderRepository, OrderStatusRepository statusRepository, UserService userService, FoodRepository foodRepository, PromoCodeRepository promoCodeRepository) {
+    private final AuditSender auditSender;
+
+    public OrderService(OrderRepository orderRepository, OrderStatusRepository statusRepository, UserService userService,
+                        FoodRepository foodRepository, PromoCodeRepository promoCodeRepository, AuditSender auditSender) {
         this.orderRepository = orderRepository;
         this.statusRepository = statusRepository;
         this.userService = userService;
         this.foodRepository = foodRepository;
         this.promoCodeRepository = promoCodeRepository;
+        this.auditSender = auditSender;
     }
 
     public Long addOrderAndGetId(List<Item> items, User user, String promoCode) {
@@ -127,7 +133,10 @@ public class OrderService {
 
         List<Item> itemsToOrder = createItems(foodItemsDto);
 
-        return addOrderAndGetId(itemsToOrder, user, promoCode);
+        Long orderId = addOrderAndGetId(itemsToOrder, user, promoCode);
+
+        auditSender.addAudit(orderId, EntityType.ORDER, ActionType.CREATE_ORDER);
+        return orderId;
     }
 
     @NotNull

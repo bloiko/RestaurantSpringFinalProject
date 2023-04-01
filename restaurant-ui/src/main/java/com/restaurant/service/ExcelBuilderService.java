@@ -1,6 +1,6 @@
 package com.restaurant.service;
 
-import com.restaurant.service.dto.ExcelBuilderDto;
+import com.restaurant.web.dto.ExcelBuilderDto;
 import com.restaurant.web.dto.ResourceDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;

@@ -1,6 +1,11 @@
 package com.restaurant.web.rest;
 
 import com.restaurant.RestaurantApplication;
+import com.restaurant.database.dao.UserRepository;
+import com.restaurant.database.entity.User;
+import com.restaurant.security.jwt.JwtProvider;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +16,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.MultiValueMap;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -26,13 +33,32 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TestingWebApplicationTest {
 
-    public static final String VALID_BEARER_TOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjp7ImF1dGhvcml0eSI6IkFETUlOIn0sImlhdCI6MTY3OTgzMzQwNCwiZXhwIjoxNjc5ODUxNDA0fQ.MyXqiCzhuaASOcffSClkwTaSJ2bZYimI12Y9o--ndBE";
+    public static final String USER_NAME = "usernameTest";
+
+    public static String validBearerToken = null;
 
     @Value(value = "${local.server.port}")
     private int port;
 
     @Autowired
+    private JwtProvider jwtProvider;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private TestRestTemplate restTemplate;
+
+    @Before
+    public void setUp() {
+        Optional<User> optionalUser = userRepository.findByUserName(USER_NAME);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            validBearerToken = "Bearer " + jwtProvider.createToken(user.getUserName(), user.getRole());
+        }else{
+            throw new RuntimeException();
+        }
+    }
 
     @Test
     public void shouldReturnForbiddenStatus() throws URISyntaxException {
@@ -61,7 +87,7 @@ public class TestingWebApplicationTest {
     @Test
     public void shouldReturnSuccessWhenDoReportOrders() throws URISyntaxException {
         MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.put(HttpHeaders.AUTHORIZATION, singletonList(VALID_BEARER_TOKEN));
+        headers.put(HttpHeaders.AUTHORIZATION, singletonList(validBearerToken));
         URI url = new URI("http://localhost:" + port + "/report/orders/month");
         RequestEntity<Object> requestEntity = new RequestEntity<>(headers, HttpMethod.GET, url);
 
@@ -73,7 +99,7 @@ public class TestingWebApplicationTest {
     @Test
     public void shouldReturnSuccessWhenDoReportUsers() throws URISyntaxException {
         MultiValueMap<String, String> headers = new HttpHeaders();
-        headers.put(HttpHeaders.AUTHORIZATION, singletonList(VALID_BEARER_TOKEN));
+        headers.put(HttpHeaders.AUTHORIZATION, singletonList(validBearerToken));
         URI url = new URI("http://localhost:" + port + "/report/users");
         RequestEntity<Object> requestEntity = new RequestEntity<>(headers, HttpMethod.GET, url);
 
