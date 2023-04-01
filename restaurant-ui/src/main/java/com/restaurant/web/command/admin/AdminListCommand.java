@@ -18,6 +18,8 @@ import java.util.List;
  *
  * @author B.Loiko
  */
+
+@Deprecated
 @Slf4j
 @Controller
 public class AdminListCommand {

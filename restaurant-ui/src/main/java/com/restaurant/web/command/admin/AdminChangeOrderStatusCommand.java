@@ -18,6 +18,8 @@ import java.io.IOException;
  *
  * @author B.Loiko
  */
+
+@Deprecated
 @Slf4j
 @Controller
 public class AdminChangeOrderStatusCommand {

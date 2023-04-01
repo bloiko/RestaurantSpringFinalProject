@@ -1,4 +1,4 @@
-package com.restaurant.service.dto;
+package com.restaurant.web.dto;
 
 import lombok.Builder;
 import lombok.Data;

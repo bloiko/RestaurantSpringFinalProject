@@ -25,7 +25,7 @@ public class EmailService {
         this.passwordFrom = passwordFrom;
     }
 
-    public void sendSuccessfulRegistrationEmail(RegistrationRequest registrationRequest) throws MessagingException, IOException {
+    public void sendSuccessfulRegistrationEmail(RegistrationRequest registrationRequest) throws Exception {
         final String emailOfReceiver = registrationRequest.getEmail();
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");

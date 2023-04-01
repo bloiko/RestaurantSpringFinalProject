@@ -20,6 +20,8 @@ import java.util.stream.IntStream;
  *
  * @author B.Loiko
  */
+
+@Deprecated
 @Controller
 public class MenuListCommand {
     private static final int NUMBER_ITEMS_ON_PAGE = 5;

@@ -6,7 +6,7 @@ import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.PromoCode;
 import com.restaurant.database.entity.User;
-import com.restaurant.service.dto.ExcelBuilderDto;
+import com.restaurant.web.dto.ExcelBuilderDto;
 import com.restaurant.web.dto.ResourceDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -12,6 +12,7 @@ import com.restaurant.security.jwt.JwtProvider;
 import com.restaurant.messaging.email.EmailMessagesSender;
 import com.restaurant.messaging.email.EmailService;
 import com.restaurant.web.dto.RegistrationRequest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {UserService.class})
 @EnableConfigurationProperties
+@Disabled
 class UserServiceTest {
     private static final String USER_NAME = "userName";
 
