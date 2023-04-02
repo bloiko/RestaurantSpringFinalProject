@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MyOrdersResponse {
+public class OrdersResponse {
 
-    private List<MyOrdersDto> myOrders;
+    private List<OrdersDto> orders;
 }

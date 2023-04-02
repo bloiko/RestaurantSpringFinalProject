@@ -3,16 +3,12 @@ package com.restaurant.web;
 import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.PromoCode;
+import com.restaurant.service.OrderService;
 import com.restaurant.service.UserService;
 import com.restaurant.web.dto.FoodItemResponse;
 import com.restaurant.web.dto.OrdersDto;
 import com.restaurant.web.dto.OrdersResponse;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,21 +16,28 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
-@RequestMapping
-public class MyOrdersController {
+@RequestMapping("/cook")
+public class CookOrdersController {
+
+    private final OrderService orderService;
 
     private final UserService userService;
 
-    public MyOrdersController(UserService userService) {
+    public CookOrdersController(OrderService orderService, UserService userService) {
+        this.orderService = orderService;
         this.userService = userService;
     }
 
-    @GetMapping("/myorders1")
-    public OrdersResponse getMyOrders() {
-        String username = getCurrentUsername();
+    @GetMapping("/orders")
+    public OrdersResponse getOrdersForCook() {
+        List<Order> orders = orderService.getOrdersForCook();
 
-        List<Order> orders = getOrdersByUsername(username);
         return mapToMyOrdersResponse(orders);
+    }
+
+    @PutMapping("/order/{orderId}")
+    public boolean changeOrderStatus(@PathVariable Long orderId, @RequestParam String orderStatus) {
+        return orderService.changeOrderStatusByCook(orderId, orderStatus);
     }
 
     private OrdersResponse mapToMyOrdersResponse(List<Order> orders) {
@@ -62,10 +65,5 @@ public class MyOrdersController {
             orders = userService.getUserOrdersSortByOrderDateReversed(username);
         }
         return orders;
-    }
-
-    private String getCurrentUsername() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userDetails.getUsername();
     }
 }

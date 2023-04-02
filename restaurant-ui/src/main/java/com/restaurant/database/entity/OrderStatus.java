@@ -23,6 +23,13 @@ public class OrderStatus {
     private Long id;
     @Column(name = "status_name")
     private String statusName;
+
+//    TODO like this
+//    @Enumerated(EnumType.STRING)
+//    private Status statusName;
+
+
+
  /*   public static OrderStatus getOrderStatus(String value){
         if(value.equals(WAITING.value)){
             return WAITING;
