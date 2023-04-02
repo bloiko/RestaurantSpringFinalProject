@@ -56,4 +56,8 @@ public class Order implements Serializable {
         this.orderStatus = orderStatus;
         this.promoCode = null;
     }
+
+    public Timestamp getOrderDate() {
+        return orderDate;
+    }
 }

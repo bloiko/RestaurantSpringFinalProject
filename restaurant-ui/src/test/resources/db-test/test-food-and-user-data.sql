@@ -1,3 +1,11 @@
+delete from food_item;
+delete from status;
+delete from category;
+delete from role;
+delete from user;
+delete from food_order;
+delete from item;
+
 /*insert statuses by Id and status_name*/
 INSERT INTO status(id, status_name)
 VALUES (1, 'WAITING'),

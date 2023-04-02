@@ -9,6 +9,8 @@ import com.restaurant.database.dao.OrderStatusRepository;
 import com.restaurant.database.dao.PromoCodeRepository;
 import com.restaurant.database.entity.*;
 import com.restaurant.web.dto.FoodItemDto;
+import com.restaurant.web.exception.ResourceNotFoundException;
+import javassist.NotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -137,6 +136,29 @@ public class OrderService {
 
         auditSender.addAudit(orderId, EntityType.ORDER, ActionType.CREATE_ORDER);
         return orderId;
+    }
+
+
+    public List<Order> getOrdersForCook() {
+//        List<OrderStatus> orderStatuses = statusRepository.findAllByStatusName(Arrays.asList("WAITING", "PREPARING"));
+
+        return orderRepository.findAllByOrderStatusNamesAndOrderByOrderDateAsc(Arrays.asList("WAITING", "PREPARING"));
+    }
+
+    public boolean changeOrderStatusByCook(Long orderId, String orderStatus) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (!optionalOrder.isPresent()){
+            throw new ResourceNotFoundException("Order not found with id = " + orderId);
+        }
+        Order order = optionalOrder.get();
+
+        OrderStatus requestedOrderStatus = statusRepository.findByStatusName(orderStatus);
+        OrderStatus currentStatus = order.getOrderStatus();
+        //TODO compare that requested order status is greater than status from db
+
+        order.setOrderStatus(requestedOrderStatus);
+        orderRepository.save(order);
+        return true;
     }
 
     @NotNull

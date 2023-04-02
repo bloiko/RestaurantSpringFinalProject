@@ -46,7 +46,6 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Slf4j
 @Service
-@Transactional
 public class UserService {
     private static final String DEFAULT_SORT_BY_FILTER = "userName";
     private final UserRepository userRepository;
