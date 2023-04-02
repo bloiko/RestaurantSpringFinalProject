@@ -34,7 +34,6 @@ public class AuditController {
         notNull(entityType, "Entity type must be specified");
         notNull(entityId, "Entity Id must be specified");
 
-        //TODO add time  sort and in response
         return auditService.getAuditsByEntityId(entityType, Long.valueOf(entityId));
     }
 }
