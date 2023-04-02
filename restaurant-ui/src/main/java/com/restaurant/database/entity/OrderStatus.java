@@ -22,26 +22,7 @@ public class OrderStatus {
     @GeneratedValue
     private Long id;
     @Column(name = "status_name")
-    private String statusName;
+    @Enumerated(EnumType.STRING)
+    private Status statusName;
 
-//    TODO like this
-//    @Enumerated(EnumType.STRING)
-//    private Status statusName;
-
-
-
- /*   public static OrderStatus getOrderStatus(String value){
-        if(value.equals(WAITING.value)){
-            return WAITING;
-        }else if(value.equals(PREPARING.value)){
-            return PREPARING;
-        }else if(value.equals(READY.value)){
-            return READY;
-        }else if(value.equals(DELIVERED.value)){
-            return DELIVERED;
-        }else if(value.equals(DONE.value)){
-            return DONE;
-        }
-        return DONE;
-    }*/
 }

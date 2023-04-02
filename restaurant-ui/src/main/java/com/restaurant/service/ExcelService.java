@@ -48,7 +48,7 @@ public class ExcelService {
         functions.add(orderFunc -> String.valueOf(orderFunc.getOrderDate()));
         functions.add(orderFunc -> orderFunc.getUser().getFirstName() + " " + orderFunc.getUser().getLastName());
         functions.add(orderFunc -> orderFunc.getUser().getEmail());
-        functions.add(orderFunc -> orderFunc.getOrderStatus().getStatusName());
+        functions.add(orderFunc -> orderFunc.getOrderStatus().getStatusName().name());
         functions.add(orderFunc -> {
             List<Item> items = orderFunc.getItems();
             StringBuilder stringBuilder = new StringBuilder();

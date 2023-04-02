@@ -3,6 +3,7 @@ package com.restaurant.database.dao;
 
 import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.OrderStatus;
+import com.restaurant.database.entity.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,7 +20,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "join o.orderStatus os " +
             "where os.statusName in :orderStatuses " +
             "order by o.orderDate ASC ")
-    List<Order> findAllByOrderStatusNamesAndOrderByOrderDateAsc(List<String> orderStatuses);
+    List<Order> findAllByOrderStatusNamesAndOrderByOrderDateAsc(List<Status> orderStatuses);
 
     List<Order> findAllByOrderStatusNot(OrderStatus status);
 

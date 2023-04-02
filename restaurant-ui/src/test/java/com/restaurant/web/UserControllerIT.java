@@ -14,7 +14,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -25,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.core.userdetails.User.withUsername;
 
 @RunWith(SpringRunner.class)
 @Transactional
@@ -32,6 +36,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestPropertySource(locations="classpath:application-test.properties")
 @Sql({"classpath:db-test/test-food-and-user-data.sql"})
 class UserControllerIT {
+
+    private static final String CURRENT_USER_NAME = "usernameTest";
+
     public static final String NEW_USER_NAME = "NEW_USER_NAME";
 
     public static final String NEW_FIRST_NAME = "NEW_FIRST_NAME";
@@ -66,14 +73,19 @@ class UserControllerIT {
         UserDto actualUserDto = userController.getUserDetailsById(userId);
 
         User expectedUser = userRepository.getById(userId);
-        assertEquals(expectedUser.getUserName(), actualUserDto.getUsername());
-        assertEquals(expectedUser.getFirstName(), actualUserDto.getFirstName());
-        assertEquals(expectedUser.getLastName(), actualUserDto.getLastName());
-        assertEquals(expectedUser.getEmail(), actualUserDto.getEmail());
-        assertEquals(expectedUser.getRole().getName(), actualUserDto.getRole());
-        assertEquals(expectedUser.getPhoneNumber(), actualUserDto.getPhoneNumber());
-        assertEquals(expectedUser.getAddress(), actualUserDto.getAddress());
-        assertNull(actualUserDto.getPassword());
+        assertUsers(actualUserDto, expectedUser);
+    }
+
+    @Test
+    void getCurrentUserDetails() {
+        setSecurityContext();
+
+        UserDto actualUserDto = userController.getCurrentUserDetails();
+
+        Optional<User> optionalUser = userRepository.findByUserName(CURRENT_USER_NAME);
+        assertTrue(optionalUser.isPresent());
+        User expectedUser = optionalUser.get();
+        assertUsers(actualUserDto, expectedUser);
     }
 
     @Test
@@ -127,14 +139,7 @@ class UserControllerIT {
                     .findAny()
                     .orElse(null);
             assertNotNull(expectedUser);
-            assertEquals(expectedUser.getUserName(), usersDetail.getUsername());
-            assertEquals(expectedUser.getFirstName(), usersDetail.getFirstName());
-            assertEquals(expectedUser.getLastName(), usersDetail.getLastName());
-            assertEquals(expectedUser.getEmail(), usersDetail.getEmail());
-            assertEquals(expectedUser.getRole().getName(), usersDetail.getRole());
-            assertEquals(expectedUser.getPhoneNumber(), usersDetail.getPhoneNumber());
-            assertEquals(expectedUser.getAddress(), usersDetail.getAddress());
-            assertNull(usersDetail.getPassword());
+            assertUsers(usersDetail, expectedUser);
         });
     }
 
@@ -159,5 +164,30 @@ class UserControllerIT {
         assertEquals(0, deletedOrderList.size());
         Optional<Item> deletedItem = itemRepository.findById(expectedItemToDelete);
         assertFalse(deletedItem.isPresent());
+    }
+
+    private static void setSecurityContext() {
+        UserDetails userDetails = withUsername(CURRENT_USER_NAME)
+                .authorities("USER")
+                .password("")
+                .accountExpired(false)
+                .accountLocked(false)
+                .credentialsExpired(false)
+                .disabled(false)
+                .build();
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new PreAuthenticatedAuthenticationToken(userDetails, "", userDetails.getAuthorities()));
+    }
+
+    private static void assertUsers(UserDto actualUserDto, User expectedUser) {
+        assertEquals(expectedUser.getUserName(), actualUserDto.getUsername());
+        assertEquals(expectedUser.getFirstName(), actualUserDto.getFirstName());
+        assertEquals(expectedUser.getLastName(), actualUserDto.getLastName());
+        assertEquals(expectedUser.getEmail(), actualUserDto.getEmail());
+        assertEquals(expectedUser.getRole().getName(), actualUserDto.getRole());
+        assertEquals(expectedUser.getPhoneNumber(), actualUserDto.getPhoneNumber());
+        assertEquals(expectedUser.getAddress(), actualUserDto.getAddress());
+        assertNull(actualUserDto.getPassword());
     }
 }

@@ -10,7 +10,6 @@ import com.restaurant.database.dao.PromoCodeRepository;
 import com.restaurant.database.entity.*;
 import com.restaurant.web.dto.FoodItemDto;
 import com.restaurant.web.exception.ResourceNotFoundException;
-import javassist.NotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,9 +31,6 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @Service
 @Transactional
 public class OrderService {
-    public static final String WAITING_STATUS = "WAITING";
-
-    public static final String DONE_STATUS = "DONE";
 
     private final OrderRepository orderRepository;
 
@@ -71,7 +67,7 @@ public class OrderService {
             discount = promoCodeObject.getDiscount();
         }
 
-        OrderStatus waitingStatus = statusRepository.findByStatusName(WAITING_STATUS);
+        OrderStatus waitingStatus = statusRepository.findByStatusName(Status.WAITING);
 
         Order order = Order.builder()
                 .id(0L)
@@ -104,11 +100,11 @@ public class OrderService {
     }
 
     public List<Order> getDoneOrders() {
-        return orderRepository.findAllByOrderStatus(statusRepository.findByStatusName(DONE_STATUS));
+        return orderRepository.findAllByOrderStatus(statusRepository.findByStatusName(Status.DONE));
     }
 
     public List<Order> getNotDoneOrdersSortByIdDesc() {
-        return orderRepository.findAllByOrderStatusNot(statusRepository.findByStatusName(DONE_STATUS))
+        return orderRepository.findAllByOrderStatusNot(statusRepository.findByStatusName(Status.DONE))
                 .stream()
                 .sorted(Comparator.comparing(Order::getId).reversed())
                 .collect(Collectors.toList());
@@ -138,14 +134,11 @@ public class OrderService {
         return orderId;
     }
 
-
     public List<Order> getOrdersForCook() {
-//        List<OrderStatus> orderStatuses = statusRepository.findAllByStatusName(Arrays.asList("WAITING", "PREPARING"));
-
-        return orderRepository.findAllByOrderStatusNamesAndOrderByOrderDateAsc(Arrays.asList("WAITING", "PREPARING"));
+        return orderRepository.findAllByOrderStatusNamesAndOrderByOrderDateAsc(Arrays.asList(Status.WAITING, Status.PREPARING));
     }
 
-    public boolean changeOrderStatusByCook(Long orderId, String orderStatus) {
+    public boolean changeOrderStatusByCook(Long orderId, Status orderStatus) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (!optionalOrder.isPresent()){
             throw new ResourceNotFoundException("Order not found with id = " + orderId);
@@ -154,7 +147,9 @@ public class OrderService {
 
         OrderStatus requestedOrderStatus = statusRepository.findByStatusName(orderStatus);
         OrderStatus currentStatus = order.getOrderStatus();
-        //TODO compare that requested order status is greater than status from db
+        if(currentStatus.getStatusName().ordinal() >= requestedOrderStatus.getStatusName().ordinal()){
+            throw new IllegalArgumentException("Requested status cannot be less ordinal than current");
+        }
 
         order.setOrderStatus(requestedOrderStatus);
         orderRepository.save(order);

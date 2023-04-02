@@ -3,6 +3,7 @@ package com.restaurant.service;
 
 import com.restaurant.database.dao.OrderStatusRepository;
 import com.restaurant.database.entity.OrderStatus;
+import com.restaurant.database.entity.Status;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -23,6 +24,6 @@ public class OrderStatusService {
     }
 
     public OrderStatus findByStatusName(String name){
-        return orderStatusRepository.findByStatusName(name);
+        return orderStatusRepository.findByStatusName(Status.valueOf(name));
     }
 }

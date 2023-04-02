@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public UserDto getUserDetailsById() {
+    public UserDto getCurrentUserDetails() {
         Authentication userDetails = SecurityContextHolder.getContext().getAuthentication();
 
         User user = userService.getUserByUserName(userDetails.getName());
