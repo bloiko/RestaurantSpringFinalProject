@@ -5,7 +5,6 @@ import com.restaurant.database.dao.UserRepository;
 import com.restaurant.database.entity.User;
 import com.restaurant.security.jwt.JwtProvider;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
