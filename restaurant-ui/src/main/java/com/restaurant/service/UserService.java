@@ -96,11 +96,7 @@ public class UserService {
     public String register(RegistrationRequest registrationRequest) {
         User registeredUserInDb = registerUserInDb(registrationRequest);
 
-        try {
-            emailMessagesSender.send(registrationRequest);
-        } catch (Exception e) {
-            log.error("Cannot send email to user with email = {}", registeredUserInDb.getEmail());
-        }
+        emailMessagesSender.send(registrationRequest);
 
         if (registeredUserInDb == null){
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");

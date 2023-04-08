@@ -1,6 +1,7 @@
 package com.restaurant.web.command.cart;
 
 import com.restaurant.database.entity.Item;
+import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.User;
 import com.restaurant.service.OrderService;
 import com.restaurant.service.UserService;
@@ -51,7 +52,8 @@ public class CartOrderItemCommand {
         }
 
         List<Item> cart = (List<Item>) session.getAttribute("cart");
-        Long orderId = orderService.addOrderAndGetId(cart, user, "");
+        Order order = orderService.addOrderAndGetId(cart, user, "");
+        Long orderId = order.getId();
         model.addAttribute("orderId", orderId);
         log.trace("Set attribute to the request: orderId --> " + orderId);
 

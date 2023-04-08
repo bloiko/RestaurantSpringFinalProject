@@ -8,6 +8,8 @@ import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.OrderStatusRepository;
 import com.restaurant.database.dao.PromoCodeRepository;
 import com.restaurant.database.entity.*;
+import com.restaurant.messaging.email.EmailMessagesSender;
+import com.restaurant.messaging.email.OrderEmailDto;
 import com.restaurant.web.dto.FoodItemDto;
 import com.restaurant.web.exception.ResourceNotFoundException;
 import org.jetbrains.annotations.NotNull;
@@ -44,17 +46,20 @@ public class OrderService {
 
     private final AuditSender auditSender;
 
+    private final EmailMessagesSender emailMessagesSender;
+
     public OrderService(OrderRepository orderRepository, OrderStatusRepository statusRepository, UserService userService,
-                        FoodRepository foodRepository, PromoCodeRepository promoCodeRepository, AuditSender auditSender) {
+                        FoodRepository foodRepository, PromoCodeRepository promoCodeRepository, AuditSender auditSender, EmailMessagesSender emailMessagesSender) {
         this.orderRepository = orderRepository;
         this.statusRepository = statusRepository;
         this.userService = userService;
         this.foodRepository = foodRepository;
         this.promoCodeRepository = promoCodeRepository;
         this.auditSender = auditSender;
+        this.emailMessagesSender = emailMessagesSender;
     }
 
-    public Long addOrderAndGetId(List<Item> items, User user, String promoCode) {
+    public Order addOrderAndGetId(List<Item> items, User user, String promoCode) {
         if (isEmpty(items)) {
             throw new IllegalArgumentException("List of items cannot be null or empty");
         }
@@ -82,7 +87,8 @@ public class OrderService {
         for (Item item : items){
             item.setOrder(order);
         }
-        return orderRepository.save(order).getId();
+
+        return orderRepository.save(order);
     }
 
     @NotNull
@@ -114,6 +120,7 @@ public class OrderService {
         return orderRepository.getById(Long.valueOf(orderIdString));
     }
 
+    @Deprecated
     public void updateOrder(Long id, OrderStatus newStatus) {
         Order order = orderRepository.getById(id);
         order.setOrderStatus(newStatus);
@@ -128,10 +135,11 @@ public class OrderService {
 
         List<Item> itemsToOrder = createItems(foodItemsDto);
 
-        Long orderId = addOrderAndGetId(itemsToOrder, user, promoCode);
+        Order order = addOrderAndGetId(itemsToOrder, user, promoCode);
 
-        auditSender.addAudit(orderId, EntityType.ORDER, ActionType.CREATE_ORDER);
-        return orderId;
+        auditSender.addAudit(order.getId(), EntityType.ORDER, ActionType.CREATE_ORDER);
+        emailMessagesSender.send(new OrderEmailDto(user.getEmail(), order.getId(), itemsToOrder, order.getOrderPrice(), order.getOrderDate()));
+        return order.getId();
     }
 
     public List<Order> getOrdersForCook() {

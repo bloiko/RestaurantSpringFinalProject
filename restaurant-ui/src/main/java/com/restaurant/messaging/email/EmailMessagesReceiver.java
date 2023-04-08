@@ -29,6 +29,16 @@ public class EmailMessagesReceiver {
         }
     }
 
+    @JmsListener(destination = "order-email")
+    public void receiveOrderMessage(OrderEmailDto orderEmailDto) {
+        log.info("Food order email request was taken into handling: " + orderEmailDto);
+        try {
+            emailService.sendSuccessfulOrderingEmail(orderEmailDto);
+        } catch (Exception e) {
+            log.error("Cannot send email to user with email = {}", orderEmailDto.getEmail());
+        }
+    }
+
 //        @JmsListener(destination = "order", selector = "type = 'LIQUIDS'")
 //        public void receiveLiquidsMessage(Order order) {
 //            System.out.println("Order with LIQUIDS was taken into handling: " + order);

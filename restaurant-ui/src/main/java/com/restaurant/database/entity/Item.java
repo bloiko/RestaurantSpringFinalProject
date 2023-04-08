@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Data
 @Builder
-@ToString
+@ToString(exclude = "order")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -29,7 +29,7 @@ public class Item implements Serializable {
     @Column(name = "quantity")
     private int quantity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 }
