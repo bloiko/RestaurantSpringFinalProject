@@ -49,11 +49,9 @@ public class User implements Serializable {
     private String email;
 
     @Column(name = "address")
-//    @NotEmpty(message = "Address must be filled!")
     private String address;
 
     @Column(name = "phone_number")
-//    @NotEmpty(message = "Phone number must be filled!")
     private String phoneNumber;
 
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)

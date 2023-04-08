@@ -33,7 +33,7 @@ public class AuditSender {
 
             auditController.addAudit(auditDto);
         } catch (Exception e) {
-            log.error("Cannot send audit {} {} for enitity id {}", entityType, actionType, entityId);
+            log.error("Cannot send audit {} {} for entity id {}", entityType, actionType, entityId);
         }
     }
 }

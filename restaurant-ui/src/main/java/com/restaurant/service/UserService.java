@@ -1,16 +1,12 @@
 package com.restaurant.service;
 
 
-import com.restaurant.database.entity.ActionType;
-import com.restaurant.database.entity.EntityType;
 import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.RoleRepository;
 import com.restaurant.database.dao.UserRepository;
-import com.restaurant.database.entity.Order;
-import com.restaurant.database.entity.Role;
-import com.restaurant.database.entity.User;
-import com.restaurant.security.jwt.JwtProvider;
+import com.restaurant.database.entity.*;
 import com.restaurant.messaging.email.EmailMessagesSender;
+import com.restaurant.security.jwt.JwtProvider;
 import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
@@ -31,7 +27,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 
-import javax.transaction.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;

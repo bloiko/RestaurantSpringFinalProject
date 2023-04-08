@@ -18,10 +18,10 @@ import java.util.function.Function;
 @Slf4j
 @Service
 @Transactional(readOnly = true)
-public class ExcelBuilderService <T> {
+public class ExcelBuilderService<T> {
 
 
-    public ResourceDTO exportWithExcelBuilder(ExcelBuilderDto<T> excelBuilderDto) {;
+    public ResourceDTO exportWithExcelBuilder(ExcelBuilderDto<T> excelBuilderDto) {
         Resource resource = prepareExcel(excelBuilderDto);
         return ResourceDTO.builder().resource(resource).
                 mediaType(MediaType.parseMediaType

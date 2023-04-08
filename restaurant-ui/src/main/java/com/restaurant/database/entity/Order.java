@@ -44,7 +44,7 @@ public class Order implements Serializable {
     private OrderStatus orderStatus;
 
     @OneToOne
-    @JoinColumn(name = "promo_code", referencedColumnName = "code", nullable = true)
+    @JoinColumn(name = "promo_code", referencedColumnName = "code")
     private PromoCode promoCode;
 
     public Order(Long id, Timestamp orderDate, BigDecimal orderPrice, User user, List<Item> items, OrderStatus orderStatus) {

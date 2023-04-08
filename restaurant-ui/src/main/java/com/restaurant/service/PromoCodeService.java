@@ -2,15 +2,13 @@ package com.restaurant.service;
 
 
 import com.restaurant.database.dao.PromoCodeRepository;
-import com.restaurant.database.entity.*;
+import com.restaurant.database.entity.PromoCode;
 import com.restaurant.web.dto.PromoCodeDto;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
  * Order service.

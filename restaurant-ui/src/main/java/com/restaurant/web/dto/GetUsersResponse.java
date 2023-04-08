@@ -1,7 +1,5 @@
 package com.restaurant.web.dto;
 
-import com.restaurant.database.entity.Category;
-import com.restaurant.database.entity.FoodItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

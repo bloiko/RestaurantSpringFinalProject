@@ -1,10 +1,8 @@
 package com.restaurant.web.mapper;
 
-import com.restaurant.database.entity.Category;
 import com.restaurant.database.entity.Item;
 import com.restaurant.database.entity.Order;
 import com.restaurant.database.entity.PromoCode;
-import com.restaurant.web.dto.CategoryDto;
 import com.restaurant.web.dto.FoodItemResponse;
 import com.restaurant.web.dto.OrdersDto;
 import com.restaurant.web.dto.OrdersResponse;

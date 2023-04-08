@@ -10,10 +10,6 @@ import java.util.Optional;
 @Repository
 public interface PromoCodeRepository extends JpaRepository<PromoCode, Long> {
 
-    boolean existsPromoCodeByCode(String code);
-
-    int findPromoCodeByCode(String code);
-
     Optional<PromoCode> findByCode(String code);
 }
 

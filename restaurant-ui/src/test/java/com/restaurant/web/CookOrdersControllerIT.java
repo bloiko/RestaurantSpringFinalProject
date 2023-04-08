@@ -41,11 +41,10 @@ class CookOrdersControllerIT {
 
         assertNotNull(ordersResponse);
         List<OrdersDto> requestedOrders = ordersResponse.getOrders();
-        assertTrue(requestedOrders.size() == 5);
-        requestedOrders.forEach(ordersDto -> {
-            assertTrue(Arrays.asList(Status.WAITING.name(), Status.PREPARING.name())
-                    .contains(ordersDto.getOrderStatus()));
-        });
+        assertEquals(5, requestedOrders.size());
+        requestedOrders.forEach(ordersDto ->
+                assertTrue(Arrays.asList(Status.WAITING.name(), Status.PREPARING.name())
+                        .contains(ordersDto.getOrderStatus())));
         List<OrdersDto> sortedOrders = requestedOrders.stream()
                 .sorted(Comparator.comparing(OrdersDto::getOrderDate))
                 .collect(Collectors.toList());
@@ -71,12 +70,11 @@ class CookOrdersControllerIT {
         assertEquals(Status.DONE, order.getOrderStatus().getStatusName());
 
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            cookOrdersController.changeOrderStatus(8L, Status.READY);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> cookOrdersController.changeOrderStatus(8L, Status.READY));
 
         String expectedMessage = "Requested status cannot be less ordinal than current";
         String actualMessage = exception.getMessage();
-        assertTrue(actualMessage.equals(expectedMessage));
+        assertEquals(actualMessage, expectedMessage);
     }
 }

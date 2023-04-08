@@ -13,11 +13,7 @@ public enum EntityType {
 
     private final Set<ActionType> actionTypes;
 
-    EntityType(Set<ActionType> actionTypes){
+    EntityType(Set<ActionType> actionTypes) {
         this.actionTypes = actionTypes;
-    }
-
-    public Set<ActionType> getActionTypes() {
-        return actionTypes;
     }
 }

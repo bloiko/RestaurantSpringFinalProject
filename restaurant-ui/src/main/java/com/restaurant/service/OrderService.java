@@ -1,8 +1,6 @@
 package com.restaurant.service;
 
 
-import com.restaurant.database.entity.ActionType;
-import com.restaurant.database.entity.EntityType;
 import com.restaurant.database.dao.FoodRepository;
 import com.restaurant.database.dao.OrderRepository;
 import com.restaurant.database.dao.OrderStatusRepository;
@@ -18,7 +16,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -62,7 +63,7 @@ public class OrderService {
         Optional<PromoCode> promoCodeOptional = promoCodeRepository.findByCode(promoCode);
         int discount = 0;
         PromoCode promoCodeObject = null;
-        if(promoCodeOptional.isPresent() && promoCodeOptional.get().isActive()){
+        if (promoCodeOptional.isPresent() && promoCodeOptional.get().isActive()) {
             promoCodeObject = promoCodeOptional.get();
             discount = promoCodeObject.getDiscount();
         }
@@ -79,7 +80,7 @@ public class OrderService {
                 .promoCode(promoCodeObject)
                 .build();
 
-        for (Item item : items){
+        for (Item item : items) {
             item.setOrder(order);
         }
         return orderRepository.save(order).getId();
@@ -93,31 +94,6 @@ public class OrderService {
         }
         BigDecimal priceDiscount = price.multiply(new BigDecimal(discount).divide(new BigDecimal(100)));
         return price.subtract(priceDiscount);
-    }
-
-    public List<OrderStatus> getStatuses() {
-        return statusRepository.findAll();
-    }
-
-    public List<Order> getDoneOrders() {
-        return orderRepository.findAllByOrderStatus(statusRepository.findByStatusName(Status.DONE));
-    }
-
-    public List<Order> getNotDoneOrdersSortByIdDesc() {
-        return orderRepository.findAllByOrderStatusNot(statusRepository.findByStatusName(Status.DONE))
-                .stream()
-                .sorted(Comparator.comparing(Order::getId).reversed())
-                .collect(Collectors.toList());
-    }
-
-    public Order getOrder(String orderIdString) {
-        return orderRepository.getById(Long.valueOf(orderIdString));
-    }
-
-    public void updateOrder(Long id, OrderStatus newStatus) {
-        Order order = orderRepository.getById(id);
-        order.setOrderStatus(newStatus);
-        orderRepository.save(order);
     }
 
     public Long orderFoodItems(List<FoodItemDto> foodItemsDto, String promoCode) {
@@ -140,14 +116,14 @@ public class OrderService {
 
     public boolean changeOrderStatusByCook(Long orderId, Status orderStatus) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if (!optionalOrder.isPresent()){
+        if (!optionalOrder.isPresent()) {
             throw new ResourceNotFoundException("Order not found with id = " + orderId);
         }
         Order order = optionalOrder.get();
 
         OrderStatus requestedOrderStatus = statusRepository.findByStatusName(orderStatus);
         OrderStatus currentStatus = order.getOrderStatus();
-        if(currentStatus.getStatusName().ordinal() >= requestedOrderStatus.getStatusName().ordinal()){
+        if (currentStatus.getStatusName().ordinal() >= requestedOrderStatus.getStatusName().ordinal()) {
             throw new IllegalArgumentException("Requested status cannot be less ordinal than current");
         }
 
