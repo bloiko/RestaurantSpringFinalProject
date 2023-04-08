@@ -30,10 +30,10 @@ public class AuditController {
 
     @GetMapping("/{entityType}/{entityId}")
     public List<AuditResponse> getAuditsByEntityId(@PathVariable("entityType") EntityType entityType,
-                                                   @PathVariable("entityId") String entityId) {
+                                                   @PathVariable("entityId") Long entityId) {
         notNull(entityType, "Entity type must be specified");
         notNull(entityId, "Entity Id must be specified");
 
-        return auditService.getAuditsByEntityId(entityType, Long.valueOf(entityId));
+        return auditService.getAuditsByEntityId(entityType, entityId);
     }
 }
