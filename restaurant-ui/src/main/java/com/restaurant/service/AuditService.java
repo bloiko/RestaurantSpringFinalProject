@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
@@ -41,7 +42,7 @@ public class AuditService {
     public List<AuditResponse> getAuditsByEntityId(EntityType entityType, Long entityId) {
         List<Audit> auditList = auditRepository.findAllByEntityIdAndEntityTypeOrderByAuditDateAsc(entityId, entityType);
 
-        List<Long> userIds = auditList.stream().map(Audit::getUserId).collect(Collectors.toList());
+        Set<Long> userIds = auditList.stream().map(Audit::getUserId).collect(Collectors.toSet());
 
         List<User> users = userRepository.findAllById(userIds);
 
