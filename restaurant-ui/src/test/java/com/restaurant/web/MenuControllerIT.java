@@ -51,7 +51,6 @@ class MenuControllerIT {
         assertEquals(sortedFoodItems, actualFoodItems);
         assertTrue(menuResponse.getFoodItems().size() <= pageSize);
         assertTrue(menuResponse.getFoodItems().size() > 0);
-
     }
 
     @Test

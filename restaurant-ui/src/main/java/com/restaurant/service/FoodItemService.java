@@ -53,7 +53,7 @@ public class FoodItemService {
         }
 
         FoodItem foodItem = new FoodItem(0L, request.getName(), request.getPrice(), request.getImage(), optionalCategory.get());
-        foodRepository.save(foodItem);
+        foodItem = foodRepository.save(foodItem);
 
         request.setId(foodItem.getId());
 
