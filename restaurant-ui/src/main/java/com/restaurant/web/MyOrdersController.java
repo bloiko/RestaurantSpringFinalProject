@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
@@ -37,15 +36,12 @@ public class MyOrdersController {
     }
 
     private List<Order> getOrdersByUsername(String username) {
-        List<Order> orders = new LinkedList<>();
-        if (username != null) {
-            orders = userService.getUserOrdersSortByOrderDateReversed(username);
-        }
-        return orders;
+        return userService.getUserOrdersSortByOrderDateReversed(username);
     }
 
     private String getCurrentUsername() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
         return userDetails.getUsername();
     }
 }

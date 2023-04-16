@@ -12,6 +12,8 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.hibernate.internal.util.StringHelper.isEmpty;
+
 @RestController
 @RequestMapping("/admin")
 public class AdminPageController {
@@ -36,6 +38,10 @@ public class AdminPageController {
 
     @PostMapping("/category")
     public CategoryDto saveNewCategory(@Valid @RequestBody CategoryDto categoryDto) {
+        if(isEmpty(categoryDto.getName())){
+            throw new IllegalArgumentException("Category name should not be null or empty");
+        }
+
         Category category = categoryService.saveNewCategory(categoryDto.getName());
 
         return categoryDtoMapper.mapCategoryToDto(category);

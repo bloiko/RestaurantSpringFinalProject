@@ -24,6 +24,7 @@ public class LoginController {
     public LoginResponse login(@RequestBody LoginRequest loginRequest) {
         hasText(loginRequest.getUsername(), "Username must be specified");
         hasText(loginRequest.getPassword(), "Password must be specified");
+
         return LoginResponse.of(userService.login(loginRequest.getUsername(), loginRequest.getPassword()));
     }
 

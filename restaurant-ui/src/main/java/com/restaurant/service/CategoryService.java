@@ -23,18 +23,20 @@ public class CategoryService {
     }
 
     public Category getCategoryById(Long categoryId) {
-        return categoryRepository.getById(categoryId);
-    }
+        Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
 
-    public Category updateCategoryName(Long categoryId, String name) {
-        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
-        if (!categoryOptional.isPresent()) {
+        if (!optionalCategory.isPresent()) {
             throw new IllegalArgumentException("Category is not present by this id");
         }
 
-        Category savedCategory = categoryOptional.get();
-        savedCategory.setName(name);
-        return categoryRepository.save(savedCategory);
+        return optionalCategory.get();
+    }
+
+    public Category updateCategoryName(Long categoryId, String name) {
+        Category category = getCategoryById(categoryId);
+        category.setName(name);
+
+        return categoryRepository.save(category);
     }
 
     public List<Category> getAllCategories() {
@@ -42,20 +44,19 @@ public class CategoryService {
     }
 
     public String deleteCategoryById(Long categoryId) {
-        Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
-        if(!optionalCategory.isPresent()){
-            throw new IllegalArgumentException("Category is not present by this id");
-        }
-
         // TODO check if we need to delete related foodItems and so on
-        categoryRepository.delete(optionalCategory.get());
+        Category category = getCategoryById(categoryId);
+
+        categoryRepository.delete(category);
         return String.valueOf(categoryId);
     }
 
     public Category saveNewCategory(String name) {
-        if(isEmpty(name)){
-            throw new IllegalArgumentException("Category name should not be null or empty");
+        Optional<Category> categoryOptional = categoryRepository.findByName(name);
+        if (categoryOptional.isPresent()) {
+            throw new IllegalArgumentException("Category is present with this name");
         }
+
         return categoryRepository.save(new Category(0L, name));
     }
 }

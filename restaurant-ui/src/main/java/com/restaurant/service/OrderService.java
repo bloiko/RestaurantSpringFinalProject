@@ -56,10 +56,6 @@ public class OrderService {
     }
 
     public Long addOrderAndGetId(List<Item> items, User user, String promoCode) {
-        if (isEmpty(items)) {
-            throw new IllegalArgumentException("List of items cannot be null or empty");
-        }
-
         Optional<PromoCode> promoCodeOptional = promoCodeRepository.findByCode(promoCode);
         int discount = 0;
         PromoCode promoCodeObject = null;
@@ -98,11 +94,12 @@ public class OrderService {
 
     public Long orderFoodItems(List<FoodItemDto> foodItemsDto, String promoCode) {
         User user = getCurrentUser();
-        if (user == null) {
-            throw new IllegalArgumentException("User cannot be null");
-        }
 
         List<Item> itemsToOrder = createItems(foodItemsDto);
+
+        if (isEmpty(itemsToOrder)) {
+            throw new IllegalArgumentException("List of items cannot be null or empty");
+        }
 
         Long orderId = addOrderAndGetId(itemsToOrder, user, promoCode);
 

@@ -1,7 +1,6 @@
 package com.restaurant.service;
 
 
-import com.restaurant.database.dao.CategoryRepository;
 import com.restaurant.database.dao.FoodRepository;
 import com.restaurant.database.entity.ActionType;
 import com.restaurant.database.entity.Category;
@@ -35,24 +34,21 @@ public class FoodItemService {
 
     private final FoodRepository foodRepository;
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     private final AuditSender auditSender;
 
-    public FoodItemService(FoodRepository foodRepository, CategoryRepository categoryRepository,
+    public FoodItemService(FoodRepository foodRepository, CategoryService categoryService,
                            AuditSender auditSender) {
         this.foodRepository = foodRepository;
-        this.categoryRepository = categoryRepository;
+        this.categoryService = categoryService;
         this.auditSender = auditSender;
     }
 
     public FoodItemRequest addNewFoodItem(FoodItemRequest request) {
-        Optional<Category> optionalCategory = categoryRepository.findById(request.getCategoryId());
-        if (!optionalCategory.isPresent()) {
-            throw new IllegalArgumentException("Category not exists with this id " + request.getCategoryId());
-        }
+        Category category = categoryService.getCategoryById(request.getCategoryId());
 
-        FoodItem foodItem = new FoodItem(0L, request.getName(), request.getPrice(), request.getImage(), optionalCategory.get());
+        FoodItem foodItem = new FoodItem(0L, request.getName(), request.getPrice(), request.getImage(), category);
         foodItem = foodRepository.save(foodItem);
 
         request.setId(foodItem.getId());
@@ -62,17 +58,11 @@ public class FoodItemService {
     }
 
     public FoodItemRequest updateFoodItem(FoodItemRequest request) {
-        Optional<Category> optionalCategory = categoryRepository.findById(request.getCategoryId());
-        if (!optionalCategory.isPresent()) {
-            throw new IllegalArgumentException("Category not exists with this id " + request.getCategoryId());
-        }
-        Optional<FoodItem> optionalFoodItem = foodRepository.findById(request.getId());
-        if (!optionalFoodItem.isPresent()) {
-            throw new IllegalArgumentException("FoodItem not exists with this id " + request.getId());
-        }
+        Category category = categoryService.getCategoryById(request.getCategoryId());
 
-        FoodItem foodItem = optionalFoodItem.get();
-        foodItem.setCategory(optionalCategory.get());
+        FoodItem foodItem = getFoodItemById(request.getId());
+
+        foodItem.setCategory(category);
         foodItem.setName(request.getName());
         foodItem.setImage(request.getImage());
         foodItem.setPrice(request.getPrice());
@@ -83,8 +73,17 @@ public class FoodItemService {
         return request;
     }
 
+    @NotNull
+    private FoodItem getFoodItemById(Long foodItemId) {
+        Optional<FoodItem> optionalFoodItem = foodRepository.findById(foodItemId);
+        if (!optionalFoodItem.isPresent()) {
+            throw new IllegalArgumentException("FoodItem not exists with this id " + foodItemId);
+        }
+        return optionalFoodItem.get();
+    }
+
     public List<Category> getCategories() {
-        return categoryRepository.findAll();
+        return categoryService.getAllCategories();
     }
 
     public Page<FoodItem> getFoodItems(MenuPage menuPage) {

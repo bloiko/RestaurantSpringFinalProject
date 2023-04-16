@@ -18,6 +18,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class PromoCodeService {
+
     private final PromoCodeRepository promoCodeRepository;
 
     public PromoCodeService(PromoCodeRepository promoCodeRepository) {
@@ -46,7 +47,7 @@ public class PromoCodeService {
     }
 
     private String changeActiveStatusByCode(String promoCode, boolean active) {
-        Optional<PromoCode> optionalPromoCode = promoCodeRepository.findByCode(promoCode);
+        Optional<PromoCode> optionalPromoCode = getPromoCode(promoCode);
         if (!optionalPromoCode.isPresent()) {
             throw new IllegalArgumentException("Promo Code is not present by this code");
         }

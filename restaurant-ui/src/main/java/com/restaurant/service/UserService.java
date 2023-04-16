@@ -75,7 +75,7 @@ public class UserService {
 
     public String login(String username, String password) {
         log.info("New user attempting to sign in");
-        User user = validateUserExistence(username);
+        User user = getUserByUserName(username);
 
         validatePassword(password, user);
 
@@ -97,8 +97,8 @@ public class UserService {
             log.error("Cannot send email to user with email = {}", registeredUserInDb.getEmail());
         }
 
-        if (registeredUserInDb == null){
-            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
+        if (registeredUserInDb == null) {
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "User was not registered");
         }
 
         try {
@@ -140,12 +140,12 @@ public class UserService {
     }
 
     @NotNull
-    private User validateUserExistence(String username) {
-        User user = getUserByUserName(username);
-        if (user == null) {
+    public User getUserByUserName(String username) {
+        Optional<User> optionalUser = userRepository.findByUserName(username);
+        if (!optionalUser.isPresent()) {
             throw new HttpServerErrorException(HttpStatus.FORBIDDEN, "Unknown username");
         }
-        return user;
+        return optionalUser.get();
     }
 
     private void validatePassword(String password, User user) {
@@ -155,12 +155,6 @@ public class UserService {
         }
     }
 
-    public boolean isCorrectAdmin(String userName, String password) {
-        User user = getUserByUserName(userName);
-        return user.getPassword().equals(password)
-                && user.getRole().getName().equals("ADMIN");
-    }
-
     public List<Order> getUserOrdersSortByOrderDateReversed(String username) {
         Long userId = getUserByUserName(username).getId();
         List<Order> orders = orderRepository.findAllByUserId(userId);
@@ -168,44 +162,26 @@ public class UserService {
         return orders;
     }
 
-    public Long addUserAndReturnId(User user) {
-        User userFromRepository = getUserByUserName(user.getUserName());
-        return userFromRepository == null ? userRepository.save(user).getId() : -1L;
-    }
-
-    public boolean isCorrectUser(String userName, String password) {
-        User user = getUserByUserName(userName);
-        if (user == null) {
-            return false;
-        }
-
-        boolean isPasswordCorrect = passwordEncoder.matches(password, user.getPassword());
-        return user.getUserName().equals(userName) && isPasswordCorrect;
-    }
-
-    public User getUserByUserName(String username) {
-        Optional<User> optionalUser = userRepository.findByUserName(username);
-
-        return optionalUser.orElse(null);
-    }
-
-    public Optional<User> getUserDetailsById(Long userId) {
-        return userRepository.findById(userId);
-    }
-
-    public User updateUserDetails(Long userId, UserDto userDto) {
-        if(isEmpty(userId)){
-            throw new IllegalArgumentException("userId cannot be null or empty");
-        }
-        
+    @NotNull
+    public User getUserById(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
 
-        if(!optionalUser.isPresent()){
+        if (!optionalUser.isPresent()) {
             throw new ResourceNotFoundException("User not found");
         }
 
-        populateDtoToUser(userDto, optionalUser.get());
-        User user = userRepository.save(optionalUser.get());
+        return optionalUser.get();
+    }
+
+    public User updateUserDetails(Long userId, UserDto userDto) {
+        if (isEmpty(userId)) {
+            throw new IllegalArgumentException("userId cannot be null or empty");
+        }
+
+        User user = getUserById(userId);
+
+        populateDtoToUser(userDto, user);
+        user = userRepository.save(user);
 
         auditSender.addAudit(userId, EntityType.USER, ActionType.UPDATE_USER_DETAILS);
         return user;
@@ -221,7 +197,7 @@ public class UserService {
     }
 
     public void updatePassword(Long userId, PasswordDto passwordDto) {
-        if(isEmpty(userId)){
+        if (isEmpty(userId)) {
             throw new IllegalArgumentException("userId cannot be null or empty");
         }
 
@@ -238,24 +214,19 @@ public class UserService {
     private void validateEqualityOfPasswords(String oldPassword, String currentPassword) {
         boolean isOldPasswordCorrect = passwordEncoder.matches(oldPassword, currentPassword);
 
-        if(!isOldPasswordCorrect){
+        if (!isOldPasswordCorrect) {
             throw new IllegalArgumentException("Old password is not correct");
         }
     }
 
     public String deleteUserById(Long userId) {
-        if(isEmpty(userId)){
+        if (isEmpty(userId)) {
             throw new IllegalArgumentException("User id is incorrect");
         }
 
-        Optional<User> userOptional = userRepository.findById(userId);
-
-        if(!userOptional.isPresent()){
-            throw new IllegalArgumentException("User is not present in db with specified id");
-        }
-
-        orderRepository.deleteAllByUserId(userOptional.get().getId());
-        userOptional.ifPresent(userRepository::delete);
+        User user = getUserById(userId);
+        orderRepository.deleteAllByUserId(user.getId());
+        userRepository.delete(user);
 
         auditSender.addAudit(userId, EntityType.USER, ActionType.DELETE_USER);
 

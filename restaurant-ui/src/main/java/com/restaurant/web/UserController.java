@@ -6,7 +6,6 @@ import com.restaurant.web.dto.GetUsersResponse;
 import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.UserDto;
 import com.restaurant.web.dto.UsersPage;
-import com.restaurant.web.exception.ResourceNotFoundException;
 import com.restaurant.web.mapper.UserDtoMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -18,7 +17,6 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
@@ -36,13 +34,9 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public UserDto getUserDetailsById(@PathVariable Long userId) {
-        Optional<User> optionalUser = userService.getUserDetailsById(userId);
+        User user = userService.getUserById(userId);
 
-        if(!optionalUser.isPresent()){
-            throw new ResourceNotFoundException("User not found");
-        }
-
-        return userDtoMapper.mapUserToDto(optionalUser.get());
+        return userDtoMapper.mapUserToDto(user);
     }
 
     @GetMapping("/profile")
@@ -51,9 +45,6 @@ public class UserController {
 
         User user = userService.getUserByUserName(userDetails.getName());
 
-        if (user == null) {
-            throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, "User not found");
-        }
         return userDtoMapper.mapUserToDto(user);
     }
 
