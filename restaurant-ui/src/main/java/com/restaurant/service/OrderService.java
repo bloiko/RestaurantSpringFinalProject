@@ -31,7 +31,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
  */
 @Service
 @Transactional
-public class OrderService {
+public class OrderService extends ReaderServiceImpl<Order> {
 
     private final OrderRepository orderRepository;
 
@@ -45,8 +45,10 @@ public class OrderService {
 
     private final AuditSender auditSender;
 
-    public OrderService(OrderRepository orderRepository, OrderStatusRepository statusRepository, UserService userService,
-                        FoodRepository foodRepository, PromoCodeRepository promoCodeRepository, AuditSender auditSender) {
+    public OrderService(OrderRepository orderRepository, OrderStatusRepository statusRepository,
+                        UserService userService, FoodRepository foodRepository,
+                        PromoCodeRepository promoCodeRepository, AuditSender auditSender) {
+        super(orderRepository);
         this.orderRepository = orderRepository;
         this.statusRepository = statusRepository;
         this.userService = userService;
@@ -66,15 +68,14 @@ public class OrderService {
 
         OrderStatus waitingStatus = statusRepository.findByStatusName(Status.WAITING);
 
-        Order order = Order.builder()
-                .id(0L)
-                .user(user)
-                .orderDate(new Timestamp(new Date().getTime()))
-                .orderStatus(waitingStatus)
-                .items(items)
-                .orderPrice(getPriceSumOfAllItems(items, discount))
-                .promoCode(promoCodeObject)
-                .build();
+        Order order = Order.builder().id(0L)
+                                     .user(user)
+                                     .orderDate(new Timestamp(new Date().getTime()))
+                                     .orderStatus(waitingStatus)
+                                     .items(items)
+                                     .orderPrice(getPriceSumOfAllItems(items, discount))
+                                     .promoCode(promoCodeObject)
+                                     .build();
 
         for (Item item : items) {
             item.setOrder(order);
@@ -108,15 +109,12 @@ public class OrderService {
     }
 
     public List<Order> getOrdersForCook() {
-        return orderRepository.findAllByOrderStatusNamesAndOrderByOrderDateAsc(Arrays.asList(Status.WAITING, Status.PREPARING));
+        return orderRepository.findAllByOrderStatusNamesAndOrderByOrderDateAsc(
+                Arrays.asList(Status.WAITING, Status.PREPARING));
     }
 
     public boolean changeOrderStatusByCook(Long orderId, Status orderStatus) {
-        Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if (!optionalOrder.isPresent()) {
-            throw new ResourceNotFoundException("Order not found with id = " + orderId);
-        }
-        Order order = optionalOrder.get();
+        Order order = getById(orderId);
 
         OrderStatus requestedOrderStatus = statusRepository.findByStatusName(orderStatus);
         OrderStatus currentStatus = order.getOrderStatus();
@@ -131,19 +129,18 @@ public class OrderService {
 
     @NotNull
     private List<Item> createItems(List<FoodItemDto> foodItemsDto) {
-        List<Long> foodItemIds = foodItemsDto.stream()
-                .map(FoodItemDto::getId)
+        List<Long> foodItemIds = foodItemsDto.stream().map(FoodItemDto::getId)
                 .collect(Collectors.toList());
 
         List<FoodItem> foodItemsFromDb = foodRepository.findAllById(foodItemIds);
 
-        return foodItemsFromDb.stream()
-                .map(foodItem -> buildItem(foodItemsDto, foodItem))
+        return foodItemsFromDb.stream().map(foodItem -> buildItem(foodItemsDto, foodItem))
                 .collect(Collectors.toList());
     }
 
     private User getCurrentUser() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
         String username = userDetails.getUsername();
         return userService.getUserByUserName(username);
     }
@@ -154,6 +151,7 @@ public class OrderService {
     }
 
     private static int getQuantityByFoodItemId(List<FoodItemDto> foodItemsDto, Long foodItemId) {
-        return foodItemsDto.stream().filter(foodItemDto -> foodItemDto.getId().equals(foodItemId)).findAny().get().getQuantity();
+        return foodItemsDto.stream().filter(foodItemDto -> foodItemDto.getId().equals(foodItemId))
+                .findAny().get().getQuantity();
     }
 }

@@ -11,7 +11,6 @@ import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
 import com.restaurant.web.dto.UsersPage;
-import com.restaurant.web.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +40,10 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Slf4j
 @Service
-public class UserService {
+public class UserService extends ReaderServiceImpl<User> {
+
     private static final String DEFAULT_SORT_BY_FILTER = "userName";
+
     private final UserRepository userRepository;
 
     private final OrderRepository orderRepository;
@@ -63,6 +64,7 @@ public class UserService {
     public UserService(UserRepository userRepository, OrderRepository orderRepository, AuthenticationManager authenticationManager,
                        RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtProvider jwtProvider, EmailMessagesSender emailMessagesSender,
                        AuditSender auditSender) {
+        super(userRepository);
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
         this.authenticationManager = authenticationManager;
@@ -141,11 +143,7 @@ public class UserService {
 
     @NotNull
     public User getUserByUserName(String username) {
-        Optional<User> optionalUser = userRepository.findByUserName(username);
-        if (!optionalUser.isPresent()) {
-            throw new HttpServerErrorException(HttpStatus.FORBIDDEN, "Unknown username");
-        }
-        return optionalUser.get();
+        return getByField(username, userRepository::findByUserName);
     }
 
     private void validatePassword(String password, User user) {
@@ -162,23 +160,12 @@ public class UserService {
         return orders;
     }
 
-    @NotNull
-    public User getUserById(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-
-        if (!optionalUser.isPresent()) {
-            throw new ResourceNotFoundException("User not found");
-        }
-
-        return optionalUser.get();
-    }
-
     public User updateUserDetails(Long userId, UserDto userDto) {
         if (isEmpty(userId)) {
             throw new IllegalArgumentException("userId cannot be null or empty");
         }
 
-        User user = getUserById(userId);
+        User user = getById(userId);
 
         populateDtoToUser(userDto, user);
         user = userRepository.save(user);
@@ -201,7 +188,7 @@ public class UserService {
             throw new IllegalArgumentException("userId cannot be null or empty");
         }
 
-        User user = userRepository.getById(userId);
+        User user = getById(userId);
 
         validateEqualityOfPasswords(passwordDto.getOldPassword(), user.getPassword());
 
@@ -220,21 +207,13 @@ public class UserService {
     }
 
     public String deleteUserById(Long userId) {
-        if (isEmpty(userId)) {
-            throw new IllegalArgumentException("User id is incorrect");
-        }
-
-        User user = getUserById(userId);
+        User user = getById(userId);
         orderRepository.deleteAllByUserId(user.getId());
         userRepository.delete(user);
 
         auditSender.addAudit(userId, EntityType.USER, ActionType.DELETE_USER);
 
         return String.valueOf(userId);
-    }
-
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
     }
 
     public Page<User> getAllUsersByPage(UsersPage usersPage) {

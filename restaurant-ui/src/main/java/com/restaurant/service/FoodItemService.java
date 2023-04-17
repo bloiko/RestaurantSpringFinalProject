@@ -16,9 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
-
 
 /**
  * Food Item service.
@@ -27,7 +24,8 @@ import java.util.Optional;
  */
 @Service
 @Transactional
-public class FoodItemService {
+public class FoodItemService extends ReaderServiceImpl<FoodItem> {
+
     public static final String DEFAULT_SORT_BY_FILTER = "category";
 
     public static final String ALL_CATEGORIES = "All categories";
@@ -39,14 +37,15 @@ public class FoodItemService {
     private final AuditSender auditSender;
 
     public FoodItemService(FoodRepository foodRepository, CategoryService categoryService,
-                           AuditSender auditSender) {
+                               AuditSender auditSender) {
+        super(foodRepository);
         this.foodRepository = foodRepository;
         this.categoryService = categoryService;
         this.auditSender = auditSender;
     }
 
     public FoodItemRequest addNewFoodItem(FoodItemRequest request) {
-        Category category = categoryService.getCategoryById(request.getCategoryId());
+        Category category = categoryService.getById(request.getCategoryId());
 
         FoodItem foodItem = new FoodItem(0L, request.getName(), request.getPrice(), request.getImage(), category);
         foodItem = foodRepository.save(foodItem);
@@ -58,9 +57,9 @@ public class FoodItemService {
     }
 
     public FoodItemRequest updateFoodItem(FoodItemRequest request) {
-        Category category = categoryService.getCategoryById(request.getCategoryId());
+        Category category = categoryService.getById(request.getCategoryId());
 
-        FoodItem foodItem = getFoodItemById(request.getId());
+        FoodItem foodItem = getById(request.getId());
 
         foodItem.setCategory(category);
         foodItem.setName(request.getName());
@@ -71,19 +70,6 @@ public class FoodItemService {
 
         auditSender.addAudit(foodItem.getId(), EntityType.FOOD_ITEM, ActionType.UPDATE_FOOD_ITEM);
         return request;
-    }
-
-    @NotNull
-    private FoodItem getFoodItemById(Long foodItemId) {
-        Optional<FoodItem> optionalFoodItem = foodRepository.findById(foodItemId);
-        if (!optionalFoodItem.isPresent()) {
-            throw new IllegalArgumentException("FoodItem not exists with this id " + foodItemId);
-        }
-        return optionalFoodItem.get();
-    }
-
-    public List<Category> getCategories() {
-        return categoryService.getAllCategories();
     }
 
     public Page<FoodItem> getFoodItems(MenuPage menuPage) {

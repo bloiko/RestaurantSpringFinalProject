@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/promocode")
 public class PromoCodeController {
+
     private final PromoCodeService promoCodeService;
 
     public PromoCodeController(PromoCodeService promoCodeService) {
@@ -31,7 +32,7 @@ public class PromoCodeController {
 
     @GetMapping("/all")
     public List<PromoCodeDto> getAllPromoCodes() {
-        List<PromoCode> promoCodes = promoCodeService.getAllPromoCodes();
+        List<PromoCode> promoCodes = promoCodeService.getAll();
 
         return promoCodes.stream().map(PromoCodeController::mapPromoCode).collect(Collectors.toList());
     }

@@ -7,7 +7,6 @@ import com.restaurant.web.dto.PromoCodeDto;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,20 +16,17 @@ import java.util.Optional;
  */
 @Service
 @Transactional
-public class PromoCodeService {
+public class PromoCodeService extends ReaderServiceImpl<PromoCode> {
 
     private final PromoCodeRepository promoCodeRepository;
 
     public PromoCodeService(PromoCodeRepository promoCodeRepository) {
+        super(promoCodeRepository);
         this.promoCodeRepository = promoCodeRepository;
     }
 
     public Optional<PromoCode> getPromoCode(String promoCode) {
         return promoCodeRepository.findByCode(promoCode);
-    }
-
-    public List<PromoCode> getAllPromoCodes() {
-        return promoCodeRepository.findAll();
     }
 
     public String addPromoCode(PromoCodeDto promoCodeDto) {

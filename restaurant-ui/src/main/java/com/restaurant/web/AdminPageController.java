@@ -17,6 +17,7 @@ import static org.hibernate.internal.util.StringHelper.isEmpty;
 @RestController
 @RequestMapping("/admin")
 public class AdminPageController {
+
     private final CategoryService categoryService;
 
     private final FoodItemService foodItemService;
@@ -31,7 +32,7 @@ public class AdminPageController {
 
     @GetMapping("/category/{categoryId}")
     public CategoryDto getCategoryById(@PathVariable Long categoryId) {
-        Category category = categoryService.getCategoryById(categoryId);
+        Category category = categoryService.getById(categoryId);
 
         return categoryDtoMapper.mapCategoryToDto(category);
     }
@@ -56,14 +57,14 @@ public class AdminPageController {
 
     @GetMapping ("/categories")
     public List<CategoryDto> getAllCategories() {
-        List<Category> users = categoryService.getAllCategories();
+        List<Category> users = categoryService.getAll();
 
         return users.stream().map(categoryDtoMapper::mapCategoryToDto).collect(Collectors.toList());
     }
 
     @DeleteMapping ("/category/{categoryId}")
     public String deleteCategoryById(@PathVariable Long categoryId) {
-        return categoryService.deleteCategoryById(categoryId);
+        return categoryService.deleteById(categoryId);
     }
 
     @PostMapping ("/food/item")

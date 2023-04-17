@@ -8,16 +8,16 @@ import com.restaurant.web.dto.UserDto;
 import com.restaurant.web.dto.UsersPage;
 import com.restaurant.web.mapper.UserDtoMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
@@ -34,7 +34,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public UserDto getUserDetailsById(@PathVariable Long userId) {
-        User user = userService.getUserById(userId);
+        User user = userService.getById(userId);
 
         return userDtoMapper.mapUserToDto(user);
     }
@@ -64,7 +64,7 @@ public class UserController {
 
     @GetMapping ("/all")
     public List<UserDto> getAllUsersDetails() {
-        List<User> users = userService.getAllUsers();
+        List<User> users = userService.getAll();
 
         return users.stream().map(userDtoMapper::mapUserToDto).collect(Collectors.toList());
     }
@@ -87,6 +87,10 @@ public class UserController {
 
     @DeleteMapping ("/{userId}")
     public String deleteUserById(@PathVariable Long userId) {
+        if (isEmpty(userId)) {
+            throw new IllegalArgumentException("User id is incorrect");
+        }
+
         return userService.deleteUserById(userId);
     }
 }
