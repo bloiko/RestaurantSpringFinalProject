@@ -6,6 +6,7 @@ import com.restaurant.web.dto.AuditDto;
 import com.restaurant.database.entity.EntityType;
 import com.restaurant.database.dao.UserRepository;
 import com.restaurant.database.entity.User;
+import com.restaurant.web.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +28,8 @@ public class AuditSender {
     public void addAudit(Long entityId, EntityType entityType, ActionType actionType) {
         try {
             Authentication userDetails = SecurityContextHolder.getContext().getAuthentication();
-            User user = userRepository.findByUserName(userDetails.getName()).get();
+            User user = userRepository.findByUserName(userDetails.getName())
+                    .orElseThrow(() -> new ResourceNotFoundException("User is not present with this name " + userDetails.getName()));
 
             AuditDto auditDto = new AuditDto(entityId, user.getId(), entityType, actionType);
 

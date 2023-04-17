@@ -75,6 +75,7 @@ class PromoCodeControllerIT {
 
         assertEquals(promoCode, code);
         Optional<PromoCode> promoCodeFromDb = promoCodeRepository.findByCode(promoCode);
+        assertTrue(promoCodeFromDb.isPresent());
         assertEquals(promoCode, promoCodeFromDb.get().getCode());
         assertEquals(discount, promoCodeFromDb.get().getDiscount());
         assertTrue(promoCodeFromDb.get().isActive());
@@ -90,6 +91,7 @@ class PromoCodeControllerIT {
 
         assertEquals(promoCode, code);
         Optional<PromoCode> promoCodeFromDb = promoCodeRepository.findByCode(promoCode);
+        assertTrue(promoCodeFromDb.isPresent());
         assertEquals(promoCode, promoCodeFromDb.get().getCode());
         assertEquals(discount, promoCodeFromDb.get().getDiscount());
         assertFalse(promoCodeFromDb.get().isActive());
@@ -105,6 +107,7 @@ class PromoCodeControllerIT {
 
         assertEquals(promoCode, code);
         Optional<PromoCode> promoCodeFromDb = promoCodeRepository.findByCode(promoCode);
+        assertTrue(promoCodeFromDb.isPresent());
         assertEquals(promoCode, promoCodeFromDb.get().getCode());
         assertEquals(discount, promoCodeFromDb.get().getDiscount());
         assertTrue(promoCodeFromDb.get().isActive());

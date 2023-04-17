@@ -20,13 +20,8 @@ public class ReaderServiceImpl<I> implements ReaderService<I> {
     }
 
     public I getByField(String value, Function<String, Optional<I>> getFunction) {
-        Optional<I> optional = getFunction.apply(value);
-
-        if (!optional.isPresent()) {
-            throw new ResourceNotFoundException("Entity is not present by this value " + value);
-        }
-
-        return optional.get();
+        return getFunction.apply(value)
+                .orElseThrow(() -> new ResourceNotFoundException("Entity is not present by this value " + value));
     }
 
     public List<I> getAll() {

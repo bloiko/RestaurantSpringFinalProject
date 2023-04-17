@@ -6,8 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Slf4j
 @Service
 @Transactional
@@ -28,10 +26,10 @@ public class CategoryService extends ReaderServiceImpl<Category> {
     }
 
     public Category saveNewCategory(String name) {
-        Optional<Category> categoryOptional = categoryRepository.findByName(name);
-        if (categoryOptional.isPresent()) {
-            throw new IllegalArgumentException("Category is present with this name");
-        }
+        categoryRepository.findByName(name)
+                .ifPresent(category -> {
+                    throw new IllegalArgumentException("Category is present with this name");
+                });
 
         return categoryRepository.save(new Category(0L, name));
     }

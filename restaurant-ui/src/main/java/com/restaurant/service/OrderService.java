@@ -134,7 +134,9 @@ public class OrderService extends ReaderServiceImpl<Order> {
 
         List<FoodItem> foodItemsFromDb = foodRepository.findAllById(foodItemIds);
 
-        return foodItemsFromDb.stream().map(foodItem -> buildItem(foodItemsDto, foodItem))
+        return foodItemsFromDb
+                .stream()
+                .map(foodItem -> buildItem(foodItemsDto, foodItem))
                 .collect(Collectors.toList());
     }
 
@@ -151,7 +153,10 @@ public class OrderService extends ReaderServiceImpl<Order> {
     }
 
     private static int getQuantityByFoodItemId(List<FoodItemDto> foodItemsDto, Long foodItemId) {
-        return foodItemsDto.stream().filter(foodItemDto -> foodItemDto.getId().equals(foodItemId))
-                .findAny().get().getQuantity();
+        FoodItemDto foodItemDto = foodItemsDto.stream()
+                .filter(foodItem -> foodItem.getId().equals(foodItemId))
+                .findAny()
+                .orElseThrow(() -> new ResourceNotFoundException("Requested status cannot be less ordinal than current"));
+        return foodItemDto.getQuantity();
     }
 }

@@ -11,6 +11,7 @@ import com.restaurant.web.dto.PasswordDto;
 import com.restaurant.web.dto.RegistrationRequest;
 import com.restaurant.web.dto.UserDto;
 import com.restaurant.web.dto.UsersPage;
+import com.restaurant.web.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,19 +128,20 @@ public class UserService extends ReaderServiceImpl<User> {
 
     @NotNull
     private Optional<User> createUser(RegistrationRequest registrationRequest) {
-        Optional<Role> role = roleRepository.findByRoleName(RoleName.USER);
+        Role role = roleRepository.findByRoleName(RoleName.USER)
+                .orElseThrow(() -> new ResourceNotFoundException("Role USER not found"));
 
         return Optional.of(userRepository.save(buildUserFromRequest(registrationRequest, role)));
     }
 
     @NotNull
-    private User buildUserFromRequest(RegistrationRequest registrationRequest, Optional<Role> role) {
+    private User buildUserFromRequest(RegistrationRequest registrationRequest, Role role) {
         return new User(registrationRequest.getUsername(),
                 passwordEncoder.encode(registrationRequest.getPassword()),
                 registrationRequest.getFirstName(),
                 registrationRequest.getLastName(),
                 registrationRequest.getEmail(),
-                role.get());
+                role);
     }
 
     @NotNull

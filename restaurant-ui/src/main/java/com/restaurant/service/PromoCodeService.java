@@ -43,14 +43,11 @@ public class PromoCodeService extends ReaderServiceImpl<PromoCode> {
     }
 
     private String changeActiveStatusByCode(String promoCode, boolean active) {
-        Optional<PromoCode> optionalPromoCode = getPromoCode(promoCode);
-        if (!optionalPromoCode.isPresent()) {
-            throw new IllegalArgumentException("Promo Code is not present by this code");
-        }
+        PromoCode promoCodeSaved = getPromoCode(promoCode)
+                .orElseThrow(() -> new IllegalArgumentException("Promo Code is not present by this code"));
 
-        PromoCode promoCodeFromDb = optionalPromoCode.get();
-        promoCodeFromDb.setActive(active);
-        promoCodeRepository.save(promoCodeFromDb);
+        promoCodeSaved.setActive(active);
+        promoCodeRepository.save(promoCodeSaved);
         return String.valueOf(promoCode);
     }
 }
