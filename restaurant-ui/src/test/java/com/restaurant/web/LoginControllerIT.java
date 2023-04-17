@@ -3,6 +3,7 @@ package com.restaurant.web;
 import com.restaurant.RestaurantApplication;
 import com.restaurant.database.dao.UserRepository;
 import com.restaurant.database.entity.Role;
+import com.restaurant.database.entity.RoleName;
 import com.restaurant.database.entity.User;
 import com.restaurant.security.jwt.JwtProvider;
 import com.restaurant.messaging.email.EmailMessagesSender;
@@ -85,6 +86,6 @@ public class LoginControllerIT {
     @NotNull
     private User buildUser() {
         return new User(USER_NAME, passwordEncoder.encode(PASSWORD), "firstName", "lastName",
-                "email@mail.com", new Role(1L, "USER"));
+                "email@mail.com", new Role(1L, RoleName.USER));
     }
 }

@@ -127,7 +127,8 @@ public class UserService extends ReaderServiceImpl<User> {
 
     @NotNull
     private Optional<User> createUser(RegistrationRequest registrationRequest) {
-        Optional<Role> role = roleRepository.findByName("USER");
+        Optional<Role> role = roleRepository.findByRoleName(RoleName.USER);
+
         return Optional.of(userRepository.save(buildUserFromRequest(registrationRequest, role)));
     }
 

@@ -19,7 +19,7 @@ public class UserDtoMapper {
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .address(user.getAddress())
-                .role(user.getRole().getName())
+                .role(user.getRole().getRoleName().name())
                 .build();
     }
 }

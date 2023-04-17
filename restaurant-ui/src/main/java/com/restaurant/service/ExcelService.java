@@ -92,7 +92,7 @@ public class ExcelService {
         functions.add(User::getEmail);
         functions.add(User::getPhoneNumber);
         functions.add(User::getAddress);
-        functions.add(user -> user.getRole().getName());
+        functions.add(user -> user.getRole().getRoleName().name());
         ExcelBuilderDto<User> excelBuilderDto = ExcelBuilderDto.<User>builder()
                 .fileName("USERS")
                 .list(usersList)

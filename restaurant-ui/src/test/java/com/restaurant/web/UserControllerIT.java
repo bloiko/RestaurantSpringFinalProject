@@ -185,7 +185,7 @@ class UserControllerIT {
         assertEquals(expectedUser.getFirstName(), actualUserDto.getFirstName());
         assertEquals(expectedUser.getLastName(), actualUserDto.getLastName());
         assertEquals(expectedUser.getEmail(), actualUserDto.getEmail());
-        assertEquals(expectedUser.getRole().getName(), actualUserDto.getRole());
+        assertEquals(expectedUser.getRole().getRoleName().name(), actualUserDto.getRole());
         assertEquals(expectedUser.getPhoneNumber(), actualUserDto.getPhoneNumber());
         assertEquals(expectedUser.getAddress(), actualUserDto.getAddress());
         assertNull(actualUserDto.getPassword());

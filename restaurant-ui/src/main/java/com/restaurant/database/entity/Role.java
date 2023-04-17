@@ -14,16 +14,18 @@ import javax.persistence.*;
 @Entity
 @Table(name = "role")
 public class Role implements GrantedAuthority {
+
     @Id
     @Column(name = "role_id")
     @GeneratedValue
     private Long id;
 
     @Column(name = "name")
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private RoleName roleName;
 
     @Override
     public String getAuthority() {
-        return name;
+        return roleName.name();
     }
 }
