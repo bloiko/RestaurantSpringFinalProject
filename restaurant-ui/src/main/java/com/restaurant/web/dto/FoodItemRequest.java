@@ -1,5 +1,7 @@
 package com.restaurant.web.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +20,7 @@ public class FoodItemRequest {
     private String name;
 
     @Min(value = 0, message = "Price should be positive number!")
-    private int price;
+    private BigDecimal price;
 
     @NotEmpty(message = "Image URL should not be empty!")
     private String image;

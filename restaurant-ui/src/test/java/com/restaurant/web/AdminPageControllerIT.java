@@ -16,6 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,7 +111,7 @@ class AdminPageControllerIT {
 
     @Test
     void addNewFoodItem() {
-        FoodItemRequest foodItemRequest = new FoodItemRequest(0L, "foodName", 10, "image_url", 1L);
+        FoodItemRequest foodItemRequest = new FoodItemRequest(0L, "foodName", new BigDecimal(10), "image_url", 1L);
 
         FoodItemRequest foodItemResponse = adminPageController.addNewFoodItem(foodItemRequest);
 
@@ -119,7 +120,7 @@ class AdminPageControllerIT {
         FoodItem foodItem = foodItemOptional.get();
         assertEquals(foodItemResponse.getId(), foodItem.getId());
         assertEquals("foodName", foodItem.getName());
-        assertEquals(10, foodItem.getPrice());
+        assertEquals(new BigDecimal(10), foodItem.getPrice());
         assertEquals("image_url", foodItem.getImage());
         assertEquals("Snacks", foodItem.getCategory().getName());
     }
@@ -127,8 +128,10 @@ class AdminPageControllerIT {
     @Test
     void updateFoodItem() {
         Category category = categoryRepository.getById(1L);
-        FoodItem foodItem = foodRepository.save(new FoodItem(0L, "foodName1", 10, "image_url_1", category));
-        FoodItemRequest foodItemRequest = new FoodItemRequest(foodItem.getId(), "foodName2", 12, "image_url_2", 2L);
+        FoodItem foodItem = foodRepository.save(new FoodItem(0L, "foodName1", new BigDecimal(10), "image_url_1",
+            category));
+        FoodItemRequest foodItemRequest = new FoodItemRequest(foodItem.getId(), "foodName2", new BigDecimal(12),
+            "image_url_2", 2L);
 
         FoodItemRequest foodItemResponse = adminPageController.updateFoodItem(foodItemRequest);
 
@@ -137,7 +140,7 @@ class AdminPageControllerIT {
         foodItem = foodItemOptional.get();
         assertEquals(foodItemResponse.getId(), foodItem.getId());
         assertEquals("foodName2", foodItem.getName());
-        assertEquals(12, foodItem.getPrice());
+        assertEquals(new BigDecimal(12), foodItem.getPrice());
         assertEquals("image_url_2", foodItem.getImage());
         assertEquals("Desserts", foodItem.getCategory().getName());
     }

@@ -87,7 +87,7 @@ public class OrderService extends ReaderServiceImpl<Order> {
     private static BigDecimal getPriceSumOfAllItems(List<Item> items, int discount) {
         BigDecimal price = new BigDecimal(0);
         for (Item item : items) {
-            price = price.add(new BigDecimal(item.getQuantity() * item.getFoodItem().getPrice()));
+            price = price.add(new BigDecimal(item.getQuantity()).multiply(item.getFoodItem().getPrice()));
         }
         BigDecimal priceDiscount = price.multiply(new BigDecimal(discount).divide(new BigDecimal(100)));
         return price.subtract(priceDiscount);

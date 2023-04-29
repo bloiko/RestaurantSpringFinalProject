@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class ExcelService {
                     .append(item.getFoodItem().getPrice())
                     .append("$")
                     .append(" = ")
-                    .append(item.getQuantity() * item.getFoodItem().getPrice())
+                    .append(new BigDecimal(item.getQuantity()).multiply(item.getFoodItem().getPrice()))
                     .append("$")
                     .append("\n"));
             return stringBuilder.toString();

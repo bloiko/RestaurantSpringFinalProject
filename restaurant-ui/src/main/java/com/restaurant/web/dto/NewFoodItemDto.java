@@ -1,5 +1,7 @@
 package com.restaurant.web.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +14,7 @@ public class NewFoodItemDto {
 
     private String name;
 
-    private int price;
+    private BigDecimal price;
 
     private String categoryName;
 }

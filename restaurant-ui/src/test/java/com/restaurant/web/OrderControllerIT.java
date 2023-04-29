@@ -67,7 +67,9 @@ class OrderControllerIT {
         assertEquals(2, itemList.size());
         assertEquals(foodItem1.getId(), itemList.get(0).getId());
         assertEquals(foodItem2.getId(), itemList.get(1).getId());
-        assertEquals(foodItem1.getPrice() * 2L + foodItem2.getPrice() * 5L, orderFromDb.getOrderPrice().longValue());
+        BigDecimal expected = foodItem1.getPrice().multiply(new BigDecimal(2))
+            .add(foodItem2.getPrice().multiply(new BigDecimal(5)));
+        assertEquals(expected, orderFromDb.getOrderPrice());
         assertNotNull(orderFromDb.getOrderDate());
     }
 
@@ -94,7 +96,8 @@ class OrderControllerIT {
         PromoCode orderPromoCode = orderFromDb.getPromoCode();
         assertEquals(promoCode, orderPromoCode.getCode());
         assertEquals(discount, orderPromoCode.getDiscount());
-        BigDecimal fullPrice = new BigDecimal(foodItem1.getPrice() * 2L + foodItem2.getPrice() * 5L);
+        BigDecimal fullPrice = foodItem1.getPrice().multiply(new BigDecimal(2))
+            .add(foodItem2.getPrice().multiply(new BigDecimal(5)));
         BigDecimal priceWithDiscount = fullPrice.multiply(new BigDecimal("0.8"));
         assertEquals(priceWithDiscount, orderFromDb.getOrderPrice());
 

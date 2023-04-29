@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * FoodItem entity.
@@ -21,10 +22,13 @@ public class FoodItem implements Serializable {
     @Id
     @GeneratedValue
     private Long id;
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "price")
-    private int price;
+    private BigDecimal price;
+
     @Column(name = "image")
     private String image;
 
