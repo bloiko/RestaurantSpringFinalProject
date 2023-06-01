@@ -1,0 +1,3 @@
+
+ALTER TABLE `user` MODIFY COLUMN `email` varchar(100)  DEFAULT NULL;
+
